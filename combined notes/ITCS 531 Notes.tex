@@ -1,0 +1,275 @@
+\documentclass{article}
+
+\usepackage{amsmath, mathrsfs, amssymb, stmaryrd, cancel, hyperref,tikz-cd, relsize,amsthm,standalone,bussproofs,comment,enumerate, appendix, xfrac}
+\hypersetup{pdfstartview={XYZ null null 1.25}}
+\usepackage[all]{xy}
+
+
+
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}[section]{\bfseries}{\itshape}
+\newtheorem{proposition}[theorem]{Proposition}{\bfseries}{\itshape}
+\newtheorem{definition}[theorem]{Definition}{\bfseries}{\upshape}
+\newtheorem{lemma}[theorem]{Lemma}{\bfseries}{\upshape}
+\newtheorem{example}[theorem]{Example}{\bfseries}{\upshape}
+\newtheorem{corollary}[theorem]{Corollary}{\bfseries}{\upshape}
+\newtheorem{remark}[theorem]{Remark}{\bfseries}{\upshape}
+\newtheorem{fact}[theorem]{Fact}{\bfseries}{\upshape}
+\newtheorem{Q}{Exercise}[section]{\bfseries}{\upshape}
+
+\newtheorem*{theorem*}{Theorem}
+
+\numberwithin{theorem}{subsection}
+
+
+\newcommand{\bN}{\mathbb{N}}
+\newcommand{\bZ}{\mathbb{Z}}
+\newcommand{\bQ}{\mathbb{Q}}
+\newcommand{\bR}{\mathbb{R}}
+\newcommand{\bP}{\mathbb{P}}
+\newcommand{\HCF}{\mathbf{HCF}}
+\newcommand{\lequiv}{\models\text{\reflectbox{$\models$}}}
+\newcommand{\sL}{\mathscr{L}}
+\newcommand{\trm}{\mathbf{term}}
+\newcommand{\cR}{\mathcal{R}}
+\newcommand{\cF}{\mathcal{F}}
+\newcommand{\cC}{\mathcal{C}}
+\newcommand{\bC}{\mathbb{C}}
+\newcommand{\bF}{\mathbb{F}}
+\newcommand{\spa}{\mathrm{span}}
+\newcommand{\cL}{\mathcal{L}}
+\DeclareMathOperator{\nul}{\mathrm{null}}
+\DeclareMathOperator{\ran}{\mathrm{ran}}
+\DeclareMathOperator{\ISp}{\downarrow \mathit{p}}
+\DeclareMathOperator{\ISq}{\downarrow \mathit{q}}
+\newcommand{\lra}{\leftrightarrow}
+\newcommand{\ra}{\rightarrow}
+\newcommand{\la}{\leftarrow}
+
+\newcommand*{\prefix}{}
+
+\title{ITCS 531 Mathematics for Computer Science Notes}
+\author{Rob Egrot}
+\date{}
+\begin{document}
+\maketitle
+\tableofcontents
+
+
+\section{Preface}
+These notes are for the first 8 weeks of a course taught to first year PhD students at the faculty of ICT at Mahidol university. Incoming students here do not usually have a strong background in mathematics or computation theory, so this course is intended to be a rigorous but relatively gentle introduction to formal mathematics and proofs. These notes have 4 sections which are mostly independent and can be taught or read in different orders or concurrently. 
+
+The section on number theory builds the necessary theory to properly understand the theory behind RSA encryption, and also to see proofs in action in the relatively familiar setting of integers and natural numbers. 
+
+The section on logic introduces the fundamental concepts of propositional and first-order logic, both because it is generally useful \cite{HHIKVV01}, and also because it is necessary to understand some of the computation theory material on the subsequent 532 Foundations of CS course (in particular Turing's solution to Hilbert's entscheidungsproblem and the Cook–Levin theorem). We state and prove the soundness and completeness of propositional logic. We also introduce the concept of first-order languages, theories and models, and we sketch a proof of soundness and completeness. For both propositional and first-order logic we use the natural deduction proof system, because it to some extent mirrors the intuitions governing mathematical thinking.
+
+The section on linear algebra uses an abstract approach modeled on that of \cite{Ax15}. In some ways this is not ideal in computer science, as computation details are often very important, but it is a nice way to develop a deeper understanding and more abstract thinking that will hopefully come in useful to students later. Unfortunately we do not have time in this course to cover very much, but we build up to demonstrating how the abstract approach can lead to elegant proofs of theorems in Euclidean geometry.
+
+The section titled `Counting' covers the basics of cardinal arithmetic, because it is good general knowledge for a person in a mathematical science to have, and also some general combinatorics techniques such as pigeon hole principle, with many examples. The first version of these notes also contained a subsection on ordinal arithmetic, but this was omitted from later versions as the ratio of useful material to technical details was judged to be too low for the purposes of the course.
+
+Each subsection ends with a small number of exercises, and students are generally advised to attempt all of them as solving problems is essential for developing mathematical skills. If this alone were not enough, results and ideas from the exercises may also be needed elsewhere. Full solutions are provided at the end of the notes. Some exercises are marked `optional'. This is used when assigning homework to avoid overly long problem sets in some weeks, but students with time available should still attempt them, for the reasons just described. Sometimes the optional questions are more difficult then the standard exercises. Each section ends with some pointers to further reading on the material covered. Where possible the focus is on material that is freely available online. 
+
+
+\newpage
+\section{Number Theory}{
+\let\section\subsection
+\let\subsection\subsubsection
+\input{../"number theory"/NT1/ITCS531NT1.tex}
+\subsubsection*{Exercises}
+\input{../"number theory"/NT1/"ITCS531NT1 - exercises.tex"}
+
+\input{../"number theory"/NT2/ITCS531NT2.tex}
+\subsubsection*{Exercises}
+\input{../"number theory"/NT2/"ITCS531NT2 - exercises.tex"}
+
+\input{../"number theory"/NT3/ITCS531NT3.tex}
+\subsubsection*{Exercises}
+\input{../"number theory"/NT3/"ITCS531NT3 - exercises.tex"}
+
+\input{../"number theory"/NT4/ITCS531NT4.tex}
+\subsubsection*{Exercises}
+\input{../"number theory"/NT4/"ITCS531NT4 - exercises.tex"}
+
+\section{Further reading}
+More about number theory and cryptography can be found in \cite[chapter 1]{DPV06}, on which some of the material here is based, and also in \cite[chapter 9]{LTLM17}. An interesting discussion of the proof of the Fundamental Theorem of Arithmetic, and proofs in general, written by one of the most prominent mathematicians alive today, can be found in \cite{GowArith}. }
+\newpage
+\section{Logic}{
+\let\section\subsection
+\let\subsection\subsubsection
+\input{../logic/L1/ITCS531L1.tex}
+\subsubsection*{Exercises}
+\input{../logic/L1/"ITCS531L1 - exercises.tex"}
+
+\input{../logic/L2/ITCS531L2.tex}
+\subsubsection*{Exercises}
+\input{../logic/L2/"ITCS531L2 - exercises.tex"}
+
+\input{../logic/L3/ITCS531L3.tex}
+\subsubsection*{Exercises}
+\input{../logic/L3/"ITCS531L3 - exercises.tex"}
+
+\input{../logic/L4/ITCS531L4.tex}
+\subsubsection*{Exercises}
+\input{../logic/L4/"ITCS531L4 - exercises.tex"}
+
+\input{../logic/L5/ITCS531L5.tex}
+\subsubsection*{Exercises}
+\input{../logic/L5/"ITCS531L5 - exercises.tex"}
+
+\section{Further reading}
+Some material on logic can be found in \cite[chapter 3]{LTLM17}, though they don't seem to cover deduction. \cite{Tel89} is a short introduction to logic covering most things talked about here, including natural deduction, though unfortunately there are some notation differences. }
+\newpage
+\section{Linear Algebra}{
+\let\section\subsection
+\let\subsection\subsubsection
+\input{../"linear algebra"/LA1/ITCS531LA1.tex}
+\subsubsection*{Exercises}
+\input{../"linear algebra"/LA1/"ITCS531LA1 - exercises.tex"}
+
+\input{../"linear algebra"/LA2/ITCS531LA2.tex}
+\subsubsection*{Exercises}
+\input{../"linear algebra"/LA2/"ITCS531LA2 - exercises.tex"}
+
+\input{../"linear algebra"/LA3/ITCS531LA3.tex}
+\subsubsection*{Exercises}
+\input{../"linear algebra"/LA3/"ITCS531LA3 - exercises.tex"}
+
+\input{../"linear algebra"/LA4/ITCS531LA4.tex}
+\subsubsection*{Exercises}
+\input{../"linear algebra"/LA4/"ITCS531LA4 - exercises.tex"}
+
+\section{Further reading}
+These notes are heavily influenced by \cite{Ax15}. For a completely different approach to the subject, the videos by 3Blue1Brown are highly regarded, though I haven't watched many of them. You can find them \href{https://www.youtube.com/playlist?list=PLZHQObOWTQDPD3MizzM2xVFitgF8hE_ab}{here}. Another source is \cite{Tre17}, which is freely available from the \href{http://www.math.brown.edu/~treil/papers/LADW/LADW.html}{author's website}.}
+\newpage
+\section{Counting}{
+\let\section\subsection
+\let\subsection\subsubsection
+\input{../counting/C1/ITCS531C1.tex}
+\subsubsection*{Exercises}
+\input{../counting/C1/"ITCS531C1 - exercises.tex"}
+
+\input{../counting/C2/ITCS531C2.tex}
+\subsubsection*{Exercises}
+\input{../counting/C2/"ITCS531C2 - exercises.tex"}
+
+%\input{../counting/C3/ITCS531C3.tex}
+\section{Further reading}
+A lot of the material covered here is touched on in \cite{LTLM17}, though the relevant sections are scattered throughout the book. A huge amount of material on combinatorics can be found in \cite{GKP94}. I don't know if this book is formally in the public domain, but if you Google it there are several links to PDFs hosted by universities and which shouldn't give you viruses. For more set theory, \cite{Halm60} is supposed to be good but I haven't read it. This will cover ordinals and cardinals in more detail than here. }
+
+\newpage
+\includecomment{comment}
+% Add label padding to avoid reference conflicts
+\renewcommand*{\prefix}{PAD}
+
+% This is a bit of a hack as I wanted to number exercise solutions with the same numbers as the original exercises, but the internal referncing does not like this at all.
+% My solution is to make the subsections invisible with *. This throws a lot of warnings but the document produced is functional.
+% Removing * causes these subsections to appear in the ToC (the warnings remain), but the link does not function correctly. 
+
+\section{Appendix - Solutions to exercises}
+
+\subsection*{Number Theory}
+\setcounter{section}{2}
+\input{../"number theory"/NT1/"ITCS531NT1 - exercises.tex"}
+\input{../"number theory"/NT2/"ITCS531NT2 - exercises.tex"}
+\input{../"number theory"/NT3/"ITCS531NT3 - exercises.tex"}
+\input{../"number theory"/NT4/"ITCS531NT4 - exercises.tex"}
+
+\subsection*{Logic}
+\setcounter{section}{3}
+\setcounter{Q}{0}
+\input{../logic/L1/"ITCS531L1 - exercises.tex"}
+\input{../logic/L2/"ITCS531L2 - exercises.tex"}
+\input{../logic/L3/"ITCS531L3 - exercises.tex"}
+\input{../logic/L4/"ITCS531L4 - exercises.tex"}
+\input{../logic/L5/"ITCS531L5 - exercises.tex"}
+
+\subsection*{Linear Algebra}
+\setcounter{section}{4}
+\setcounter{Q}{0}
+\input{../"linear algebra"/LA1/"ITCS531LA1 - exercises.tex"}
+\input{../"linear algebra"/LA2/"ITCS531LA2 - exercises.tex"}
+\input{../"linear algebra"/LA3/"ITCS531LA3 - exercises.tex"}
+\input{../"linear algebra"/LA4/"ITCS531LA4 - exercises.tex"}
+
+\subsection*{Counting}
+\setcounter{section}{5}
+\setcounter{Q}{0}
+\input{../counting/C1/"ITCS531C1 - exercises.tex"}
+\input{../counting/C2/"ITCS531C2 - exercises.tex"}
+%\subsubsection{Ordinal numbers}
+%\input{../counting/C3/"ITCS531C3 - exercises.tex"}
+
+
+\bibliographystyle{plainurl}  
+
+\begin{thebibliography}{10}
+
+\bibitem{Ax15}
+Sheldon Axler.
+\newblock {\em Linear algebra done right}.
+\newblock Undergraduate Texts in Mathematics. Springer, Cham, third edition,
+  2015.
+\newblock \href {https://doi.org/10.1007/978-3-319-11080-6}
+  {\path{doi:10.1007/978-3-319-11080-6}}.
+
+\bibitem{DPV06}
+S.~Dasgupta, C.H Papadimitriou, and U.~Vazirani.
+\newblock {\em Algorithms}.
+\newblock McGraw-Hill Education, 2006.
+\newblock URL:
+  \url{http://algorithmics.lsi.upc.edu/docs/Dasgupta-Papadimitriou-Vazirani.pdf}.
+
+\bibitem{GowArith}
+T.~Gowers.
+\newblock Proving the fundamental theorem of arithmetic, 2011.
+\newblock URL:
+  \url{https://gowers.wordpress.com/2011/11/18/proving-the-fundamental-theorem-of-arithmetic/}.
+
+\bibitem{GKP94}
+Ronald~L. Graham, Donald~E. Knuth, and Oren Patashnik.
+\newblock {\em Concrete mathematics}.
+\newblock Addison-Wesley Publishing Company, Reading, MA, second edition, 1994.
+\newblock A foundation for computer science.
+
+\bibitem{Halm60}
+Paul~R. Halmos.
+\newblock {\em Naive set theory}.
+\newblock Springer-Verlag, New York-Heidelberg, 1974.
+\newblock Reprint of the 1960 edition, Undergraduate Texts in Mathematics.
+
+\bibitem{HHIKVV01}
+Joseph~Y. Halpern, Robert Harper, Neil Immerman, Phokion~G. Kolaitis, Moshe~Y.
+  Vardi, and Victor Vianu.
+\newblock On the unusual effectiveness of logic in computer science.
+\newblock {\em Bull. Symbolic Logic}, 7(2):213--236, 2001.
+\newblock \href {https://doi.org/10.2307/2687775} {\path{doi:10.2307/2687775}}.
+
+\bibitem{Lak76}
+Imre Lakatos.
+\newblock {\em Proofs and refutations}.
+\newblock Cambridge University Press, Cambridge-New York-Melbourne, 1976.
+\newblock The logic of mathematical discovery, Edited by John Worrall and Elie
+  Zahar.
+
+\bibitem{LTLM17}
+E.~Lehman, F.~Thompson Leighton, and A.~Meyer.
+\newblock {\em Mathematics for computer science}.
+\newblock Samurai Media Limited, 2017.
+\newblock URL:
+  \url{https://ocw.mit.edu/courses/electrical-engineering-and-computer-science/6-042j-mathematics-for-computer-science-spring-2015/readings/MIT6_042JS15_textbook.pdf}.
+
+\bibitem{Tel89}
+P.~Teller.
+\newblock {\em A Modern Formal Logic Primer}.
+\newblock Prentice Hall, 1989.
+\newblock URL: \url{http://tellerprimer.ucdavis.edu/}.
+
+\bibitem{Tre17}
+Sergei Treil.
+\newblock {\em Linear Algebra Done Wrong}.
+\newblock 2017.
+
+\end{thebibliography}
+
+\end{document}
+
