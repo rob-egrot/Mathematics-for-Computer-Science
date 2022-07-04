@@ -12,4 +12,4 @@ To compile the homework sheets (with or without solutions) as stand-alone docume
 This command is used as a kind of hack in the main document to avoid duplicating labels when files are input twice.
 Some exercises reference results in the notes, so these will have to be changed manually to avoid unknown references in a stand-alone file.
 
-There are also files for slides and solutions for selected homework problems (created with Beamer). These can be foudn in the 'slides' folder.
+There are also files for slides and solutions for selected homework problems (created with Beamer). These can be found in the 'slides' folder.
