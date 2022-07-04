@@ -1,0 +1,349 @@
+\documentclass{article}
+
+\usepackage{amsmath, mathrsfs, amssymb, stmaryrd, cancel, hyperref, relsize,tikz,amsthm, bussproofs, comment}
+\usepackage{graphicx}
+\usepackage{xfrac}
+\hypersetup{pdfstartview={XYZ null null 1.25}}
+\usepackage[all]{xy}
+\usepackage[normalem]{ulem}
+\usepackage{tikz-cd}
+
+
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}[section]{\bfseries}{\itshape}
+\newtheorem{proposition}[theorem]{Proposition}{\bfseries}{ \itshape}
+\newtheorem{definition}[theorem]{Definition}{\bfseries}{\upshape}
+\newtheorem{lemma}[theorem]{Lemma}{\bfseries}{\upshape}
+\newtheorem{example}[theorem]{Example}{\bfseries}{\upshape}
+\newtheorem{corollary}[theorem]{Corollary}{\bfseries}{\upshape}
+\newtheorem{remark}[theorem]{Remark}{\bfseries}{\upshape}
+\newtheorem{fact}[theorem]{Fact}{\bfseries}{\upshape}
+\newtheorem{Q}[theorem]{Exercise}{\bfseries}{\upshape}
+
+\newtheorem*{theorem*}{Theorem}
+
+\newcommand{\bN}{\mathbb{N}}
+\newcommand{\bZ}{\mathbb{Z}}
+\newcommand{\bQ}{\mathbb{Q}}
+\newcommand{\bR}{\mathbb{R}}
+\newcommand{\bP}{\mathbb{P}}
+\newcommand{\HCF}{\mathbf{HCF}}
+\newcommand{\lequiv}{\models\text{\reflectbox{$\models$}}}
+
+\title{ITCS 531 \\Logic 2: Deduction rules for propositional logic}
+\author{Rob Egrot}
+\date{}
+
+\includecomment{comment}
+
+\begin{document}
+\maketitle
+
+\section{Deduction rules for propositional logic}\label{S:deduction}
+In the previous section we saw how formulas and sets of formulas can imply other formulas according to truth tables. This allows us to make deductions about when a formula must be true assuming that certain other formulas are true. This method of deduction is \emph{semantic}, because it is based on thinking about whether the basic propositions that are components of the various formulas are true or false. In other words, the notion of truth with respect to some `world' where the basic propositions are interpreted plays a vital role. A fundamentally different approach to logical deduction is to set aside concepts like `true', `false' and `meaning' and just look at the structure of the formulas involved. This is known as \emph{syntax}, and we will develop a syntactical approach to deduction in this section. 
+  
+\paragraph{Formal proofs in propositional logic.} A formal proof begins with a (possibly empty) set of sentences, $\Gamma$, (considered to be axioms). Alongside this set of axioms we have a collection of \emph{deduction rules} (also called \emph{inference rules}), which are used to generate new sentences from combinations of ones previously generated. During this process the intended meaning of the sentences are irrelevant. The only important thing is their syntactic form. The set of sentences provable from $\Gamma$ is the set of sentences that can be obtained from $\Gamma$ using a finite number of applications of the inference rules.
+
+\paragraph{Natural deduction.} There are many ways we can define deduction rules for propositional logic that are equivalent in a technical sense. We use a system called \emph{natural deduction}. The advantage of this system is that it is relatively easy for humans to follow, and the proofs it constructs resemble natural human reasoning. The disadvantage of the system, from a mathematical point of view, is that the flexibility in the system that allows its proofs to (roughly) follow human thought processes make the format of the proofs, in a sense, less rigid, and therefore more difficult to formally reason about. This is important to mathematical logicians because they want to be able to prove theorems about the deductive power of formal systems, and it's easier to do this when the formal proofs must follow strict patterns. We're not worried about that though.
+
+\paragraph{Inference rules for natural deduction.} Our sentences here will use the set of logical connectives $\{\wedge,\vee,\neg,\rightarrow\}$. 
+\newpage
+\begin{minipage}{0.5\textwidth}
+\textbf{Introduction rules.}
+\vspace{1cm}
+\end{minipage}
+\begin{minipage}{0.5\textwidth}
+\textbf{Elimination rules.}
+\vspace{1cm}
+\end{minipage}
+
+\begin{minipage}{0.5\textwidth}
+\begin{prooftree}
+\AxiomC{}
+\LeftLabel{ $\top_I$:\quad}
+\UnaryInfC{$\top$}
+\end{prooftree}
+
+\begin{prooftree}
+\AxiomC{$\phi$}
+\AxiomC{$\psi$}
+\LeftLabel{$\wedge_I$:\quad}
+\BinaryInfC{$\phi\wedge \psi$}
+\end{prooftree} 
+
+\begin{prooftree}
+\AxiomC{$\phi$}
+\LeftLabel{ $\vee_{I_l}$:\quad}
+\UnaryInfC{$\phi\vee\psi$}
+\end{prooftree}
+
+\begin{prooftree}
+\AxiomC{$\psi$}
+\LeftLabel{ $\vee_{I_r}$:\quad}
+\UnaryInfC{$\phi\vee\psi$}
+\end{prooftree} 
+
+\begin{prooftree}
+\AxiomC{$[\phi]$}
+\doubleLine
+\UnaryInfC{$\bot$}
+\LeftLabel{ $\neg_{I}$:\quad}
+\UnaryInfC{$\neg\phi$}
+\end{prooftree}
+
+\begin{prooftree}
+\AxiomC{$[\phi]$}
+\doubleLine
+\UnaryInfC{$\psi$}
+\LeftLabel{ $\rightarrow_{I}$:\quad}
+\UnaryInfC{$\phi\rightarrow\psi$}
+\end{prooftree}
+\end{minipage}
+\begin{minipage}{0.5\textwidth}
+\begin{prooftree}
+\AxiomC{$\bot$}
+\LeftLabel{ $\bot_E$:\quad}
+\UnaryInfC{$\phi$}
+\end{prooftree} 
+
+\begin{prooftree}
+\AxiomC{$\phi\wedge\psi$}
+\LeftLabel{ $\wedge_{E_l}$:\quad}
+\UnaryInfC{$\phi$}
+\end{prooftree}
+
+\begin{prooftree}
+\AxiomC{$\phi\wedge\psi$}
+\LeftLabel{ $\wedge_{E_r}$:\quad}
+\UnaryInfC{$\psi$}
+\end{prooftree}
+
+\begin{prooftree}
+\AxiomC{$\phi \vee \psi$}
+\AxiomC{[$\phi$]}
+\doubleLine
+\UnaryInfC{$\theta$}
+\AxiomC{[$\psi$]}
+\doubleLine
+\UnaryInfC{$\theta$}
+\LeftLabel{$\vee_E$:\quad}
+\TrinaryInfC{$\theta$}
+\end{prooftree}
+
+\begin{prooftree}
+\AxiomC{$\phi$}
+\AxiomC{$\neg\phi$}
+\LeftLabel{$\neg_E$:\quad}
+\BinaryInfC{$\bot$}
+\end{prooftree} 
+
+
+\begin{prooftree}
+\AxiomC{$\phi\rightarrow\psi$}
+\AxiomC{$\phi$}
+\LeftLabel{$\rightarrow_E$:\quad}
+\BinaryInfC{$\psi$}
+\end{prooftree} 
+\end{minipage}
+
+\vspace{1cm}
+These rules, whose intended meanings we will hopefully become clearer soon, define something called \emph{intuitionistic propositional logic}. This is like classical propositional logic except that here $\neg\neg \phi$ does not imply $\phi$ (though the converse is still true, see example \ref{E:neg}). To get classical propositional logic we need one extra rule (double negation elimination).
+
+\begin{prooftree}
+\AxiomC{$\neg\neg\phi$}
+\LeftLabel{ $\neg\neg_{E}$:\quad}
+\UnaryInfC{$\phi$}
+\end{prooftree}
+
+Roughly speaking, introduction rules create new sentences by combining old ones with a logical connective, and elimination rules create new sentences by eliminating logical connectives from old ones, though there are some rules that don't fit this pattern in an obvious way. 
+
+Derivations go from top to bottom. We can introduce sentences based on our axioms, then use the inference rules to derive new ones. Derived sentences go below the line. The idea is essentially that the thing above the line is what is known, and the thing below the line is something we can deduce from that. For example, the $\top_I$ rule says that we can always derive a tautology. I.e. something that is always true is always true. The rule $\bot_E$ says that from a contradiction we can derive anything. This is known as the \emph{principle of explosion}. This is not entirely uncontroversial, but the argument for why we should accept it is similar to the argument for why the truth table of $p\rightarrow q$ is like it is.
+
+Sentences in square brackets, e.g. $[\phi]$, are \emph{assumptions}. When we make an assumption we have to discharge it (i.e. get rid of it) later using one of the inferences rules $\neg_I$, $\rightarrow_I$, or $\vee_E$. We often use a subscript when making an assumption, e.g. $[\phi]_1$, so we can keep track of when we discharge it. We will discharge assumptions using `last in first out'. So, in a derivation, the last assumption made is the first to be discharged.  
+
+Double lines (e.g. in $\vee_E$) represent a subderivation. That is, it stands for some arbitrary derivation beginning with the thing on the top and ending with the thing on the bottom. 
+
+To illustrate this, think about the rule $\vee_E$. In words, this rule is intended to represent the fact if $\theta$ logically follows from either $\phi$ or $\psi$, and if we know that one or both of $\phi$ or $\psi$ is true, then we also know that $\theta$ must be true. In the form of a deduction rule, this says that if we can derive $\theta$ from assumption $\phi$, and if we can derive $\theta$ from assumption $\psi$, then $\theta$ should be a consequence of $\phi\vee \psi$.
+
+If we are doing a complicated derivation with lots of subderivations, then we discharge assumptions only from the same subderivation. For example, suppose we're using the $\vee_E$ rule. Then nothing we do in the subderivation beginning with the assumption $[\phi]$ will ever cause us to discharge an assumption made in the subderivation beginning with the assumption $[\psi]$.
+
+
+We implicitly assume we can deduce any formula from itself or an assumption of itself:
+
+\begin{minipage}{0.5\textwidth}
+\begin{prooftree} 
+\AxiomC{$\phi$}
+\UnaryInfC{$\phi$}
+\end{prooftree}
+\end{minipage}
+\begin{minipage}{0.5\textwidth}
+\begin{prooftree} 
+\AxiomC{$[\phi]$}
+\UnaryInfC{$\phi$}
+\end{prooftree}
+\end{minipage}
+
+
+Note that when we make deductions we can usually freely switch the order of sentences. For example, $\phi$ and $\neg \phi$ could be switched when applying rule $\neg_E$.
+
+The best way to understand derivations is by looking at examples, so here are several.
+
+\begin{example}
+We can deduce $\phi\rightarrow \phi$ from an empty set of axioms.
+\begin{prooftree}
+\AxiomC{$[\phi]_1$}
+\UnaryInfC{$\phi$}
+\RightLabel{\quad$(\rightarrow_I)_1$}
+\UnaryInfC{$\phi\rightarrow\phi$}
+\end{prooftree}
+\end{example}
+
+
+\begin{example}
+If $\phi\vee \psi$ is an axiom then we can deduce $\psi\vee \phi$.
+\begin{prooftree}
+\AxiomC{$\phi\vee \psi$}
+\AxiomC{$[\phi]_1$}
+\UnaryInfC{$\phi$}
+\RightLabel{\quad$(\vee_{I_r})$}
+\UnaryInfC{$\psi\vee \phi$}
+\AxiomC{$[\psi]_1$}
+\UnaryInfC{$\psi$}
+\RightLabel{\quad$(\vee_{I_l})$}
+\UnaryInfC{$\psi\vee \phi$}
+\RightLabel{\quad$(\vee_{E})_1$}
+\TrinaryInfC{$\psi\vee\phi$}
+\end{prooftree}
+\end{example}
+
+\begin{example}\label{E:neg}
+For all sentences $\phi$, we can derive $\phi\rightarrow\neg\neg\phi$ from an empty set of axioms, without using the rule $\neg\neg_E$.
+\begin{prooftree}
+\AxiomC{$[\phi]_1$}
+\UnaryInfC{$\phi$}
+\AxiomC{$[\neg\phi]_2$}
+\UnaryInfC{$\neg\phi$}
+\RightLabel{\quad$(\neg_E)$}
+\BinaryInfC{$\bot$}
+\RightLabel{\quad$(\neg_I)_2$}
+\UnaryInfC{$\neg\neg\phi$}
+\RightLabel{\quad$(\rightarrow_I)_1$}
+\UnaryInfC{$\phi\rightarrow\neg\neg\phi$}
+\end{prooftree} 
+\end{example}
+
+
+
+\begin{example}[De Morgan's laws]
+\mbox{} 
+\begin{enumerate}
+\item From $\phi\vee\psi$ we can deduce $\neg(\neg\phi\wedge \neg\psi)$\\
+\begin{prooftree}
+\AxiomC{$(\phi\vee\psi)$}
+
+\AxiomC{$[\phi]_1$}
+\UnaryInfC{$\phi$}
+\AxiomC{$[\neg\phi\wedge\neg \psi]_2$}
+\RightLabel{\quad$(\wedge_{E_l})$}
+\UnaryInfC{$\neg\phi$}
+\RightLabel{\quad$(\neg_E)$}
+\BinaryInfC{$\bot$}
+\RightLabel{\quad$(\neg_I)_2$}
+\UnaryInfC{$\neg(\neg\phi\wedge \neg\psi)$}
+
+\AxiomC{$[\psi]_1$}
+\UnaryInfC{$\psi$}
+\AxiomC{$[\neg\phi\wedge\neg \psi]_3$}
+\RightLabel{\quad$(\wedge_{E_r})$}
+\UnaryInfC{$\neg\psi$}
+\RightLabel{\quad$(\neg_E)$}
+\BinaryInfC{$\bot$}
+\RightLabel{\quad$(\neg_I)_3$}
+\UnaryInfC{$\neg(\neg\phi\wedge \neg\psi)$}
+\RightLabel{\quad $(\vee_E)_{1}$}
+\TrinaryInfC{$\neg(\neg\phi\wedge \neg\psi)$}
+\end{prooftree}
+
+\item From $\neg(\neg\phi\wedge \neg\psi)$ we can deduce $\phi\vee\psi$.
+\begin{prooftree}
+
+\AxiomC{$\neg(\neg\phi\wedge \neg\psi)$}
+
+\AxiomC{$[\phi]_2$}
+\RightLabel{$(\vee_{I_l})$}
+\UnaryInfC{$\phi\vee \psi$}
+\AxiomC{$[\neg(\phi\vee\psi)]_1$}
+\UnaryInfC{$\neg(\phi\vee\psi)$}
+\RightLabel{$(\neg_E)$}
+\BinaryInfC{$\bot$}
+\RightLabel{$(\neg_I)_2$}
+\UnaryInfC{$\neg\phi$}
+
+\AxiomC{$[\psi]_3$}
+\AxiomC{$[\neg(\phi\vee\psi)]_1$}
+\doubleLine
+\BinaryInfC{$\neg\psi$}
+
+\RightLabel{$(\wedge_I)$}
+\BinaryInfC{$\neg\phi\wedge\neg\psi$}
+\RightLabel{$(\neg_E)$}
+\BinaryInfC{$\bot$}
+\RightLabel{$(\neg_I)_1$}
+\UnaryInfC{$\neg\neg(\phi\vee\psi)$}
+\RightLabel{$(\neg\neg_E)$}
+\UnaryInfC{$\phi\vee\psi$}
+\end{prooftree}
+\end{enumerate}
+Note that in this example we need the extra rule $\neg\neg_E$. The result is not true in intuitionistic propositional logic.
+\end{example}
+
+\begin{example}
+$\phi\vee\neg \phi$ is a theorem of classical propositional logic (i.e. it can be deduced from an empty set of axioms).
+\begin{prooftree}
+\AxiomC{$\neg(\neg\phi\vee\phi)$}
+\AxiomC{$[\neg(\neg\phi\vee\phi)]_1$}
+\UnaryInfC{$\neg(\neg\phi\vee\phi)$}
+\AxiomC{$[\phi]_2$}
+\UnaryInfC{$\phi$}
+\RightLabel{\quad$(\vee_{I_r})$}
+\UnaryInfC{$\neg\phi\vee\phi$}
+\RightLabel{\quad$(\neg_E)$}
+\BinaryInfC{$\bot$}
+\RightLabel{\quad$(\neg_I)_2$}
+\UnaryInfC{$\neg\phi$}
+\RightLabel{\quad$(\vee_{I_l})$}
+\UnaryInfC{$\neg\phi\vee\phi$}
+\RightLabel{\quad$(\neg_E)$}
+\BinaryInfC{$\bot$}
+\RightLabel{\quad$(\neg_I)_1$}
+\UnaryInfC{$\neg\neg(\neg\phi\vee\phi)$}
+\RightLabel{\quad$(\neg\neg_E)$}
+\UnaryInfC{$\neg\phi\vee\phi$}
+\end{prooftree}
+Note that this example also requires $\neg\neg_E$.
+\end{example}
+
+\begin{example}\label{E:notor}
+If $\phi\vee \psi$ and $\neg \phi$ are axioms then we can deduce $\psi$.
+\begin{prooftree}
+\AxiomC{$\phi\vee \psi$}
+\AxiomC{$\neg\phi$}
+\AxiomC{$[\phi]_1$}
+\UnaryInfC{$\phi$}
+\RightLabel{\quad$(\neg_{E})$}
+\BinaryInfC{$\bot$}
+\RightLabel{\quad$(\bot_{E})$}
+\UnaryInfC{$\psi$}
+\AxiomC{$[\psi]_1$}
+\UnaryInfC{$\psi$}
+\RightLabel{\quad$(\vee_{I_l})$}
+\RightLabel{\quad$(\vee_{E})_1$}
+\TrinaryInfC{$\psi$}
+\end{prooftree}
+\end{example}
+
+
+
+
+
+\end{document}

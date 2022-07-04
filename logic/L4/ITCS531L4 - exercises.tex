@@ -1,0 +1,135 @@
+\documentclass{article}
+
+\usepackage{amsmath, mathrsfs, amssymb, stmaryrd, cancel, hyperref, relsize,tikz,amsthm,comment,bussproofs,enumerate}
+\usepackage{graphicx}
+\usepackage{xfrac}
+\hypersetup{pdfstartview={XYZ null null 1.25}}
+\usepackage[all]{xy}
+\usepackage[normalem]{ulem}
+\usepackage{tikz-cd}
+
+
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}{\bfseries}{\itshape}
+\newtheorem{proposition}[theorem]{Proposition}{\bfseries}{\itshape}
+\newtheorem{definition}[theorem]{Definition}{\bfseries}{\upshape}
+\newtheorem{lemma}[theorem]{Lemma}{\bfseries}{\upshape}
+\newtheorem{example}[theorem]{Example}{\bfseries}{\upshape}
+\newtheorem{corollary}[theorem]{Corollary}{\bfseries}{\upshape}
+\newtheorem{remark}[theorem]{Remark}{\bfseries}{\upshape}
+\newtheorem{fact}[theorem]{Fact}{\bfseries}{\upshape}
+\newtheorem{Q}[theorem]{Exercise}{\bfseries}{\upshape}
+
+\newtheorem*{theorem*}{Theorem}
+
+% Uncomment below to create stand-alone file
+% \newcommand*{\prefix}{}
+
+\newcommand{\sL}{\mathscr{L}}
+\newcommand{\bN}{\mathbb{N}}
+\newcommand{\bZ}{\mathbb{Z}}
+\newcommand{\bQ}{\mathbb{Q}}
+\newcommand{\bR}{\mathbb{R}}
+\newcommand{\bP}{\mathbb{P}}
+\newcommand{\HCF}{\mathbf{HCF}}
+\newcommand{\lequiv}{\models\text{\reflectbox{$\models$}}}
+\newcommand{\lra}{\leftrightarrow}
+\newcommand{\ra}{\rightarrow}
+\newcommand{\la}{\leftarrow}
+
+\title{ITCS 531 \\Logic 4: First-order logic exercises}
+\author{Rob Egrot}
+\date{}
+
+\begin{document}
+\maketitle
+%\includecomment{comment}
+\begin{Q}
+Let $x,y,z$ be variables, let $R,S$ be relation symbols, let $f,g$ be function symbols, and let $c,d$ be constant symbols. Assume that the arities of relations and functions are correctly represented by the number of arguments they take in each formula. Which of the following are formulas? In the formulas identify the free and bound variables.  
+\begin{enumerate}[a)]
+\item $\forall x (f(c,f(x,d))$
+\item $R(x,y,z)\vee S(f(c,d))$
+\item $\exists y (R(x) \vee \forall z S(f(x,z),c))$
+\item $\exists y (R(x) \vee \forall y S(f(x,y),c))$
+\item $R(x) \wedge \exists x S(x)$
+\end{enumerate}
+\end{Q}
+\begin{comment}
+\textbf{Solution:}
+\begin{enumerate}[a)]
+\item This is not a formula.
+\item This is a formula, and all its variables are free.
+\item This is a formula. Here, $x$ occurs free, and $z$ occurs bound.
+\item This is a formula. Here the first $\exists y$ doesn't do anything, as $y$ does not occur free in $R(x) \vee \forall y S(f(x,y),c)$ (it's a \emph{null quantifier}). Here $y$ occurs bound, and $x$ occurs free.
+\item This is a formula, and $x$ occurs both free and bound.
+\end{enumerate}
+\end{comment}
+
+
+\begin{Q}
+Let $\sL=\{0,1,+,\times\}$ be the language of basic arithmetic. Let $\phi=\forall x(\neg(x\approx 0)\rightarrow \exists y(x\times y \approx 1))$. Let $\bN$ and $\bR$ have their usual meanings, and interpret $\sL$ into these languages by giving the non-logical symbols of $\sL$ their usual meanings. 
+\begin{enumerate}[a)]
+\item Does $\bN\models \phi$?
+\item Does $\bR\models \phi$?
+\item Let $n\in\bN$ with $n\geq 2$, and let $\bZ_n$ be the integers mod $n$. For what values of $n$ does $\bZ_n\models \phi$? 
+\item Let $A=(\{a,b\},I)$, where $I$ interprets $0$ and $1$ as $a$ and $b$ respectively, $b\times b = b$, and $a\times b = a\times a = a$. Does $A\models \phi$?
+\item Let $\psi= \exists x \forall y(\neg (y\approx 0)\rightarrow (x\times y \approx 1))$. Which of the structures in parts a)-d) is a model for $\psi$? 
+\end{enumerate} 
+\end{Q}
+\begin{comment}
+\textbf{Solution:}
+\begin{enumerate}[a)]
+\item $\bN$ does not satisfy $\phi$. For example, there is no natural number $n$ such that $2\times n \approx 1$.
+\item $\bR$ satisfies $\phi$, because every non-zero real number $x$ has a multiplicative inverse $\frac{1}{x}$.
+\item Proposition \ref{P:inv} from the number theory notes gives the answer to this. According to this, $a$ has a multiplicative inverse mod $n$ if and only if $a$ and $n$ are coprime. In order for every non-zero member of $\bZ_n$ to have an multiplicative inverse it is necessary and sufficient for $n$ to be prime.
+\item In $A$ there is only one non-zero element, and that is $b$, which corresponds to $1$. Since we are told that $b\times b = b$, it follows that $A\models \phi$.  
+\item $\psi$ says that there is an element $x$ such that whenever $y$ is a non-zero element we have $x\times y = 1$. This is obviously not true in $\bN$ or $\bR$. It is true for $\bZ_2$, and also for $A$.
+\end{enumerate}
+\end{comment}
+
+\begin{Q}\label{\prefix Q:models}
+We define logical implication for first-order formulas of a language $\sL$ by saying $\phi\models \psi$ if and only if, whenever $A$ is an $\sL$-structure and $v$ is an assignment to $A$, we have 
+\[A,v\models \phi\implies A,v\models \psi\]
+We define two formulas to be logically equivalent if they both logically imply each other (we write e.g. $\phi\lequiv \psi$).
+
+Now, let $R$ and $S$ be unary predicates. Let $\phi=\forall x R(x) \vee \forall x S(x)$, and let $\psi=\forall x \forall y (R(x)\vee S(y))$. Prove that $\phi\lequiv \psi$.
+
+HINT: You don't need to worry about assignments here, because $\phi$ and $\psi$ are both sentences (the next exercise makes this precise). Just think about what the statements are saying. If $\phi$ holds in a structure, why must $\psi$ also hold? Conversely, if $\psi$ holds why must $\phi$ hold?
+\end{Q}
+\begin{comment}
+\textbf{Solution:}
+Let $A$ be a structure of the appropriate kind. Suppose first that $A\models \phi$. Then either every element of $A$ satisfies $R$, or every element of $A$ satisfies $S$. In the former case, for every pair of elements $a,b\in A$ we must have $R(a)\vee S(b)$, because $R(a)$ must be true. So $A\models \forall x\forall y(R(x)\vee S(y))$. This shows $\phi\models \psi$.
+
+Conversely, suppose $A\models \psi$. Suppose that $A$ does not satisfy $\forall x R(x)$. Then there is $a\in A$ with $A\not\models R(a)$. In other words, $R(a)$ is not true. Since $A\models \forall x\forall y(R(x)\vee S(y))$, we must have $A\models \forall y(R(a)\vee S(y))$. As $R(a)$ is not true in $A$, it follows that $A\models \forall y S(y)$. By changing the variable name we have $A\models \forall x S(x)$, and so $A\models \forall x R(x) \vee \forall x S(x)$. This shows $\psi\models \phi$, and we are done.
+\end{comment}
+
+\begin{Q}\label{\prefix Q:assign}
+Let $\phi$ be an $\sL$-formula, let $A$ be an $\sL$-structure, and let $v$ be an assignment for $\sL$ to $A$ with $A,v \models \phi$. Prove that $A,u\models \phi$ for all assignments $u$ such that $u(x)= v(x)$ for all variables $x$ occurring free in $\phi$. HINT: You should use induction on the formula construction. First prove that this is true for atomic $\sL$-formulas, then, assuming it's true for $\phi$ and $\psi$ prove it's true for $\neg\phi$, $\phi\vee \psi$, and $\forall x \phi$. This is all we need because of the functional completeness of $\{\neg,\vee\}$, and the fact that $\exists x \phi \lequiv \neg \forall x\neg \phi$. This exercise is difficult for people new to formal logic, but it's just a matter of understanding the definitions involved. If you get stuck you need to think carefully about exactly what you are trying to prove. 
+
+It follows easily from this result that if $\phi$ is an $\sL$-sentence, then either $A, v\models \phi$ for all $v$, or there is no such $v$.
+\end{Q}
+\begin{comment}
+\textbf{Solution:}
+We induct on formula construction. It's obviously true for atomic formulas, because these have no bound variables. Suppose now that it's true for formulas $\phi$ and $\psi$.
+\begin{itemize}
+\item[$\neg \phi$:]  Suppose $A ,v\models \neg \phi$. Then $A, v\not\models \phi$. Suppose that $u$ is an assignment that agrees with $v$ about the free variables of $\phi$. Then, if $A,u\models \phi$, by the inductive hypothesis we would have $A, v\models \phi$, which would be a contradiction. So we must have $A, u\models \neg\phi$ as required.
+\item[$\phi\vee\psi$] Suppose $A,v\models \phi\vee\psi$. Then, wlog we can assume that $A,v\models \phi$. Let $u$ be an assignment agreeing with $v$ about the free variables of $\phi\vee\psi$. Then it certainly agrees with $v$ about the free variables of $\phi$. So $A, u\models \phi$, and thus $A,u\models \phi\vee\psi$ as required.
+\item[$\forall x \phi$:] Suppose $A ,v\models \forall x \phi$, and let $u$ be an assignment agreeing with $v$ about the free variables of $\forall x\phi$. We must show that $A, u\models \forall x \phi$. I.e. that $A, u'\models \phi$ for all $u'$ agreeing with $u$ except possibly at $x$. Let $u'$ be such an assignment, and let $v'$ be an assignment agreeing with $v$ except possibly at $x$, where we define $v'(x)=u'(x)$. Then, if $F$ is the set of variables occurring free in $\phi$, we have
+\begin{itemize}
+\item $v'$ agrees with $v$ on $F\setminus\{x\}$.
+\item $u$ agrees with $v$ on $F\setminus\{x\}$.
+\item $u'$ agrees with $u$ on $F\setminus\{x\}$.
+\item $u'$ agrees with $v'$ on $F$.
+\end{itemize}
+So,
+\begin{align*}
+A,v\models \forall x \phi &\implies A, v'\models \phi \text{ (by definition of $\models$)}  \\
+&\implies A,u'\models \phi \text{ (by the inductive hypothesis)},
+\end{align*}
+and so $A,u\models \forall x\phi$ as required.
+
+\item[$\exists x\phi$:] (This is redundant) Suppose $A ,v\models \exists x \phi$, and let $u$ be an assignment agreeing with $v$ about the free variables of $\phi$. We must show that $A, u\models \exists x \phi$. I.e. that there is $u'$ agreeing with $u$ everywhere except possibly at $x$ such that $A, u'\models \phi$. Now, there is $v'$ agreeing with $v$ except possibly at $x$ and with $A, v'\models \phi$. Define $u'$ so that $u'(x) = v'(x)$, and $u'$ agrees with $u$ everywhere else. Then $u'$ agrees with $v'$ for all free variables of $\phi$. Thus $A, u'\models \phi$ by the inductive hypothesis, which is what we want to prove.
+
+\end{itemize}
+\end{comment}
+\end{document}

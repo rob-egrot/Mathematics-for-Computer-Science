@@ -1,0 +1,240 @@
+\documentclass{article}
+
+\usepackage{amsmath, mathrsfs, amssymb, stmaryrd, cancel, hyperref, relsize,tikz,amsthm}
+\usepackage{graphicx}
+\usepackage{xfrac}
+\hypersetup{pdfstartview={XYZ null null 1.25}}
+\usepackage[all]{xy}
+\usepackage[normalem]{ulem}
+\usepackage{tikz-cd}
+
+
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}[section]{\bfseries}{\itshape}
+\newtheorem{proposition}[theorem]{Proposition}{\bfseries}{\itshape}
+\newtheorem{definition}[theorem]{Definition}{\bfseries}{\upshape}
+\newtheorem{lemma}[theorem]{Lemma}{\bfseries}{\upshape}
+\newtheorem{example}[theorem]{Example}{\bfseries}{\upshape}
+\newtheorem{corollary}[theorem]{Corollary}{\bfseries}{\upshape}
+\newtheorem{remark}[theorem]{Remark}{\bfseries}{\upshape}
+\newtheorem{fact}[theorem]{Fact}{\bfseries}{\upshape}
+\newtheorem{Q}[theorem]{Exercise}{\bfseries}{\upshape}
+
+\newtheorem*{theorem*}{Theorem}
+
+\newcommand{\bN}{\mathbb{N}}
+\newcommand{\bZ}{\mathbb{Z}}
+\newcommand{\bQ}{\mathbb{Q}}
+\newcommand{\bR}{\mathbb{R}}
+\newcommand{\bP}{\mathbb{P}}
+\newcommand{\HCF}{\mathbf{HCF}}
+\newcommand{\lequiv}{\models\text{\reflectbox{$\models$}}}
+\newcommand{\ra}{\rightarrow}
+
+\title{ITCS 531 \\Logic 1: Semantics for propositional formulas}
+\author{Rob Egrot}
+\date{}
+
+\begin{document}
+\maketitle
+
+\section{Semantics for propositional formulas}
+\paragraph{The logic of mathematical proofs.} Mathematical proofs, presented in a formal style, start with assumptions (axioms), and proceed by making a sequence of logical deductions till the desired conclusion is reached. This axiom-theorem-proof style dates back to the Ancient Greeks, particularly the geometric results collected by Euclid in the famous Elements around 300 BCE. This neat picture of mathematics does not really correspond to how mathematicians actually work as, in reality, mathematicians do a lot of work based on informal ideas and intuitions. The modern style of being very explicit about assumptions and definitions that you will see if you read a mathematics paper or advanced text book (or these notes!) really started in the late 19th century. The reason for the change to a more formal style of presentation was that, as mathematics became more advanced, particularly after the development of Calculus by Newton and Leibniz, mathematicians started proving results that seemed to contradict each other. To resolve these apparent contradictions, mathematicians found it was necessary to state very precisely what they were trying to prove and what assumptions they were making. By doing this they were able to see that the contradictions often came from people starting from slightly different assumptions about what they were talking about\footnote{The philosopher of science and mathematics Imre Lakatos explored the process of mathematical argument, proof and discovery in his famous book \emph{proofs and refutations} \cite{Lak76}.}.
+
+So, while the formal style does not correspond to how mathematicians \emph{think}, it is an important part of mathematical communication, as without it mathematicians are not sure whether they are actually talking about the same things. The formal style also helps mathematicians prevent logic errors in their own reasoning. What this means in practice is that mathematicians usually come up with ideas using intuitive reasoning, but they \emph{write them down} in a kind of formal style as a protection against making mistakes, and also so other people can, with effort, understand exactly what they're talking about. 
+
+The result of this is that while it is debatable whether the formal style captures the true essence of mathematics, all mathematics should be, in principle, capable of being expressed as a formal procession of axioms and deductions. In other words, mathematics can, in the abstract, be treated as a formal system, and can therefore itself be a subject of mathematical reasoning! This realization opens the door to doing mathematics about mathematics (metamathematics). This abstract work was a crucial step in the development of computers, which we will study next semester. But, before we can understand the role of formal logic in the theory of computation, and also the modern role of formal logic as a tool for reasoning about computer systems, we need to understand the basics, and that is what this course is about. To properly describe mathematical and computational ideas symbolically we need a complex language, but we can think about the abstract structure of logical arguments with a relatively simple formal system.
+
+The Ancient Greeks thought a lot about this. For example, Aristotle gave the following example of a logical deduction: 
+\begin{enumerate}
+\item \emph{All humans are mortal.} 
+\item\emph{All Greeks are human.}
+\item\emph{Therefore, all Greeks are mortal.}
+\end{enumerate}
+
+This is an example of something call a \emph{syllogism}. The conclusion here is true in reality, but also, if we accept the truth of the preceding statements, we must also accept the truth of the conclusion, just because of its form. I.e.
+\begin{enumerate}
+\item \emph{All $X$ have property $Y$.} 
+\item\emph{$Z$ is $X$.}
+\item\emph{Therefore, $Z$ has property $Y$.}
+\end{enumerate}
+
+Whatever the values of $X$, $Y$ and $Z$, if statements one and two are true, then statement three must be true too. Medieval Christian scholars loved syllogisms, and they studied them intensively for about 300 years starting around the early 12th century.  We won't spend any more time on this `Aristotelian' style of logic though, as syllogisms are not flexible enough to cover all the deductions we understand today as `logical'. Instead we will develop formal tools for reasoning about the logic of propositions in an essentially mathematical way. The key idea is that, like the syllogism above, we are interested in arguments that are correct or not based only on their logical form, and not on what the basic statements actually mean. We develop a logical theory of propositions by abstracting away the meaning of the propositions, so we can investigate the structure of arguments in a pure form.  
+
+\paragraph{Propositional logic}
+For our formal system of propositional logic we need three things:
+\begin{itemize}
+\item A collection of basic propositions (also called \emph{propositional variables}),  $\{p_0,p_1,p_2,\ldots\}$. These are used to represent statements that can be either true or false (but not both!). We can also use individual letters, e.g. $p$, $q$, $r$, to stand for basic propositions.
+\item A set of logical connectives $\{\wedge,\vee,\neg,\rightarrow,\leftrightarrow\}$. These represent ways we can combine true/false statements to create new ones.
+\begin{itemize}
+\item[$\wedge$:] $p\wedge q$ is supposed to mean ``$p$ and $q$". 
+\item[$\vee$:] $p\vee q$ is supposed to mean ``$p$ or $q$".
+\item[$\neg$:] $\neg p$ is supposed to mean ``not $p$".
+\item[$\rightarrow$:] $p\rightarrow q$ is supposed to mean ``$p$ implies $q$" (we need to be a bit careful here as there are different forms of implication. The one we're interested in is technically known as \emph{material implication}, and we will see what this means soon).
+\item[$\leftrightarrow$:] $p\leftrightarrow q$ is supposed to mean ``$p$ implies $q$, and $q$ implies $p$".
+\end{itemize}
+\item Brackets `$($' and `$)$'. We use these to delimit formulas. In other words, we use brackets to tell us where one formula ends and another begins, so we can make sense of them.
+\end{itemize}
+If we assign meaning to some of the basic propositions we can combine them into new statements using the logical connectives and brackets.
+\begin{example}
+Let $a,b,c\in \bN$, and suppose  $p$ means ``$a|b$", $q$ means ``$a|(b+c)$", and $r$ means ``$a|c$". Then $(p\wedge q)\rightarrow r$ means ``If $a$ divides $b$, and $a$ divides $(b+c)$, then $a$ divides $c$". This statement is true, which we proved during the number theory course.
+\end{example} 
+
+\begin{example}
+Again let $a,b,c\in \bN$, and suppose $p$ means ``$a|b$", $q$ means ``$a|c$", and $r$ means ``$a|bc$". Then $(p\wedge q)\leftrightarrow r$ means ``$a$ divides $b$, and $a$ divides $b$, if and only if $a$ divides $bc$". This is not true (why?). The `only if' part is true, but the `if' part is not (though it looks similar to a true statement). 
+\end{example}
+
+Not every string we can make using basic propositions and logical connectives makes sense.
+
+\begin{example}
+$(p\rightarrow \wedge q)\vee \neg r$ doesn't make sense, whatever meaning we give to $p$, $q$ and $r$. It's not true or false, it just doesn't mean anything.
+\end{example}
+
+\paragraph{Well-formed formulas.} Intuitively, propositional formulas are well-formed if they are capable of making sense as true or false statements. We have a recursive system for building well-formed formulas. If we can construct a string using this system, then it is a well-formed formula. Otherwise it is not.
+\begin{itemize}
+\item Individual basic proposition symbols are well-formed formulas.
+\item If $\phi$ is well-formed then $\neg \phi$ is well-formed.
+\item If $\phi$ and $\psi$ are well-formed then $(\phi * \psi)$ is well-formed for all $*\in\{\wedge, \vee, \rightarrow,\leftrightarrow\}$.
+\end{itemize} 
+When we write down formulas we often cheat and leave out some of the brackets (we do this in the examples). We also usually write things like $(p\vee q)\vee r$ as $p\vee q\vee r$. This makes some formulas slightly easier for humans to read. In propositional logic we often refer to well-formed formulas as just \emph{formulas}, and sometimes as \emph{sentences}. We define the \emph{length} of a sentence $\phi$ to be the number of logical connectives that occur in $\phi$. E.g. if $\phi = \neg((p\vee q)\wedge q)$ then the length of $\phi$ is 3. 
+
+If $\phi$ is a formula, then a subformula of $\phi$ is a substring of $\phi$ that is also a sentence (i.e. can be obtained by our recursive construction). We consider $\phi$ to be a subformula of itself.  
+
+\paragraph{Truth tables.} Every basic proposition must be either true or false, and cannot be both. The same applies to sentences. Whether a sentence is true or false is completely dependent on the true/false values of the basic propositions it is built from. This truth value can be calculated recursively from the truth values of the basic propositions. We use \emph{truth tables} to represent the recursion rules. Let $\phi$ and $\psi$ be sentences.
+\begin{itemize}
+\item[$\neg$:]
+\begin{tabular}{ c c  }
+ $\phi$ & $\neg \phi$  \\ \hline 
+ T & F  \\  
+ F & T     
+\end{tabular}
+      $\phantom{\iff}\wedge$:
+\begin{tabular}{ c c c  }
+ $\phi$ & $\psi$ & $\phi\wedge \psi$ \\ \hline 
+ T & T & T \\  
+ T & F & F \\
+ F & T & F \\
+ F & F & F    
+\end{tabular} 
+      $\phantom{iff}\vee$: 
+\begin{tabular}{ c c c  }
+ $\phi$ & $\psi$ & $\phi\vee \psi$ \\ \hline 
+ T & T & T \\  
+ T & F & T \\
+ F & T & T \\
+ F & F & F    
+\end{tabular} 
+\item[$\rightarrow$:] 
+\begin{tabular}{ c c c  }
+ $\phi$ & $\psi$ & $\phi\rightarrow \psi$ \\ \hline 
+ T & T & T \\  
+ T & F & F \\
+ F & T & T \\
+ F & F & T    
+\end{tabular} 
+$\phantom{iff}\leftrightarrow$:
+\begin{tabular}{ c c c  }
+ $\phi$ & $\psi$ & $\phi\leftrightarrow \psi$ \\ \hline 
+ T & T & T \\  
+ T & F & F \\
+ F & T & F \\
+ F & F & T    
+\end{tabular} 
+\end{itemize}
+
+Look carefully at the truth table for $\ra$. What this says is that $\phi\ra\psi$ is true whenever $\phi$ is false or $\psi$ is true. For example, if $\phi$ is ``my eyes are closed" and $\psi$ is ``I am sleeping", then we want to understand $\phi\ra\psi$ as something like ``if my eyes are closed, then I am sleeping". When should this be true? Obviously, if my eyes are closed then it will be true if I'm sleeping, and false if I am not. But what if I'm not sleeping? According to the truth table, in this case the statement will be true. It is often not clear to students why this should be the case. The intuition behind this form of implication (\emph{material implication}, as mentioned previously), is that propositions are a snapshot of the present state of a system. So, if $\phi$ is not true, then $\phi\ra \psi$ makes no claim about the system, and therefore must be considered true, whatever $\psi$ may be. 
+
+We can contrast this with other forms of implication. For example, a \emph{subjunctive implication} is something like ``if I dropped it, then it would break". Intuitively, this statement should be true for something like a chicken egg, and false for something like a tennis ball, irrespective of whether I actually drop the thing or not. But according to material implication, ``if I dropped it, then it would break" would be true for a tennis ball so long as I don't drop it! 
+
+Another problem is that might want that for $\phi\ra \psi$ to be true there should be some relevant connection between $\phi$ being true and $\psi$ being true. For example, suppose a student who likes yoghurt studies hard and does well in her exams. Then ``she studied hard so she did well in her exams" might be considered a true statement, but ``she likes yoghurt so she did well in her exams" should probably not be considered true. This kind of conditional where the first part must be relevant to the second part is called an \emph{indicative implication}. Note that in our example here, according to material implication both statements are true, which doesn't seem right. 
+
+So material implication is not appropriate for everything, but it is generally thought to be appropriate for mathematics, which mathematicians like to imagine is an unchanging reality of fixed, eternal truths. Also, as mentioned above, it's useful for reasoning about states of systems, so has many applications in computer science.
+
+\begin{example}    
+\begin{tabular}{ c c c c c }
+ $p$ & $q$ & $r$ & $p\wedge q$ & $(p\wedge q)\rightarrow r$ \\ \hline 
+ T & T & T & T & T \\  
+ T & T & F & T & F \\
+ T & F & T & F & T \\
+ T & F & F & F & T \\
+ F & T & T & F & T \\
+ F & T & F & F & T \\
+ F & F & T & F & T \\
+ F & F & F & F & T 
+\end{tabular} 
+\end{example}
+
+\paragraph{Tautologies and contradictions.}
+When we set every propositional variable to be either true or false then we are making a \emph{truth assignment} (or just \emph{assignment}). If a sentence is true under a particular assignment we say it is \emph{satisfied} by that assignment. A sentence is \emph{satisfiable} if there is some assignment that satisfies it. In other words, if there is a way we can interpret each basic proposition as true or false so that the whole thing becomes true. If $\Gamma$ is a set of sentences, then we say $\Gamma$ is satisfiable if there is an assignment that satisfies every sentence in $\Gamma$. 
+
+A sentence that is satisfied by every assignment is called a \emph{tautology}. In other words, a tautology is something that is always true, whatever truth values the basic propositions take. A basic example for classical propositional logic is $p\vee \neg p$, which we understand as saying that a proposition must be either true or false. Be careful here though, because in some logic systems this is not something we can assume, difficult though that may be to believe (see section \ref{S:deduction}).  We sometimes use the symbol $\top$ to denote a tautology. 
+
+A sentence that is not satisfiable is called a \emph{contradiction}. A basic example is $p\wedge \neg p$, which we interpret as saying a proposition cannot be both true and false at the same time. We sometimes use the symbol $\bot$ to denote a contradiction. If $\phi$ is a tautology then $\neg \phi$ is a contradiction, and vice versa.
+
+\paragraph{Logical implication.} If $\phi$ and $\psi$ are sentences then we say that $\phi$ \emph{logically implies} $\psi$ (or, equivalently, that $\psi$ is a \emph{logical consequence} of $\phi$), if whenever an assignment satisfies $\phi$, it also satisfies $\psi$. We write $\phi\models \psi$, and we should observe that this is another way of saying that $\phi\ra\psi$ is true. We say that $\phi$ and $\psi$ are \emph{logically equivalent} if each is a logical consequence of the other. In this case we write $\phi \lequiv \psi$. 
+
+We can also do this with sets of sentences. If $\Gamma$ is a set of sentences and $\psi$ is a sentence, then $\psi$ is a logical consequence of $\Gamma$ if, whenever an assignment satisfies $\phi$ for all $\phi\in\Gamma$, it also satisfies $\psi$. We write $\Gamma\models \psi$. We sometimes call a set of sentences a \emph{theory}, and then we might say that $\psi$ is a consequence of the theory $\Gamma$. The intuition behind this choice of language is that we want to be able to say things like ``the fact that the set of primes is infinite is a consequence of the theory of numbers". A theory can be empty (i.e. have no members). We write $\models \phi$ if $\phi$ follows from the empty theory, i.e. if $\phi$ is a tautology. 
+
+\begin{example}
+Let $\Gamma$ be the theory $\{p\wedge \neg q, q\vee r\}$. Then $r\wedge p$ is a logical consequence of $\Gamma$ (i.e. $\Gamma\models p\wedge r$). We can prove this by writing out a truth table:
+\[\begin{tabular}{ c c c c c c c}
+ $p$ & $q$ & $r$ & $p\wedge \neg q$ & $q\vee r$ & $r\wedge p$ \\ \hline 
+ T & T & T & F & T & T \\  
+ T & T & F & F & T & F \\
+ T & F & T & T & T & T \\
+ T & F & F & T & F & F \\
+ F & T & T & F & T & F \\
+ F & T & F & F & T & F \\
+ F & F & T & F & T & F \\
+ F & F & F & F & F & F
+\end{tabular}\]
+Looking at this truth table we see there is only one assignment that makes both $p\wedge \neg q$ and $q\vee r$ true, and that is the one that makes $p$ and $r$ true, and makes $q$ false. Looking at the corresponding row in the truth table we see that $r\wedge p$ is also true with this assignment. So, every assignment that makes everything in $\Gamma$ true must also make $r\wedge p$ true, which means $\Gamma\models r\wedge p$, by definition.
+
+We could also work this out without writing out the whole truth table, e.g. we might notice just by looking at the formulas that $p\wedge \neg q$ being true means $p$ is true and $q$ is false, and then $q\vee r$ can only be true if $r$ is true, which means $r\wedge p$ must be true too.
+
+For complicated formulas, writing out a truth table is quite a lot of effort, so it's usually a good idea to look at the formulas first and see if you can find a quick argument for why one thing logically implies another. But, if you get stuck, the option of working out the truth table is always there.
+\end{example}
+
+\paragraph{Sufficiency of connectives.} The set $\{\wedge,\vee,\neg,\rightarrow,\leftrightarrow\}$ is bigger than we need. We can use truth tables to check that some of the connectives can be reproduced using combinations of different ones.
+
+\begin{lemma}\label{L:imp}
+If $\phi$ and $\psi$ are sentences, then $\neg\phi \vee \psi \lequiv \phi\rightarrow \psi$.
+\end{lemma}
+\begin{proof}\mbox{}
+\[\begin{tabular}{ c c c c }
+ $\phi$ & $\psi$ & $\phi\rightarrow \psi$ & $\neg\phi\vee\psi$ \\ \hline 
+ T & T & T & T \\  
+ T & F & F & F \\
+ F & T & T & T \\
+ F & F & T & T   
+\end{tabular}\]
+\newline
+We can see that the last two columns are the same. 
+\end{proof}
+What this means is that whenever $\phi\ra \psi$ appears in a formula, we could replace it with $\neg\phi\vee\psi$ without changing the truth value of the formula. In other words, we don't really need the connective $\ra$, because for every formula involving $\ra$ there's an equivalent one where it does not appear. This might be intuitively obvious, but we will provide proof now, as the proof method will be very important.
+\begin{corollary}\label{C:imp}
+If $\phi$ is a sentence, then there is a sentence $\phi'$ where the symbol $\rightarrow$ does not occur, and with $\phi\lequiv \phi'$.
+\end{corollary}
+\begin{proof}
+We induct on the length of $\phi$. In the base case $n=0$, the only possibility is that $\phi$ is a basic proposition. In this just we can define $\phi'$ to be $\phi$, and the result is automatic. For the inductive step, suppose the result is true for every formula of length $n$, and let $\phi$ have length $n+1$. There are three cases.
+\begin{enumerate}
+\item $\phi = \neg \psi$ for some $\psi$. In this case the length of $\psi$ is $n$, and so the inductive hypothesis applies and gives us $\psi'$ that does not contain `$\rightarrow$' and with $\psi\lequiv \psi'$. We can then define $\phi'=\neg\psi'$ to complete the proof, as, since $\psi\lequiv \psi'$ we must have $\neg\psi\lequiv \neg\psi'$, and $\phi=\neg\psi$.
+\item $\phi = \psi_1*\psi_2$ for some $*\in\{\wedge,\vee,\leftrightarrow\}$. In this case the inductive hypothesis applies to $\psi_1$ and $\psi_2$, and so we define $\phi'=\psi_1'*\psi_2'$.
+\item $\phi = \psi_1\rightarrow \psi_2$. In this case we apply the inductive hypothesis to $\psi_1$ and $\psi_2$, then lemma \ref{L:imp} says we can define $\phi'=\neg\psi_1'\vee \psi_2'$.
+\end{enumerate}   
+\end{proof}
+
+\begin{definition}[Functionally complete set of connectives]
+A set of connectives defined by truth tables, $S$, is \emph{functionally complete} if every formula that can be constructed from $\{\wedge,\vee,\neg,\rightarrow,\leftrightarrow\}$ is logically equivalent to one constructed from $S$ (using a recursive process analogous to the one we defined earlier). 
+\end{definition}
+
+\begin{proposition}\label{P:imp}
+$\{\wedge,\vee,\neg,\leftrightarrow\}$ is functionally complete.
+\end{proposition}
+\begin{proof}
+This is what we showed in corollary \ref{C:imp}.
+\end{proof}
+
+The proof of corollary \ref{C:imp} generalizes to other connectives. So if we can show that any sentence containing a particular connective is equivalent to another not containing it, then we know that we will still have a functionally complete set of connectives if we eliminate that connective. We will see in the exercises that $\{\wedge, \neg\}$ is functionally complete, and the same is true for $\{\vee,\neg\}$. 
+
+\end{document}

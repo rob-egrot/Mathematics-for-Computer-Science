@@ -1,0 +1,136 @@
+\documentclass{article}
+
+\usepackage{amsmath, mathrsfs, amssymb, stmaryrd, cancel, hyperref, relsize,tikz,amsthm,comment,bussproofs,xcolor,enumerate}
+\usepackage{graphicx}
+\usepackage{xfrac}
+\hypersetup{pdfstartview={XYZ null null 1.25}}
+\usepackage[all]{xy}
+\usepackage[normalem]{ulem}
+\usepackage{tikz-cd}
+
+
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}{\bfseries}{\itshape}
+\newtheorem{proposition}[theorem]{Proposition}{\bfseries}{\itshape}
+\newtheorem{definition}[theorem]{Definition}{\bfseries}{\upshape}
+\newtheorem{lemma}[theorem]{Lemma}{\bfseries}{\upshape}
+\newtheorem{example}[theorem]{Example}{\bfseries}{\upshape}
+\newtheorem{corollary}[theorem]{Corollary}{\bfseries}{\upshape}
+\newtheorem{remark}[theorem]{Remark}{\bfseries}{\upshape}
+\newtheorem{fact}[theorem]{Fact}{\bfseries}{\upshape}
+\newtheorem{Q}[theorem]{Exercise}{\bfseries}{\upshape}
+
+\newtheorem*{theorem*}{Theorem}
+
+% Uncomment below to create stand-alone file
+% \newcommand*{\prefix}{}
+
+\newcommand{\sL}{\mathscr{L}}
+\newcommand{\bN}{\mathbb{N}}
+\newcommand{\bZ}{\mathbb{Z}}
+\newcommand{\bQ}{\mathbb{Q}}
+\newcommand{\bR}{\mathbb{R}}
+\newcommand{\bP}{\mathbb{P}}
+\newcommand{\HCF}{\mathbf{HCF}}
+\newcommand{\lequiv}{\models\text{\reflectbox{$\models$}}}
+\newcommand{\lra}{\leftrightarrow}
+\newcommand{\ra}{\rightarrow}
+\newcommand{\la}{\leftarrow}
+
+\title{ITCS 531 \\Logic 5: Basic model theory exercises}
+\author{Rob Egrot}
+\date{}
+
+\begin{document}
+\maketitle
+%\includecomment{comment}
+\begin{Q}
+Let $\phi$ be a formula where $x$ occurs free.
+\begin{enumerate}[a)]
+\item Write down a proof tree that shows $\forall x \phi \vdash \neg\exists x \neg\phi$. 
+\item Write down a proof tree that shows $\exists x \phi \vdash \neg\forall x \neg \phi$.
+\end{enumerate}
+\end{Q}
+\begin{comment}
+\textbf{Solution:}
+\begin{enumerate}[a)]
+\item\begin{prooftree}
+\AxiomC{$[\exists x\neg\phi]_1$}
+\AxiomC{$[\neg\phi[x'/x]]_2$}
+\AxiomC{$\forall x\phi$}
+\RightLabel{ $\color{red}(\forall_E)$}
+\UnaryInfC{$\phi[x'/x]$}
+\RightLabel{ $\color{red}(\neg_E)$}
+\BinaryInfC{$\bot$}
+\RightLabel{ $\color{red}(\exists_E)$}
+\BinaryInfC{$\bot$}
+\RightLabel{ $\color{red}(\neg_I)$}
+\UnaryInfC{$\neg\exists x \neg\phi$}
+\end{prooftree}
+
+\item \begin{prooftree}
+\AxiomC{$\exists x \phi$}
+\AxiomC{$[\forall x\neg\phi]_1$}
+\LeftLabel{ $\color{red}(\forall_E)$}
+\UnaryInfC{$\neg\phi[x'/x]$}
+\AxiomC{$[\phi[x'/x]]_2$}
+\RightLabel{ $\color{red}(\neg_E)$}
+\BinaryInfC{$\bot$}
+\RightLabel{ $\color{red}(\exists_E)$}
+\BinaryInfC{$\bot$}
+\RightLabel{ $\color{red}(\neg_I)$}
+\UnaryInfC{$\neg\forall x \neg\phi$}
+\end{prooftree}
+\end{enumerate}
+\end{comment}
+
+\begin{Q}
+Assume that lemma \ref{L:equiv} holds for first-order logic. Prove that theorems \ref{T:G1} and \ref{T:G2} are equivalent. I.e., prove the equivalence of the statements
+\[\tag{$\dagger$} \text{$\Gamma$ consistent $\iff\Gamma$ is satisfiable}\]
+\[\tag{$\ddagger$} \Gamma\vdash \phi\iff\Gamma\models\phi\]
+\end{Q}
+\begin{comment}
+\textbf{Solution:}
+This is similar to exercise \ref{godel_equiv}.
+\begin{itemize}
+\item[$\dagger\implies\ddagger$:] \begin{align*}
+\Gamma\vdash \phi &\iff \Gamma\cup\{\neg\phi\}\vdash \bot\\
+&\iff \Gamma\cup\{\neg\phi\}\models \bot\\
+&\iff \Gamma\models \phi
+\end{align*}
+\item[$\ddagger\implies\dagger$:] 
+\begin{align*}
+\Gamma\vdash \bot &\iff \Gamma\setminus\{\phi\} \cup\{\phi\} \vdash \bot \\
+&\iff \Gamma\setminus\{\phi\}\vdash \neg\phi \\
+&\iff \Gamma\setminus\{\phi\}\models \neg\phi \\
+&\iff\Gamma\models \bot
+\end{align*}
+\end{itemize}
+\end{comment}
+
+
+\begin{Q}
+Prove that if $\Gamma$ is an $\sL$-theory then there is an $\sL$-theory $\Gamma'$ with $\Gamma\subseteq \Gamma'$ such that $\Gamma'$ is \emph{complete} (i.e. if $\phi$ is an $\sL$-sentence, then either $\phi\in\Gamma'$ or $\neg\phi\in\Gamma'$). HINT: If $\Gamma$ is consistent then it must have a .....?
+\end{Q}
+\begin{comment}
+\textbf{Solution:}
+An $\sL$-theory is a satisfiable set of $\sL$-sentences. Since $\Gamma$ is satisfiable, it must have a model. Let $A$ be a model for $\Gamma$, and let 
+\[\Gamma'=\{\phi:\phi\text{ is an }\sL\text{-sentence and }A\models \phi\}.\] 
+Then $\Gamma\subseteq \Gamma'$, because $A\models \Gamma$, and $\Gamma'$ is complete because every $\sL$-sentence is either true or false in $A$.
+\end{comment}
+
+\begin{Q}
+Let $\Gamma$ be an $\sL$-theory, and let $\phi$ be an $\sL$-sentence. Prove that if $\Gamma\models \phi$ then $\Delta\models \phi$ for some finite $\Delta\subseteq \Gamma$.
+\end{Q}
+\begin{comment}
+\textbf{Solution:}
+Suppose $\Gamma\models \phi$. Then, by completeness we have $\Gamma\vdash \phi$. So there is a deduction tree using $\Gamma$ that proves $\phi$. As deduction trees are finite, this tree involves only a finite number of sentences from $\Gamma$. Define $\Delta$ to be the set of sentences from $\Gamma$ used in the proof of $\phi$. Then $\Delta\vdash \phi$, and so $\Delta\models \phi$ by soundness. 
+\end{comment}
+
+\begin{Q}[Compactness theorem for first-order logic] Let $\Gamma$ be a set of $\sL$-sentences. Prove that $\Gamma$ has a model if and only if every finite subset of $\Gamma$ has a model. 
+\end{Q}
+\begin{comment}
+\textbf{Solution:}
+This is very similar to exercise \ref{compactness}. First, if $\Gamma$ has a model then every subset of $\Gamma$ obviously has a model too. Conversely, suppose $\Gamma$ does \emph{not} have a model. Then $\Gamma\models \bot$. So by exercise 4 there is finite $\Delta\subseteq \Gamma$ with $\Delta\models \bot$. I.e. $\Delta$ does not have a model. 
+\end{comment}
+\end{document}

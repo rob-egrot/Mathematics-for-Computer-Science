@@ -1,0 +1,161 @@
+\documentclass{article}
+
+\usepackage{amsmath, mathrsfs, amssymb, stmaryrd, cancel, hyperref, relsize,tikz,amsthm,comment}
+\usepackage{graphicx}
+\usepackage{xfrac}
+\hypersetup{pdfstartview={XYZ null null 1.25}}
+\usepackage[all]{xy}
+\usepackage[normalem]{ulem}
+\usepackage{tikz-cd}
+
+
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}{\bfseries}{\itshape}
+\newtheorem{proposition}[theorem]{Proposition}{\bfseries}{\itshape}
+\newtheorem{definition}[theorem]{Definition}{\bfseries}{\upshape}
+\newtheorem{lemma}[theorem]{Lemma}{\bfseries}{\upshape}
+\newtheorem{example}[theorem]{Example}{\bfseries}{\upshape}
+\newtheorem{corollary}[theorem]{Corollary}{\bfseries}{\upshape}
+\newtheorem{remark}[theorem]{Remark}{\bfseries}{\upshape}
+\newtheorem{fact}[theorem]{Fact}{\bfseries}{\upshape}
+\newtheorem{Q}[theorem]{Exercise}{\bfseries}{\upshape}
+
+\newtheorem*{theorem*}{Theorem}
+
+% Uncomment below to create stand-alone file
+% \newcommand*{\prefix}{}
+
+\newcommand{\bN}{\mathbb{N}}
+\newcommand{\bZ}{\mathbb{Z}}
+\newcommand{\bQ}{\mathbb{Q}}
+\newcommand{\bR}{\mathbb{R}}
+\newcommand{\bP}{\mathbb{P}}
+\newcommand{\HCF}{\mathbf{HCF}}
+\newcommand{\lequiv}{\models\text{\reflectbox{$\models$}}}
+\newcommand{\lra}{\leftrightarrow}
+\newcommand{\ra}{\rightarrow}
+\newcommand{\la}{\leftarrow}
+
+\title{ITCS 531 \\Logic 1: Semantics for propositional formulas exercises}
+\author{Rob Egrot}
+\date{}
+
+\begin{document}
+\maketitle
+%\includecomment{comment}
+
+\begin{Q}
+Let $\phi$ and $\psi$ be sentences. Show that 
+\[\phi\leftrightarrow \psi \lequiv (\phi \wedge \psi)\vee (\neg \phi \wedge \neg \psi)\]
+\end{Q}
+\begin{comment}
+\textbf{Solution:}  
+The truth tables are the same: 
+
+\begin{tabular*}{0.75\textwidth}{@{\extracolsep{\fill} }  c  c  c  c }
+  $\phi$ & $\psi$ & $\phi\leftrightarrow \psi$ & $(\phi \wedge \psi)\vee (\neg \phi \wedge \neg \psi)$ \\
+  \hline 
+   T & T & T & T  \\
+	 T & F & F & F  \\
+	 F & T & F & F  \\
+	 F & F & T & T  
+\end{tabular*}
+\end{comment}
+\begin{Q}
+Prove that the set $\{\wedge,\neg\}$ is functionally complete. HINT: think about proposition \ref{P:imp} and corollary \ref{C:imp}. 
+\end{Q}
+\begin{comment}
+\textbf{Solution:} 
+To prove this we need to show that for every sentence $\phi$ there is a sentence $\phi'$ using only $\wedge$ and $\neg$ such that $\phi \lequiv\phi'$. In proposition \ref{P:imp} we already proved that $\{\wedge,\vee,\neg,\lra\}$ is functionally complete, so we can assume without loss of generality that $\phi$ only contains connectives from $\{\wedge,\vee,\neg,\lra\}$. 
+
+As in the proof of corollary \ref{C:imp}, we use induction on formula construction. In the base case $\phi = p$ for some proposition symbol $p$. In this case we just set $\phi' = p$.
+
+For the inductive step, suppose first that $\phi = \psi_1\vee \psi_2$, and we have already found $\psi_1'$ and $\psi_2'$. Then define $\phi' = \neg(\neg \psi_1'\wedge \neg\psi_2')$, and we can use truth tables to show $\phi\lequiv \phi'$.
+
+Similarly, suppose $\phi = \psi_1\lra \psi_2$ and we have already found $\psi_1'$ and $\psi_2'$. Notice that $(\psi'_1 \wedge \psi'_2)\vee (\neg \psi'_1 \wedge \neg \psi'_2)\lequiv \psi_1\lra\psi_2$. So, using the first case we can define $\phi' = \neg\big( \neg(\psi'_1 \wedge \psi'_2)\wedge \neg(\neg \psi'_1 \wedge \neg \psi'_2)\big)$.
+
+Finally, the cases where $\phi = \neg \psi$ and $\phi = \psi_1\wedge \psi_2$ are easy, because we can just set $\phi' = \neg \psi'$ or $\phi' =  \psi_1'\wedge \psi_2'$.
+\end{comment}
+
+\begin{Q}
+Define a binary connective $|$ using the following truth table.
+
+{\centering
+\begin{tabular}{ c c c  }
+ $\phi$ & $\psi$ & $\phi| \psi$ \\ \hline 
+ T & T & F \\  
+ T & F & T \\
+ F & T & T \\
+ F & F & T    
+\end{tabular}\par}
+
+Prove that $\{|\}$ is functionally complete.
+\end{Q}
+\begin{comment}
+\textbf{Solution:} 
+We will do this by showing that if $\phi$ is a sentence involving only symbols from $\{\wedge,\neg\}$, there is a sentence $\phi'$ using only $|$ such that $\phi\lequiv \phi'$. This is enough because we already proved that $\{\wedge,\neg\}$ is functionally complete. We use the same inductive method as before, and the base case is again trivial.
+
+So suppose $\phi = \neg\psi$ and we already have $\psi'$.  Observe that
+
+{\centering
+\begin{tabular}{ c c c c }
+ $\psi$ & $\neg\psi$ & $\psi| \psi$ \\ \hline 
+ T & F & F \\  
+ F & T & T   
+\end{tabular}\par} 
+So we can define $\phi' = \psi'|\psi'$.
+
+Suppose now that $\phi = \psi_1\wedge \psi_2$ and we already have $\psi_1'$ and $\psi_2'$. Observe that
+
+{\centering
+\begin{tabular}{ c c c c c }
+ $\psi_1$ & $\psi_2$ & $\psi_1\wedge \psi_2$ & $\psi_1|\psi_2$ & $(\psi_1|\psi_2)|(\psi_1|\psi_2)$ \\ \hline 
+ T & T & T & F & T \\  
+ T & F & F & T & F \\
+ F & T & F & T & F \\
+ F & F & F & T & F 
+\end{tabular}\par}
+So we can define $\phi' = (\psi'_1|\psi'_2)|(\psi'_1|\psi'_2)$.
+\end{comment}
+
+\begin{Q}
+Let $p$ and $q$ be basic propositions. How many possible distinct truth tables are there for formulas involving only the propositions $p$ and $q$? (We consider two truth tables for formulas involving the same basic propositions to be distinct if there is a truth assignment for the basic propositions such that the evaluation of each formula under this assignment is different in each table. For example, the truth tables of $p\wedge q$ and $p\vee q$ are distinct because the values of these formulas when $p$ is true and $q$ is false are different).
+\end{Q}
+\begin{comment}
+\textbf{Solution:} 
+There are 4 rows in each truth table for $p$ and $q$.
+
+{\centering
+\begin{tabular}{ c c c }
+ $p$ & $q$ & $\phi$ \\ \hline 
+ T & T & ?  \\  
+ T & F & ?  \\
+ F & T & ?  \\
+ F & F & ?  
+\end{tabular}\par}
+
+Here each ? can be true or false. This gives $2^4 = 16$ distinct possibilities.
+\end{comment}
+
+\begin{Q}
+A sentence $\phi$ is in \emph{disjunctive normal form}, (DNF), if it is of the form $\phi_1\vee\ldots\vee \phi_n$, where each $\phi_i$ is of the form $l_1\wedge\ldots\wedge l_k$, and each $l_j$ is either a basic proposition or the negation of a basic proposition. E.g. $(p\wedge q)\vee (\neg p)\vee (p\wedge \neg q \wedge r)$ is in DNF. Show that every sentence is equivalent to a sentence in DNF. HINT: Think about the truth table.
+\end{Q}
+\begin{comment}
+\textbf{Solution:} 
+Consider this example. Suppose $\phi$ contains only the proposition symbols $p,q,r$, and that its truth table is as follows:
+
+{\centering
+\begin{tabular}{ c c c c }
+ $p$ & $q$ & $r$ & $\phi$ \\ \hline 
+ T & T & T & T  \\  
+ T & T & F & F  \\
+ T & F & T & F  \\
+ T & F & F & F  \\
+ F & T & T & T  \\  
+ F & T & F & T  \\
+ F & F & T & F  \\
+ F & F & F & F  \\
+\end{tabular}\par}
+ Then $\phi$ is obviously logically equivalent to $(p\wedge q \wedge r) \vee (\neg p\wedge q \wedge r) \vee (\neg p \wedge q \wedge \neg r)$, which is a DNF sentence. This method obviously generalizes. If $\phi$ is a contradiction, i.e. if all rows in the truth table are $F$, then $\phi$ is equivalent to e.g. $p\wedge \neg p$.
+\end{comment}
+\end{document}

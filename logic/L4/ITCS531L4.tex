@@ -1,0 +1,252 @@
+\documentclass{article}
+
+\usepackage{amsmath, mathrsfs, amssymb, stmaryrd, cancel, hyperref, amsthm, comment}
+\usepackage{graphicx}
+\usepackage{xfrac}
+\hypersetup{pdfstartview={XYZ null null 1.25}}
+\usepackage[all]{xy}
+\usepackage[normalem]{ulem}
+
+
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}[section]{\bfseries}{\itshape}
+\newtheorem{proposition}[theorem]{Proposition}{\bfseries}{\itshape}
+\newtheorem{definition}[theorem]{Definition}{\bfseries}{\upshape}
+\newtheorem{lemma}[theorem]{Lemma}{\bfseries}{\upshape}
+\newtheorem{example}[theorem]{Example}{\bfseries}{\upshape}
+\newtheorem{corollary}[theorem]{Corollary}{\bfseries}{\upshape}
+\newtheorem{remark}[theorem]{Remark}{\bfseries}{\upshape}
+\newtheorem{fact}[theorem]{Fact}{\bfseries}{\upshape}
+\newtheorem{Q}[theorem]{Exercise}{\bfseries}{\upshape}
+
+\newtheorem*{theorem*}{Theorem}
+
+\newcommand{\bN}{\mathbb{N}}
+\newcommand{\bZ}{\mathbb{Z}}
+\newcommand{\bQ}{\mathbb{Q}}
+\newcommand{\bR}{\mathbb{R}}
+\newcommand{\bP}{\mathbb{P}}
+\newcommand{\HCF}{\mathbf{HCF}}
+\newcommand{\cR}{\mathcal{R}}
+\newcommand{\cF}{\mathcal{F}}
+\newcommand{\cC}{\mathcal{C}}
+\newcommand{\lequiv}{\models\text{\reflectbox{$\models$}}}
+\newcommand{\sL}{\mathscr{L}}
+\newcommand{\trm}{\mathbf{term}}
+
+\title{ITCS 531 \\Logic 4: First-order logic}
+\author{Rob Egrot}
+\date{}
+
+\includecomment{comment}
+
+\begin{document}
+\maketitle
+
+\section{First-order logic}
+
+Propositional logic describes how propositions can be combined together to form new ones, and how we can understand the truth values of these composite statements by understanding the truth values of the basic propositions that they are constructed from. We also have a closely related purely syntactic notion of logical deduction that allows us to understand propositions as necessary consequences of other propositions (or sets of propositions). This is good as far as it goes, but it is also quite limited. The main problem is that for us to say anything interesting in propositional logic, the basic propositions have to be pre-defined. The notions of tautology and contradiction allow us to understand how some statements must be true or false based purely on their logical forms, but this is of limited use if we want to describe the state of a complex system.
+
+This brings us to first-order logic, which extends the power of propositional logic by adding the means to create and interpret complex propositions. More explicitly, there are still propositions in first-order logic, and these can be combined and analyzed as they are propositional logic, but rather than relying on basic propositions whose meanings are essentially abstracted away, propositions in first-order logic are statements that can be meaningfully interpreted in appropriate structures. How this works will became clearer soon, but first we review the concept of a relation.  
+\paragraph{Functions and relations.}
+
+Intuitively, we understand a function as a rule mapping each element of a set $A$ to an element of another set $B$ (sometimes $B=A$). Similarly, we can think of a relation between two sets $A$ and $B$ as a rule which matches elements of $A$ and $B$ in pairs. For example, ``has visited" is a relation between the set of people and the set of cities. We want to make our intuitions a bit more mathematical if we want to reason about functions and relations formally, so we need some precise technical definitions for these familiar concepts.
+
+\begin{definition}[Relation]
+An $n$-ary relation between sets $X_1,\ldots X_n$ is a subset of $\prod_{i=1}^n X_i$. Given such a relation $r$, and an $n$-tuple $(x_1,\ldots,x_n)\in \prod_{i=1}^n X_i$, we say $r(x_1,\ldots,x_n)$ holds if and only if $(x_1,\ldots,x_n)\in r$. 
+\end{definition}
+
+\begin{example}\mbox{}
+\begin{enumerate}
+\item The order relation $\leq$ is a binary relation on $\bN^2$.
+\item If $X$ is a set, and $Y\subseteq X$, then we can define a unary relation, $r_Y$, on $X$ by $r_Y(x)\iff x\in Y$.
+\item We can define a relation, $p$, on $\bN^3$ by $p(x,y,z)\iff x^2+ y^2 = z^2$. This is a $3$-ary (ternary) relation.
+\item We can define a ternary relation, $q$, on $\bN\times \bN \times \bQ$ by $q(x,y,z)\iff z=\frac{x}{y}$.
+\end{enumerate}
+\end{example}
+
+\begin{definition}[Function]
+An $n$-ary function is a well-defined map, $f$, from $\prod_{i=1}^n X_i$ to $Y$ for some sets $X_i$ ($i\in\{1,\ldots n\}$) and $Y$. In this context, well-defined means that, for every $(x_1,\ldots,x_n)\in \prod_{i=1}^n X_i$, the value of $f(x_1,\ldots,x_n)$ exists and is unique. 
+\end{definition}
+
+We can think of functions as special kinds of relations. I.e. an $n$-ary function, $f:\prod_{i=1}^n X_i\to Y$ is equivalent to an $(n+1)$-ary relation, $r_f$, on $(\prod_{i=1}^n X_i)\times Y$, with the well-definedness property being that, given $(x_1,\ldots,x_n)\in \prod_{i=1}^n X_i$, there is always a unique $y\in Y$ such that $r_f(x_1,\ldots,x_n,y)$ holds. The converse is also true, in that any $(n+1)$-ary relation with the well-definedness property can be thought of as an $n$-ary function.
+
+\begin{example}\mbox{}
+\begin{enumerate}
+\item Every polynomial $a_0 + a_1 x+\ldots + a_n x^n$ defines a unary function from $\bN$ to $\bN$ (and from $\bR$ to $\bR$, or from $\bN$ to $\bR$ etc.)
+\item Division can be thought of as a binary function $d$ from $\bQ\times (\bQ\setminus\{0\})$ to $\bQ$ by defining $d(x,y)=\frac{x}{y}$. We can't define a function $\bQ\times \bQ$ to $\bQ$ like this though, as division by zero is not defined.
+\end{enumerate}
+\end{example} 
+
+\paragraph{First-order languages.}
+
+Now we have precise definitions for functions and relations, we can begin to construct a formal system powerful enough to handle large parts of mathematics, and consequently, powerful enough to reason about things we can formalize mathematically, such as programming languages, air traffic control systems etc. This will involve some careful setting up, as this is all unavoidably technical.
+\begin{definition}[$\sL$]
+A language, $\sL$, for first-order logic consists of the following things.
+\begin{enumerate}
+\item Logical symbols.
+\begin{enumerate}
+\item An infinite set of variables enumerated by natural numbers, \[V=\{x_0,x_1,\ldots\}.\]
+\item The equality symbol, $\approx$. 
+\item The set of logical connectives, $\{\neg,\vee,\wedge,\rightarrow\}$.
+\item The set of quantifier symbols, $\{\forall,\exists\}$.
+\item A set  of brackets, $\{(,)\}$.
+\end{enumerate}
+\item Non-logical symbols.
+\begin{enumerate}
+\item A countable (possibly empty) set, $\cR$, of \emph{predicate} symbols. 
+\begin{itemize}
+\item Every predicate symbol has an associated \emph{arity}. Formally, we think of this as a map from $\cR$ to $\bN$. 
+\end{itemize}
+\item A countable (possibly empty) set, $\cF$, of \emph{function} symbols.
+\begin{itemize}
+\item Every function symbol also has an associated \emph{arity}. Formally, we think of this as a map from $\cF$ to $\bN$. 
+\end{itemize}
+\item A countable (possibly empty) set, $\cC$, of \emph{constant} symbols.
+\begin{itemize}
+\item We can think of a constant as a $0$-ary (nullary) function. I.e. a $0$-ary function corresponds to a unary relation with the well-definedness property. But this is just a single element.
+\end{itemize}
+\end{enumerate}
+\end{enumerate} 
+\end{definition}
+
+The non-logical symbols of $\sL$ are known as the \emph{signature} of $\sL$. Every language we are interested in will have the same logical symbols, so for us, what distinguishes first-order languages from each other are their signatures. We will specify languages just by giving their signatures, and say things like ``Given a first-order signature $\sL$". There may be more than one choice of signature that seems appropriate for studying a given mathematical structure or object. The choice of signature is in some ways arbitrary, but it will affect the things that can be done with the language in significant ways, particularly when it comes to the highly formal arguments that studying logical systems often involves.    
+
+Note that the choice of logical symbols is also somewhat arbitrary, though less potentially significant. As in propositional logic, we could use a smaller set of logical connectives, and it turns out that only one quantifier is enough, but we use the larger set as it is more intuitive for humans.
+
+\begin{example}
+Suppose we want to use first-order logic to talk about arithmetic with natural numbers. What non-logical symbols might we need? We probably want binary functions $+$ and $\times$, for example, which we hope to give their usual interpretations. We might also want to specify the numbers 0 and 1 using constant symbols. This would give us a language with two binary functions and two constants. 
+
+It could potentially be convenient to have a special unary predicate to tell us when a number is prime, say, so we can add a unary predicate symbol to our collection of non-logical symbols if we like. As discussed above, we are free to choose our signature however we want, but our choice may have consequences later. 
+\end{example}
+
+\paragraph{First-order formulas}
+Formulas in first-order logic are defined recursively. Unlike in propositional logic, the variables themselves are not supposed to be propositions. I.e. it doesn't make sense for a variable in first-order logic to be true or false.
+
+\begin{definition}[Term]
+The set of \emph{terms} of $\sL$ is defined recursively.
+\begin{itemize}
+\item Every variable $x$ is an $\sL$-term.
+\item Every constant $c$ is an $\sL$-term.
+\item If $f$ is an $n$-ary function symbol occurring in $\sL$ and $t_1,\ldots,t_n$ are $\sL$-terms then $f(t_1,\ldots,t_n)$ is also an $\sL$-term.
+\end{itemize}
+\end{definition}
+
+Terms, like variables, are not propositions. It does not make sense for them to be true or false.
+
+\begin{definition}[Atomic formula]
+The set of \emph{atomic formulas} of $\sL$ is defined as follows:
+\begin{itemize}
+\item If $t_1$ and $t_2$ are $\sL$-terms, then $t_1\approx t_2$ is an atomic $\sL$-formula.
+\item If $R$ is an $n$-ary relation of $\sL$, and $t_1,\ldots,t_n$ are $\sL$-terms, then $R(t_1,\ldots,t_n)$ is an atomic $\sL$-formula. 
+\end{itemize} 
+\end{definition} 
+
+Atomic formulas are the simplest formulas that are meant to correspond to propositions. That is, once we have defined our semantics, it will make sense for these to be true or false.
+
+\begin{definition}[Formula]
+The set of \emph{formulas} of $\sL$ ($\sL$-formulas) is defined recursively.
+\begin{itemize}
+\item Every atomic $\sL$-formula is an $\sL$-formula.
+\item If $\phi$ is an $\sL$-formula, then $\neg\phi$ is an $\sL$-formula.
+\item If $\phi$ and $\psi$ are $\sL$-formulas, then $(\phi\wedge \psi)$, $(\phi\vee\psi)$ and $(\phi\rightarrow \psi)$ are $\sL$-formulas.
+\item If $\phi$ is an $\sL$-formula and $x$ is a variable symbol, then $\forall x\phi$ and $\exists x\phi$ are $\sL$-formulas. \footnote{This allows formulas like $\exists y \forall yR(y)$. Here the $\exists$ quantifier doesn't do anything, as the only $y$ in  $\forall yR(y)$ is already covered by the quantifier $\forall$. In cases like this we say $\exists y$ is a \emph{null quantifier}. The quantifier $\forall$ in $\forall x R(y)$ is also null, because in this case there is no $x$ variable at all. Being able to reuse variables like this can be useful, as logics with only finitely many variable symbols are very important in applications of logic to classes of finite structures (such as in computer science). Logic with finite variable symbols and its applications is not part of this course, but it's something worth knowing about. Since we assume an infinite number of variable symbols in our languages, it's always possible for us to rewrite a formula into an equivalent one (we'll define what \emph{equivalent} here means later!) with no null quantifiers and no reused variables.}
+\end{itemize} 
+\end{definition}
+
+As in propositional logic, we are sometimes loose with our use of brackets, adding them or removing them when the result makes the formulas easier for humans to read.
+\begin{example}
+Let $\sL$ have signature $\cR=\{R,S\}$, where $R$ is unary and $S$ is binary, $\cF=\{f\}$, where $f$ is ternary, and $\cC=\{c,d\}$. Let $x,y,z$ be variables. 
+\begin{enumerate}
+\item $f(x,y,f(z,c,d)) \approx c$ is an atomic $\sL$-formula.
+\item $\exists z(R(f(x,z,d)))\vee S(f(x,y,x),d)$ is an $\sL$-formula.
+\item $f(x,y,z) \wedge c$ is not an $\sL$-formula.
+\end{enumerate}
+\end{example}
+
+\begin{definition}[Subformula]
+If $\phi$ is an $\sL$-formula, then a \emph{subformula} of $\phi$ is a substring of $\phi$ that is also an $\sL$-formula.
+\end{definition}
+
+\paragraph{Models for first-order languages.}
+As mentioned previously, the basic variables of a first-order language do not correspond to propositions in the sense of propositional logic. In order to give first-order formulas meaning we must interpret them in a structure.
+
+\begin{definition}[$\sL$-structure]
+Given a first-order signature, $\sL$, an $\sL$-\emph{structure}  is a set $X$, plus some additional information giving concrete meaning to the symbols in $\cR\cup \cF \cup \cC$ as follows: 
+\begin{enumerate} 
+\item Every $n$-ary relation symbol from $\cR$ is assigned to an $n$-ary relation on $X^n$. 
+\item Every $n$-ary function symbol from $\cF$ is assigned to an $n$-ary function from $X^n$ to $X$.
+\item Every constant symbol from $\cC$ is assigned to a specific element of $X$.
+\end{enumerate}
+We will consider a structure to be a pair $(X,I)$, where $X$ is the underlying set, and $I$ is the function that interprets the non-logical symbols of $\sL$ as relations, functions and constants over $X$. Given, for example, a relation symbol $R$, we will sometimes write $R_I$ for the concrete relation corresponding to $R$.
+\end{definition}
+
+\begin{definition}[Assignment]
+An \emph{assignment} of a first-order signature $\sL$ to an $\sL$-structure, $A=(X,I)$, is a function $v:V\to X$. In other words, an assignment associates every variable with an element of $X$.  
+\end{definition}
+
+$\sL$-formulas are capable of being true or false in $\sL$-structures, but we must assign meaning to the terms first. We do this formally in a moment, but first we should understand that the intuition behind this is actually very simple. An $\sL$-structure is just a set which we equip with relations, functions and constants corresponding to the symbols from $\sL$. An assignment just gives a meaning to the variables of $\sL$ as elements of the set. 
+
+Once we have assigned meaning to the functions and constants of $\sL$, and also to the variables, we also assign meaning to the terms in a natural way, because the terms are just combinations of variables, constants and functions. Since the terms have a meaning, it makes sense for formulas to be true or false, because formulas just assert things like ``this relation holds between these elements". This now has a natural meaning, because we can check if the interpretation of this relation holds for the interpretations of the elements.
+
+\begin{example}
+Let $\sL$ have non-logical symbols $\{\leq, 0\}$, where $\leq$ is a binary relation, and $0$ is a constant. We can take $\bN$ as a $\sL$-structure by giving these symbols their usual meanings. 
+\begin{enumerate}
+\item Let $\phi$ be the formula $x\leq y$. Then this is true if our assignment $v$ maps $x$ to 1 and $y$ to 5, for example, but false if $v$ takes $x$ to 465 and $y$ to 7.  
+\item Let $\psi$ be the formula $\forall x(0\leq x)$. Then $\phi$ is true whatever $v$ we choose. In fact, although we haven't formally defined this yet, we intuitively see that the truth of this formula shouldn't depend on the assignment $v$ at all, because the only variable is in the scope of a quantifier. I.e. the formula is either true \emph{for all} possible values of $x$, or not at all. 
+\item Let $\chi$ be the formula $\exists x(x\leq y \wedge \neg(x\approx 0))$. Then $\chi$ will be true so long as $v(y)\neq 0$.
+\end{enumerate}
+\end{example} 
+
+\begin{definition}[$v^+$]
+Let $\trm(\sL)$ be the set of terms of $\sL$, and let $v$ be an assignment for $\sL$ to $(X,I)$. Then define $v^+:\trm(\sL)\to X$ recursively as follows:
+\begin{itemize}
+\item If $x$ is a variable then $v^+(x)=v(x)$.
+\item If $c$ is a constant then $v^+(c)= c_I$.
+\item If $f$ is an $n$-ary function, and $t_1,\ldots,t_n$ are terms such that $v^+(t_i)$ has been defined for all $i\in\{1,\ldots,n\}$, then $v^+(f(t_1,\ldots,t_n))=f_I(v^+(t_1),\ldots,v^+(t_n))$.
+\end{itemize}
+\end{definition}
+
+
+\begin{definition}[Models]
+Let $\sL$ be a first-order signature, let $A=(X,I)$ be a structure for $\sL$, and let $v$ be an assignment of $\sL$ to $A$. Let $\phi$ be a formula of $\sL$. We write $A,v\models \phi$ when $A$ and $v$ provide a model for $\phi$, and we define what this means recursively. 
+\begin{itemize}
+\item Atomic formulas:
+\begin{itemize}
+\item $A,v\models t_1\approx t_2 \iff v^+(t_1)= v^+(t_2)$.
+\item $A,v\models R(t_1,\ldots,t_n)\iff R_I(v^+(t_1),\ldots,v^+(t_n))$ holds.
+\end{itemize}
+\item Suppose $\phi$ and $\psi$ are formulas such that whether $A,u$ models $\phi$ and $\psi$ has already been determined, for all assignments $u: V\to X$. Then:
+\begin{itemize}
+\item $A,v\models \neg \phi \iff A,v\not\models \phi$.
+\item $A,v\models \phi\vee \psi \iff A,v\models \phi$ or $A,v\models  \psi$.
+\item $A,v\models \phi\wedge \psi \iff A,v\models \phi$ and $A,v\models \psi$.
+\item $A,v\models \phi\rightarrow \psi \iff A,v\models \neg \phi$ or $A,v\models \psi$.
+\item $A,v\models \forall x \phi\iff$ whenever $u$ is an assignment of $\sL$ to $A$ that agrees with $v$ on every variable except, possibly, $x$, we have $A,u\models \phi$.
+\item $A,v\models \exists x \phi \iff$ there is an assignment, $u$, of $\sL$ to $A$ that agrees with $v$ on every variable except, possibly, $x$, and $A,u\models \phi$. 
+\end{itemize}
+\end{itemize}
+\end{definition}
+
+\paragraph{Free and bound variables.} 
+If $\phi$ is an $\sL$-formula, and $x$ is a variable, then we say an occurrence of $x$ is \emph{free} in $\phi$ if there is no subformula of $\phi$ containing this occurrence of $x$ that has the form $\forall x \phi'$ or $\exists x \phi'$. If there is a free occurrence of $x$ in $\phi$ then we say that $x$ is a \emph{free variable} of $\phi$. If an occurrence of $x$ is not free in $\phi$ then we say it is \emph{bound}, and that $x$ occurs \emph{bound} in $\phi$. A bound occurrence of a variable is said to be \emph{in the scope of} the corresponding quantifier. 
+
+\begin{example}
+Let $\sL$ have signature $\cR=\{R,S\}$, where $R$ is unary and $S$ is binary, $\cF=\{f\}$, where $f$ is ternary, and $\cC=\{c,d\}$. Let $x,y,z$ be variables. 
+\begin{enumerate}
+\item $f(x,y,f(z,c,d)) \approx c$ has no bound variables.
+\item $z$ occurs only bound in $(\exists z(R(f(x,z,d)))\vee S(f(x,y,x),d)$, and $x$ and $y$ occur only free.
+\item All variables in $\forall x (R(x)\vee S(x,c))\wedge \exists x (R(f(x,x,x)))$ are bound.
+\item In $\exists xR(x) \wedge S(x,y)$ the variable $x$ occurs both free and bound. Note that $x$ is still a free variable of this formula, even though it also occurs bound. The variable $y$ occurs only free. 
+\end{enumerate}
+\end{example}
+
+\begin{definition}[Sentence]
+A sentence of $\sL$ (an $\sL$-sentence) is an $\sL$-formula that contains no free variables.
+\end{definition}
+
+By exercise 4.4, if a sentence is true for some assignment into a model, then it is true for every assignment into the same model. So in this case we can suppress $v$ and just write, e.g. $A\models \phi$.
+
+
+ 
+\end{document}

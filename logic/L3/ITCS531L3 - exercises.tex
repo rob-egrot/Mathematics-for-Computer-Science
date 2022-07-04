@@ -1,0 +1,99 @@
+\documentclass{article}
+
+\usepackage{amsmath, mathrsfs, amssymb, stmaryrd, cancel, hyperref, relsize,tikz,amsthm,comment,bussproofs,enumerate}
+\usepackage{graphicx}
+\usepackage{xfrac}
+\hypersetup{pdfstartview={XYZ null null 1.25}}
+\usepackage[all]{xy}
+\usepackage[normalem]{ulem}
+\usepackage{tikz-cd}
+
+
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}{\bfseries}{\itshape}
+\newtheorem{proposition}[theorem]{Proposition}{\bfseries}{\itshape}
+\newtheorem{definition}[theorem]{Definition}{\bfseries}{\upshape}
+\newtheorem{lemma}[theorem]{Lemma}{\bfseries}{\upshape}
+\newtheorem{example}[theorem]{Example}{\bfseries}{\upshape}
+\newtheorem{corollary}[theorem]{Corollary}{\bfseries}{\upshape}
+\newtheorem{remark}[theorem]{Remark}{\bfseries}{\upshape}
+\newtheorem{fact}[theorem]{Fact}{\bfseries}{\upshape}
+\newtheorem{Q}[theorem]{Exercise}{\bfseries}{\upshape}
+
+\newtheorem*{theorem*}{Theorem}
+
+% Uncomment below to create stand-alone file
+% \newcommand*{\prefix}{}
+
+\newcommand{\bN}{\mathbb{N}}
+\newcommand{\bZ}{\mathbb{Z}}
+\newcommand{\bQ}{\mathbb{Q}}
+\newcommand{\bR}{\mathbb{R}}
+\newcommand{\bP}{\mathbb{P}}
+\newcommand{\HCF}{\mathbf{HCF}}
+\newcommand{\lequiv}{\models\text{\reflectbox{$\models$}}}
+\newcommand{\lra}{\leftrightarrow}
+\newcommand{\ra}{\rightarrow}
+\newcommand{\la}{\leftarrow}
+
+\title{ITCS 531 \\Logic 3: Soundness, completeness and compactness exercises}
+\author{Rob Egrot}
+\date{}
+
+\begin{document}
+\maketitle
+%\includecomment{comment}
+
+\begin{Q}\label{\prefix Q:proof}
+Complete the proof of theorem \ref{T:sound} (don't forget the extra axiom, $\neg\neg_E$).
+\end{Q}
+\begin{comment}
+\textbf{Solution:}
+There are four rules left to check: $\vee_I$, $\vee_E$, $\rightarrow_E$, and $\neg\neg_E$. Technically $\vee_I$ is two rules, but we'll just do $\vee_{I_l}$ as $\vee_{I_r}$ is essentially the same.
+\begin{enumerate}[]
+\item$\vee_I$: Suppose the last step in the proof is an application of $\vee_{I_l}$. Then we have derived $\phi$ from $\Gamma$, and from this we get $\phi\vee \psi$. By the inductive hypothesis we have $\Gamma\models \phi$, and so we obviously have $\Gamma\models \phi\vee \psi$, by properties of truth tables.
+\item$\vee_E$: Suppose the last step is an application of $\vee_E$. Then we have derived $\phi\vee\psi$ from $\Gamma$, and we have derived $\theta$ from the assumption of $\{\phi\}\cup\Gamma$, and also from the assumption of $\{\psi\}\cup\Gamma$. Since these internal derivations must be shorter than the main derivation, the inductive hypothesis applies. So we have $\Gamma\models \phi\vee\psi$, $\{\phi\}\cup\Gamma\models \theta$, and  $\{\psi\}\cup\Gamma\models\theta$. Since $\Gamma\models \phi\vee\psi$ if and only if either $\Gamma\models \phi$ or $\Gamma\models \psi$, any assignment satisfying $\Gamma$ must also satisfy either $\{\phi\}\cup\Gamma$ or $\{\psi\}\cup\Gamma$. In either case it must satisfy $\theta$ too, so we are done.
+\item $\rightarrow_E$: Here we have derived $\phi\rightarrow \psi$ and $\phi$ from $\Gamma$. So, by the inductive hypothesis, any assignment satisfying $\Gamma$ must also satisfy  $\phi\rightarrow \psi$ and $\phi$. So any such assignment must also satisfy $\psi$, and we are done.
+\item$\neg\neg_E$: Here we have $\Gamma\models \neg\neg\phi$, by the inductive hypothesis. Clearly $\Gamma\models \phi$, as an assignment satisfies $\neg\neg\phi$ if and only if it satisfies $\phi$.
+\end{enumerate}
+\end{comment}
+
+\begin{Q}\label{\prefix godel_equiv}
+Prove that soundness of a deduction system is equivalent to the statement ``every satisfiable set of sentences is consistent". HINT: think about how the proof of lemma \ref{L:sat} works.
+\end{Q}
+\begin{comment}
+\textbf{Solution:}
+This argument is essentially the same as the proof of lemma \ref{L:sat} using lemma \ref{L:equiv}. First, soundness is the statement
+\[\tag{$\dagger$} \Gamma\vdash \phi \implies \Gamma\models \phi,\]
+and ``every satisfiable set of sentences is consistent" is $\Gamma\not\models \bot \implies \Gamma\not\vdash\bot$, which is equivalent to
+\[\tag{$\ddagger$} \Gamma\vdash \bot \implies \Gamma\models \bot.\]
+
+First we show that $(\dagger)\implies (\ddagger)$. To do this we must, assuming $(\dagger)$ and $\Gamma\vdash \bot$, prove that $\Gamma\models \bot$. First, choose $\psi\in\Gamma$. We must be able to do this as if $\Gamma$ is empty then we would not have $\Gamma\vdash \bot$. Let $\Gamma'=\Gamma\setminus\{\psi\}$. We proceed as follows:
+\begin{align*}
+\Gamma\vdash \bot &\iff \Gamma'\cup\{\psi\}\vdash\bot \\
+&\iff \Gamma'\vdash \neg\psi \phantom{xxx}\text{ by lemma \ref{L:equiv}(2)} \\
+&\implies \Gamma'\models \neg\psi \phantom{xxx}\text{ by ($\dagger$)}\\
+&\iff \Gamma \models \bot \phantom{xxxx}\text{ by lemma \ref{L:equiv}(1)}.
+\end{align*}
+This is what we want, so $(\dagger)\implies (\ddagger)$. Now we must prove that $(\ddagger)\implies (\dagger)$. To do this we must show that, assuming $(\ddagger)$, if $\Gamma\vdash \phi$ then $\Gamma\models \phi$, for any sentence $\phi$. We proceed as follows:
+\begin{align*}
+\Gamma \vdash \phi &\iff \Gamma \vdash \neg\neg \phi \phantom{xxxxx}\text{ by classical logic}\\
+&\iff\Gamma\cup\{\neg\phi\}\vdash \bot \phantom{x}\text{ by lemma \ref{L:equiv}(2)} \\
+&\implies \Gamma\cup\{\neg\phi\}\models \bot \phantom{x}\text{ by $(\ddagger)$}\\
+&\iff \Gamma \models \neg\neg \phi \phantom{xxixx}\text{ by lemma \ref{L:equiv}(1)}\\
+&\iff \Gamma \models \phi \phantom{xxxxxxx}\text{ because this is true for truth tables}.
+\end{align*}
+\end{comment}
+
+\begin{Q}[Compactness theorem for propositional logic]\label{\prefix compactness}
+Use soundness and completeness to prove the following:
+\begin{theorem*}
+Let $\Gamma$ be a set of sentences in propositional logic. Then $\Gamma$ is satisfiable if and only if every finite subset of $\Gamma$ is satisfiable. 
+\end{theorem*} 
+\end{Q}
+\begin{comment}
+\textbf{Solution:}
+Clearly one direction of this is trivial. If $\Gamma$ is satisfiable then every subset of $\Gamma$ must be satisfiable, finite or not. Conversely, suppose $\Gamma$ is \emph{not} satisfiable. Then $\Gamma \models \bot$. By completeness this means $\Gamma\vdash \bot$, so there is a proof of $\bot$ from $\Gamma$. But proofs are finite, and so only a finite number of sentences from $\Gamma$ will be used in this proof. Let $\Gamma'$ be the finite set of all sentences from $\Gamma$ that appear in this proof. Then $\Gamma'\vdash \bot$, and so, by soundness, we also have $\Gamma'\models \bot$. But this means $\Gamma'$ is not satisfiable. So we have shown that $\Gamma$ not being satisfiable means there is a finite subset of $\Gamma$ which is not satisfiable, and this is equivalent to saying that if every finite subset of $\Gamma$ is satisfiable then $\Gamma$ is also satisfiable, which is what we are trying to prove.
+\end{comment}
+
+\end{document}

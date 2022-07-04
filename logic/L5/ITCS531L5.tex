@@ -1,0 +1,262 @@
+\documentclass{article}
+
+\usepackage{amsmath, mathrsfs, amssymb, stmaryrd, cancel, hyperref, amsthm, bussproofs, comment}
+\usepackage{graphicx}
+\hypersetup{pdfstartview={XYZ null null 1.25}}
+\usepackage[all]{xy}
+\usepackage[normalem]{ulem}
+\usepackage{xfrac}
+
+
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}[section]{\bfseries}{\itshape}
+\newtheorem{proposition}[theorem]{Proposition}{\bfseries}{\itshape}
+\newtheorem{definition}[theorem]{Definition}{\bfseries}{\upshape}
+\newtheorem{lemma}[theorem]{Lemma}{\bfseries}{\upshape}
+\newtheorem{example}[theorem]{Example}{\bfseries}{\upshape}
+\newtheorem{corollary}[theorem]{Corollary}{\bfseries}{\upshape}
+\newtheorem{remark}[theorem]{Remark}{\bfseries}{\upshape}
+\newtheorem{fact}[theorem]{Fact}{\bfseries}{\upshape}
+\newtheorem{Q}[theorem]{Exercise}{\bfseries}{\upshape}
+
+\newtheorem*{theorem*}{Theorem}
+
+\newcommand{\bN}{\mathbb{N}}
+\newcommand{\bZ}{\mathbb{Z}}
+\newcommand{\bQ}{\mathbb{Q}}
+\newcommand{\bR}{\mathbb{R}}
+\newcommand{\bP}{\mathbb{P}}
+\newcommand{\HCF}{\mathbf{HCF}}
+\newcommand{\lequiv}{\models\text{\reflectbox{$\models$}}}
+\newcommand{\sL}{\mathscr{L}}
+\newcommand{\trm}{\mathbf{term}}
+
+\title{ITCS 531 \\Logic 5: Basic model theory}
+\author{Rob Egrot}
+\date{}
+
+\includecomment{comment}
+
+\begin{document}
+\maketitle
+
+\section{Basic model theory}
+As discussed in the previous section, $\sL$-structures give meaning to $\sL$-sentences. So, if we want to understand an $\sL$-sentence, or, more usually an $\sL$-theory, we can try to understand its models, i.e. the $\sL$-structures in which it is true. Conversely, given a mathematical object, we can try to understand it better by interpreting it as an $\sL$-structure for some language $\sL$, then seeing which $\sL$-sentences it is a model for. For example, we can think of natural number arithmetic as a structure for some suitable language, and we can investigate properties of natural number arithmetic by investigating the formulas of this language. This is not a hypothetical example. Logicians in the mid 20th century used this approach to solve a famous problem about so-called \emph{Diophantine equations} (look up Hilbert's tenth problem). This two-way process of understanding languages through models, and models through languages, is the starting point of the field known as \emph{model theory}. 
+
+It is through model theory that mathematical logic finds most of its applications in modern mathematics, and while other areas such as recursion and computability theory are more relevant for research in computer science\footnote{We should mention here that the proof of the Diophantine problem mentioned above has more to do with computability theory than with modern `mathematical' model theory, so these subjects are not totally disconnected from pure mathematics.}, the basics of model theory are important for anyone who wants to understand applications of logic. This section explores the concept of a model as introduced in the last section. We will see a concept of deduction for first-order logic, based on that for propositional logic, and we will connect the concepts of deductive implication and semantic implication via models using soundness and completeness theorems, as we did for propositional logic. We will also look at the concept of an `intended model', and see some unavoidable limitations of using first-order logic to describe infinite structures.  
+  
+\paragraph{Semantics.}
+Generalizing exercise 4.3, if $\Gamma$ is a set of $\sL$-formulas for some first-order signature $\sL$, and if $\phi$ is an $\sL$-formula, then we write $\Gamma\models \phi$ if, whenever $v$ is an assignment of the variables of $\sL$ into an $\sL$-structure $A$, we have \[A, v \models \Gamma\implies A,v \models \phi.\] 
+We say that $\phi$ is a \emph{logical consequence} of $\Gamma$. An important special case is \emph{sentences}, that is, formulas that have no free variables. By exercise 4.4, for sentences the assignment $v$ is irrelevant. In this case we can just write, e.g. \[A\models \phi.\]
+
+When $A\models \phi$ for a sentence $\phi$ we say $A$ is a \emph{model} for $\phi$. Similarly, if $\Delta$ is a set of $\sL$-sentences we can write e.g. $A\models \Delta$ when $A\models \phi$ for all $\phi\in\Delta$, and say $A$ is a model for $\Delta$.
+
+\begin{definition}
+If $\phi$ is an $\sL$-formula then we say $\phi$ is:
+\begin{itemize}
+\item \emph{Valid} if $A,v\models \phi$ whenever $A$ is an $\sL$-structure and $v$ is an assignment.
+\item \emph{Satisfiable} if there is an $\sL$-structure $A$ and an assignment $v$ with $A,v\models \phi$.
+\item A \emph{contradiction} if it is not satisfiable, i.e. if there is no $A,v$ with $A,v\models\phi$.
+\end{itemize}
+
+Similarly, if $\Gamma$ is a set of $\sL$-formulas then $\Gamma$ is:
+\begin{itemize}
+\item \emph{Valid} if $A,v\models \Gamma$ whenever $A$ is an $\sL$-structure and $v$ is an assignment.
+\item \emph{Satisfiable} if there is an $\sL$-structure $A$ and an assignment $v$ with $A,v\models \Gamma$.
+\item \emph{Contradictory} if it is not satisfiable, i.e. if there is no $A,v$ with $A,v\models\Gamma$. If $\Gamma$ is not satisfiable we write $\Gamma\models \bot$.
+\end{itemize}
+\end{definition}
+
+\begin{example}
+Let $\sL=\{0,1,\times,+\}$ be the language of arithmetic.
+\begin{enumerate}
+\item Let $\phi = \forall x\big((x\approx 0)\vee \neg(x\approx 0)\big)$. Then $\phi$ is valid. More generally, if $\sL$ is a language, and if $\phi_1,\ldots,\phi_n$ are $\sL$-sentences, then any propositional tautology constructed by treating the $\phi_i$ as basic propositions will be valid.
+\item Let $\psi= \forall x(\neg(x\approx 0)\rightarrow \exists y(x\times y\approx 1))$. This is true if we take $\bR$ as our structure, but not if we take $\bZ$. So $\psi$ is satisfiable but not valid.
+\item If $\phi_1,\ldots,\phi_n$ are $\sL$-sentences, then any propositional contradiction using the $\phi_i$ as basic propositions will be a contradiction. 
+\end{enumerate}
+\end{example}
+
+\begin{definition}[Theory]\label{D:theory}
+If $\sL$ is a language, then an $\sL$-\emph{theory} is a satisfiable set of $\sL$-sentences. 
+\end{definition}
+
+Checking logical consequence, validity etc. is much more complicated for first-order logic than for propositional logic. In propositional logic all we have to do is construct a truth table, which is a deterministic process. It may take a long time but we know that, in the end, we will get an answer. In first-order logic, to check directly if a sentence is valid we have to look at every possible structure and check that it is a model. Since there may be an infinite number of structures this cannot usually be done. We might ask if there is an algorithm that can tell if a sentence is valid, using a trick to avoid having to check every possible model. There is no obvious way to do this, and in fact, no such algorithm can exist (as we will see next semester).
+
+\paragraph{Intended models.} When we write down axioms in first-order logic, there is often some particular system whose behaviour we are trying to formalize. For example, we might write down axioms for defining real numbers. The intended model here is $\bR$, and we can choose axioms so that $\bR$ is indeed a model. But can we choose first-order axioms so that $\bR$ is the only model? The answer to this is no. In fact, it is impossible to use first-order logic to define a specific infinite structure, due to the following important theorem (which we state without proof). 
+
+\begin{theorem}[L\"owenheim-Skolem theorem]\label{T:LS}
+Let $\Gamma$ be a countable $\sL$-theory. Then, if $\Gamma$ has an infinite model, it has models of every infinite cardinality.
+\end{theorem}
+
+Theorem \ref{T:LS} gives us an infinite supply of extra models for any theory that has at least one infinite model. Unintended models need not have different cardinalities though, as the following example illustrates.
+
+\begin{example}\label{E:nums}
+Let $\sL=\{0,s\}$, where $s$ is a unary function. Let $\Gamma$ consist of the following sentences.
+\begin{itemize}
+\item[$\phi_1$:] $\forall x (\neg (x\approx 0)\rightarrow \exists y (x= s(y))$.
+\item[$\phi_2$:] $\forall x (\neg (x\approx s(x)))$. 
+\item[$\phi_3$:] $\forall x\forall y ((s(x)\approx s(y))\rightarrow (x\approx y))$. 
+\end{itemize}
+One model of $\Gamma$ is the natural numbers, where $s$ is interpreted as the `successor' function. Is $\bN$ the only model? No, for example, the disjoint union of $\bN$ and $\bZ$ is also a model if we interpret $0$ as the zero of $\bN$, and $s$ as the successor function in both $\bN$ and $\bZ$. 
+\end{example}
+
+\paragraph{Substitution.}
+Let $\phi$ be an $\sL$-formula with free variables $x_1,\ldots x_n$. We can express this fact by writing $\phi[x_1,\ldots,x_n]$. Now, let $t$ be an $\sL$-term, and let $i\in \{1,\ldots,n\}$. Then we can create a new formula from $\phi$ by replacing every occurrence of the variable $x_i$ with the term $t$. We use the notation $\phi[x_1,\ldots,x_{i-1},t/x_i,x_{i+1},\ldots,x_n]$ to denote this new formula. Note that this new formula may have different free variables, depending on what variables occur free in $t$.
+
+Sometimes we will write something like $\phi[t/x]$. This represents substituting some variable $x$ that occurs free in $\phi$ with a term $t$. In other words, we sometimes hide some free variables and make explicit only the one we are replacing. 
+
+\begin{example}
+Let $\sL=\{0,s\}$ be the language from example \ref{E:nums}, and let $\phi = s(x)\approx y$. Then we may write $\phi[x,y]$ when we want to explicitly mention the free variables of $\phi$. Let $t = s(s(z))$ be a term. Then $\phi[t/x,y]= s(s(s(z)))\approx y$. Alternatively, we could not mention $x$ explicitly and write something like $\phi[t/y]$, which is the $\sL$-formula $s(x)\approx s(s(z))$ in this case.
+\end{example}  
+
+\paragraph{Syntax.}
+We can extend the natural deduction system for propositional logic to first-order logic. We have all the same deduction rules as before (but with first-order formulas in place of propositional sentences), and also the following extra ones.
+
+
+\vspace{1cm}
+\begin{minipage}{0.5\textwidth}
+\textbf{Introduction rules.}
+\end{minipage}
+\begin{minipage}{0.5\textwidth}
+\textbf{Elimination rules.}
+\end{minipage}
+
+\begin{minipage}{0.5\textwidth}
+\begin{prooftree}
+\AxiomC{}
+\LeftLabel{ $\approx_I$:\quad}
+\UnaryInfC{$t\approx t$}
+\end{prooftree}
+
+\begin{prooftree}
+\AxiomC{$\phi[x'/x]$}
+\LeftLabel{ $\forall_I$:\quad}
+\UnaryInfC{$\forall x \phi$}
+\end{prooftree}
+
+\begin{prooftree}
+\AxiomC{$\phi[t/x]$}
+\LeftLabel{ $\exists_I$:\quad}
+\UnaryInfC{$\exists x \phi$}
+\end{prooftree}
+
+\end{minipage}
+\begin{minipage}{0.5\textwidth}
+
+\begin{prooftree}
+\AxiomC{$t_1\approx t_2$}
+\AxiomC{$\phi[t_1/z]$}
+\LeftLabel{ $\approx_E$:\quad}
+\BinaryInfC{$\phi[t_2/z]$}
+\end{prooftree}
+
+\begin{prooftree}
+\AxiomC{$\forall x \phi$ }
+\LeftLabel{ $\forall_E$:\quad}
+\UnaryInfC{$\phi[t/x]$}
+\end{prooftree}
+
+\begin{prooftree}
+\AxiomC{$\exists x \phi$}
+\AxiomC{$[\phi[x'/x]]$}
+\doubleLine
+\UnaryInfC{$\psi$}
+\LeftLabel{ $\exists_E$:\quad}
+\BinaryInfC{$\psi$}
+\end{prooftree}
+
+
+\end{minipage}
+
+These rules require additional explanation, as the notation hides some details.
+
+\begin{itemize}
+\item[$\approx_I$:] This is fairly straightforward. It just says that we can deduce the fact that a term is identical to itself from an empty set of assumptions.
+\item[$\forall_I$:] Here $\phi$ is a formula where $x$ occurs free. The intuition behind this rule is that, if we can prove $\phi$ in the case where $x=x'$, for arbitrary $x'$, then $\phi$ should be true for all possible values of $x$. To make this rule sound we need to make sure that $x'$ has no special property that specifies it as a member of a strict subset of the domain. Formally, this means that the symbol $x'$ must not occur free in an assumption or axiom anywhere in the proof tree above the application of this rule, or in the formula $\forall x \phi[x]$ itself. Why? Because if $x'$ occurs free in an assumption, axiom or $\phi$ then we are supposing some fact involving $x'$, and this might constrain $x'$. So we could not say with certainty that $\phi[x]$ for arbitrary $x$ holds just because $\phi[x']$ holds, as $\phi[x']$ might only hold because of the extra property we are supposing $x'$ has.  
+\item[$\exists_I$:] Here again $\phi$ is a formula where $x$ occurs free, and $t$ can be any term. The intuition is that, if we can prove $\phi$ for some value of $x$, then $\exists x\phi$ must be true.
+\item[$\approx_E$:] Here $\phi$ is a formula where $z$ occurs free, and $t_1$ and $t_2$ are terms. The intuition is that, if $t_1$ and $t_2$ are equal, and if $\phi$ is true in the case where $z= t_1$, then $\phi$ should also be true in the case where $z= t_2$.  
+\item[$\forall_E$:] $\phi$ is a formula where $x$ occurs free and $t$ is a term. The intuition here is that if $\phi$ is true for all values of $x$, then, in particular, $\phi$ should be true when $x = t$.
+\item[$\exists_E$:] Once again, $\phi$ is a formula where $x$ occurs free. The idea is that, if we can deduce $\psi$ from $\phi$ where $x$ is set to any arbitrary value, then, if we know there is some value for $x$ which makes $\phi$ true (i.e. $\exists x\phi$), then we should be able to conclude that $\psi$ is true. Here again we have to be careful that $x'$ is truly arbitrary, which again means that it must not occur free in $\phi$, or in an assumption or axiom previously in the proof tree.  
+\end{itemize}
+
+\begin{example} Let $\phi$ and $\psi$ be formulas where $x$ occurs free. Then we can deduce $\forall x \psi$ from $\forall x \neg \phi$ and $\forall x (\phi \vee \psi)$.
+\end{example}
+\begin{prooftree}
+\AxiomC{$\forall x \neg\phi$}
+\LeftLabel{ $(\forall_E)$}
+\UnaryInfC{$\neg\phi[x'/x]$}
+\AxiomC{$\forall x (\phi\vee \psi)$}
+\LeftLabel{ $(\forall_E)$}
+\UnaryInfC{$\phi[x'/x]\vee \psi[x'/x]$}
+\doubleLine
+\LeftLabel{(propositional deduction, see example \ref{E:notor})}
+\BinaryInfC{$\psi[x'/x]$}
+\LeftLabel{ $(\forall_I)$}
+\UnaryInfC{$\forall x\psi$}
+\end{prooftree}
+\begin{example}
+Let $\phi$ and $\psi$ be formulas where $x$ occurs free. Then we can deduce $\exists x \psi$ from $\exists x \neg \phi$ and $\forall x (\phi \vee \psi)$.
+\end{example}
+\begin{prooftree}
+\AxiomC{$\exists x \neg\phi$}
+\AxiomC{$[\neg\phi[x'/x]]$}
+\UnaryInfC{$\neg\phi[x'/x]$}
+\LeftLabel{$(\exists_E)$}
+\BinaryInfC{$\neg\phi[x'/x]$}
+\AxiomC{$\forall x (\phi\vee \psi)$}
+\RightLabel{$(\forall_E)$}
+\UnaryInfC{$\phi[x'/x]\vee\psi[x'/x]$}
+\doubleLine
+\LeftLabel{(propositional deduction)}
+\BinaryInfC{$\psi[x'/x]$}
+\LeftLabel{$(\exists_I)$}
+\UnaryInfC{$\exists x\psi$}
+\end{prooftree}
+Note that in this second example, we can't use $\forall_I$ to deduce $\forall x \psi$ at the end. This is because $x'$ occurs in the assumption we used in the deduction of $\neg\phi[x'/x]$ at the start.
+
+\paragraph{Soundness and completeness.}
+As with propositional logic we write $\Gamma\vdash \phi$ if $\phi$ can be deduced from a set of formulas $\Gamma$. We say a set of $\sL$-sentences, $\Gamma$, is \emph
+{consistent} if we do not have $\Gamma\vdash \bot$. We sometimes describe a consistent set of $\sL$-sentences as an $\sL$-\emph{theory}. This is consistent with definition \ref{D:theory} because, as in propositional logic, there is a strong link between $\vdash$ and $\models$.
+
+\begin{theorem}[G\"odel]\label{T:G1}
+Let $\Gamma$ be a set of $\sL$-formulas. Then $\Gamma$ is consistent if and only if it is satisfiable.
+\end{theorem}
+
+This theorem is equivalent to the following result (the proof of this is one of the exercises).
+
+\begin{theorem}[Extended soundness and completeness]\label{T:G2}
+Let $\Gamma$ be a set of $\sL$-formulas and let $\phi$ be an $\sL$-formula. Then
+\[\Gamma\vdash \phi\iff \Gamma\models \phi.\]
+\end{theorem}
+\begin{proof}
+This proof is too long for us here, but we provide a sketch of the main ideas involved the argument. Proving soundness is similar to the inductive argument used for the propositional case. The base case again is easy, so the key step is proving for each rule that an argument that has been sound up to a final application of that rule remains sound after this application.  Arguments for the rules shared with propositional logic are essentially the same as in the propositional case. For example:
+\begin{itemize}
+\item[$\wedge_I$:] Here we have deduced $\phi$ and $\psi$ from $\Gamma$, and from these have deduction $\phi\wedge \psi$. Assuming that the deductions of $\phi$ and $\psi$ are both sound, this means that any model, $(A,v)$, of $\Gamma$ must be a model of both $\phi$ and $\psi$, and therefore must also be a model of $\phi\wedge \psi$, by the definition of $\models$.
+\end{itemize}
+The new rules are a little technically tricky, but don't require any creative leap.  For example:
+\begin{itemize}
+\item[$\forall_I$:] Here we have deduced $\phi[x'/x]$ from $\Gamma$ for arbitrary choice of $x'$. Assuming this deduction is sound, this means that any pair $(A,v)$ satisfying $\Gamma$ will also satisfy $\phi[x'/x]$. We must show that $A,v\models \forall x \phi[x]$ too. We proceed as follows:
+\begin{itemize}
+\item By the rules for $\forall_I$, the variable $x'$ must have not occurred in the deduction tree above $\phi[x'/x]$. So only axioms where $x'$ does not occur free are used. 
+\item Therefore there is a subset $\Gamma'$ of $\Gamma$ containing only formulas where $x'$ does not occur free with $\Gamma'\vdash \phi[x'/x]$.
+\item The inductive hypothesis applied to this deduction gives $\Gamma'\models \phi[x'/x]$.
+\item Now, let $A,v\models \Gamma$. We want to show that $A,v\models \forall x \phi[x]$.
+\item For this, we must show that if $v'$ agrees with $v$ about everything except, possibly, $x$ (temporary notation $v'=_x v$), then $A,v'\models \phi[x]$. 
+\item So, let $v' =_x v$.
+\item Define $v'' =_{x'} v$ by setting $v''(x') = v'(x)$. 
+\item Then $A,v'' \models \Gamma'$, as $x'$ does not occur free in any formula in $\Gamma'$.
+\item So $A,v''\models \phi[x'/x]$.
+\item It follows that $A,v'\models \phi[x]$, because $x'$ does not occur free in $\phi$ (by the rules for $\forall_I$), by definition of $v''$ we have $v'(x) = v''(x')$, and for $y\notin \{x,x'\}$ we have $v'(y)=v(y)=v''(y)$. In other words, evaluating $\phi[x]$ with $v'$ is exactly the same as evaluating $\phi[x'/x]$ using $v''$.
+\item Thus $A,v\models \forall x \phi[x]$ as required.
+\end{itemize}
+\end{itemize}
+
+Completeness is harder, but conceptually similar to the propositional version. Again, proving completeness is equivalent to proving that every consistent set of sentences is satisfiable. The difference here is that, rather than just building a true/false assignment that satisfies a consistent set of propositional sentences, we must find a pair $(A,v)$ satisfying a set of first-order formulas. We omit the lengthy details, but it turns out that it is possible to do this, using the formulas themselves as the base of the structure. 
+\end{proof}
+
+
+There's also a compactness theorem for first-order logic, which you will find in the exercises.
+
+
+
+\end{document}

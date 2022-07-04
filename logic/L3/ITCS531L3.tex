@@ -1,0 +1,177 @@
+\documentclass{article}
+
+\usepackage{amsmath, mathrsfs, amssymb, stmaryrd, cancel, hyperref, relsize,tikz,amsthm, bussproofs, comment}
+\usepackage{graphicx}
+\usepackage{xfrac}
+\hypersetup{pdfstartview={XYZ null null 1.25}}
+\usepackage[all]{xy}
+\usepackage[normalem]{ulem}
+\usepackage{tikz-cd}
+
+
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}[section]{\bfseries}{\itshape}
+\newtheorem{proposition}[theorem]{Proposition}{\bfseries}{\itshape}
+\newtheorem{definition}[theorem]{Definition}{\bfseries}{\upshape}
+\newtheorem{lemma}[theorem]{Lemma}{\bfseries}{\upshape}
+\newtheorem{example}[theorem]{Example}{\bfseries}{\upshape}
+\newtheorem{corollary}[theorem]{Corollary}{\bfseries}{\upshape}
+\newtheorem{remark}[theorem]{Remark}{\bfseries}{\upshape}
+\newtheorem{fact}[theorem]{Fact}{\bfseries}{\upshape}
+\newtheorem{Q}[theorem]{Exercise}{\bfseries}{\upshape}
+
+\newtheorem*{theorem*}{Theorem}
+
+\newcommand{\bN}{\mathbb{N}}
+\newcommand{\bZ}{\mathbb{Z}}
+\newcommand{\bQ}{\mathbb{Q}}
+\newcommand{\bR}{\mathbb{R}}
+\newcommand{\bP}{\mathbb{P}}
+\newcommand{\HCF}{\mathbf{HCF}}
+\newcommand{\lequiv}{\models\text{\reflectbox{$\models$}}}
+
+\title{ITCS 531 \\Logic 3: Soundness, completeness and compactness}
+\author{Rob Egrot}
+\date{}
+
+%\includecomment{comment}
+
+\begin{document}
+\maketitle
+
+\section{Soundness, completeness and compactness}
+In section 1 we introduced semantics for propositional logic in the form of truth tables. We wrote $\phi\models \psi$ when $\psi$ is a logical consequence of $\phi$,  and we determined this just by constructing a truth table and comparing the appropriate columns. In section 2 we defined a formal deduction system (natural deduction). We write $\phi\vdash \psi$ if $\psi$ follows from $\phi$ by application of the inference rules we defined. 
+
+Logical consequence and formal deduction are both supposed to capture the idea of statements being implied by others Intuitively, both systems seem to do this, though they do it in different ways. We want the two systems to be equivalent, in a sense we define below. Note that we interpret $\Gamma\models\bot$ to mean that there is no assignment satisfying $\Gamma$.
+
+
+\begin{definition}[Sound]
+A formal deduction system for propositional logic is \emph{sound} if whenever $\Gamma\vdash \phi$, we also have $\Gamma\models \phi$. Intuitively this means that if we make a formal deduction then we know the truth table will show the same result. We sometimes use the slogan ``provable implies true". 
+\end{definition}   
+
+\begin{definition}[Complete]
+A formal deduction system for propositional logic is \emph{complete} if whenever $\Gamma\models \phi$, we also have $\Gamma\vdash \phi$. Intuitively this means that if we can show a logical implication with a truth table, then we will be able to construct the corresponding proof using our deduction system. We sometimes use the slogan ``true implies provable". 
+\end{definition}
+
+We want our deduction system to be both sound and complete. In other words, we want to be able to say, if we can prove it using deduction rules, then it's true according to truth tables, and if it's true according to truth tables, then we can prove it. A sound and complete deduction system for propositional logic matches up perfectly with the intuitively simple truth tables. 
+
+\paragraph{Why have deduction systems?} 
+Truth tables are simple to create and check, but formal proofs using deduction rules can be very difficult to find. Since we are mainly interested in deduction systems that are sound and complete, why even bother to define a separate system for formal proofs? Why not just use truth tables? There are two main answers to this. First, occasionally formal deduction rules give an easier way of proving something than setting up a truth table. For example, it follows easily from the natural deduction system that $\phi\rightarrow(\phi\rightarrow(\phi\rightarrow(\phi\rightarrow\phi)))$, but proving this by truth table would be quite tedious. More importantly, the difference between syntax and semantics will become much more significant when we start using more powerful logical systems. 
+
+In particular, in first-order logic (which we cover in sections 4 and 5), logical consequence is extremely difficult, if not impossible, to test directly, so a sound and complete deduction system becomes extremely important. With this in mind, we could consider learning about deduction systems for propositional logic to be training for the serious work ahead.
+
+\paragraph{Soundness of natural deduction.}    
+\begin{theorem}\label{T:sound}
+The natural deduction system for propositional logic is sound.
+\end{theorem}
+\begin{proof}
+We need to prove that whenever $\Gamma\vdash \chi$, we also have $\Gamma\models \chi$. I.e. if we can deduce $\chi$ from set of assumptions $\Gamma$, then whenever an assignment satisfies every sentence in $\Gamma$ it must also satisfy $\chi$. We use induction on the number of steps in the derivation of $\chi$ from $\Gamma$. By `number of steps' we mean, `number of uses of deduction rules'. 
+
+The base case is simple. If the length of the derivation is 1 then there is only a single statement in the proof tree, which must be $\chi$. This is only a valid step in a proof if $\chi\in\Gamma$. In this case any assignment satisfying everything in $\Gamma$ will obviously satisfy $\chi$.
+
+For the inductive step we assume that the result is true for all derivations with length less than or equal to $n$, say, and we suppose the length of our derivation is $n+1$. We show that the last move is sound, for all possible choices of last move. We do this systematically by checking each case. 
+\begin{itemize}
+\item[$\top_I$:] In this case $\chi=\top$. This case is trivial because every assignment satisfies $\top$, so of course any assignment satisfying $\Gamma$ must also satisfy $\chi$.
+\item[$\bot_E$:] This is a subtle case. The last step in the derivation is deriving $\chi$ from $\bot$, where $\bot$ has first been derived from $\Gamma$. Since we are assuming the derivation of $\bot$ is sound, this means that $\Gamma\models\bot$. In other words, there is no assignment satisfying $\Gamma$. So it is vacuously true that $\Gamma\models \chi$, because there are no assignments satisfying $\Gamma$ to worry about.
+\item[$\wedge_I$:] Here we deduce $\chi=\phi\wedge\psi$ from $\phi$ and $\psi$, with $\Gamma\vdash \phi$ and $\Gamma\vdash \psi$. By the inductive hypothesis, the derivations of $\phi$ and $\psi$ are both sound, therefore, any assignment that satisfies $\Gamma$ will satisfy both $\phi$ and $\psi$. But then the truth table says it will also satisfy $\phi\wedge\psi$, which is what we want.
+\item[$\wedge_{E_l}$:] Here $\chi=\phi$, which we deduce from $\phi\wedge \psi$. Again, by the inductive hypothesis we assume the derivation of $\phi\wedge \psi$ from $\Gamma$ is sound, which means that any assignment that satisfies $\Gamma$ also satisfies $\phi\wedge \psi$. But then it must also satisfy $\phi$, which is what we want.
+\item[$\neg_I$:] Here $\chi=\neg\phi$, and we assume $\phi$ and derive a contradiction from $\Gamma\cup\{\phi\}$. By the inductive hypothesis we assume that this derivation is sound, so there is no assignment satisfying $\Gamma\cup\phi$. In other words, any assignment satisfies $\Gamma$ must also satisfy $\neg\phi$. But this means that the derivation of $\neg\phi$ from $\Gamma$ is sound, which is what we want.
+\item[$\rightarrow_I$:]  Here $\chi=\phi\rightarrow \psi$, and we derive $\psi$ from $\Gamma\cup\{\phi\}$. Again, by the inductive hypothesis, this derivation is sound, so any assignment that satisfies $\Gamma\cup\{\phi\}$ also satisfies $\psi$. Suppose an assignment satisfies $\Gamma$. If this assignment satisfies $\phi$, then we have have just shown it satisfies $\psi$ too, so by the truth table also satisfies $\phi\rightarrow \psi$. Alternatively, if it does not satisfy $\phi$, then, again by the truth table, it also satisfies $\phi\rightarrow\psi$. So any assignment satisfying $\Gamma$ also satisfies $\phi\rightarrow\psi$, which is what we are trying to prove.
+\item[$\neg_E$:] Here $\chi =\bot$, so in other words we have derived a contradiction from $\Gamma$. To apply this rule in a derivation we must first have derived $\phi$ and $\neg\phi$ from $\Gamma$. By the inductive hypothesis, these derivations are sound, so any assignment that satisfies $\Gamma$ must also satisfy $\phi$ and $\neg\phi$. This is impossible, so there cannot be an assignment satisfying $\Gamma$, and, by definition, this means $\Gamma\models\bot$, which is what we want to prove. 
+\end{itemize}
+The remaining possibilities are exercise \ref{Q:proof}.      
+\end{proof}
+
+\paragraph{Completeness of natural deduction.}
+
+\begin{theorem}\label{T:complete}
+The natural deduction system for propositional logic is complete.
+\end{theorem}
+
+To prove this we will need some preliminary results. First note that this result is only true if we include the $\neg\neg_E$ deduction rule, otherwise we cannot formally prove that $\neg\neg\phi\vdash \phi$, or that $\vdash\phi\vee\neg\phi$, and both $\neg\neg\phi\models \phi$ and $\models\phi\vee\neg\phi$ are obviously true.
+
+\begin{lemma}\label{L:equiv}
+Let $\Gamma$ be a set of sentences, then:
+\begin{enumerate}
+\item $\Gamma\models \neg\phi\iff \Gamma\cup\{\phi\}\models\bot$, and
+\item $\Gamma\vdash \neg\phi\iff \Gamma\cup\{\phi\}\vdash\bot$.
+\end{enumerate}
+\end{lemma}
+\begin{proof}
+If $\Gamma\models \neg\phi$ then every assignment that satisfies $\Gamma$ must satisfy $\neg\phi$. So there can be no assignment that satisfies $\Gamma\cup\{\phi\}$ (i.e. $\Gamma\cup\{\phi\}\models\bot$). Conversely, if there is no assignment that satisfies $\Gamma\cup\{\phi\}$ then every assignment that satisfies $\Gamma$ must satisfy $\neg\phi$ (i.e. $\Gamma\models \neg\phi$).
+
+For part 2, suppose first that $\Gamma\vdash \neg\phi$. Then we can derive $\bot$ from $\Gamma\cup\{\phi\}$ using rule $\neg_E$. Conversely, suppose $\Gamma\cup\{\phi\}\vdash \bot$. Then, starting with $\Gamma$, we can apply rule $\neg_I$ with assumption $\phi$ to derive $\neg\phi$ (we copy the derivation of $\phi$ from $\Gamma$), and thus $\Gamma\vdash \neg\phi$. 
+\end{proof}
+
+\begin{definition}[Consistent]
+A set of sentences $\Gamma$ is \emph{consistent} if $\Gamma\not\vdash \bot$. I.e. if we cannot deduce a contradiction from it.
+\end{definition} 
+
+\begin{lemma}\label{L:sat}
+Completeness of the natural deduction system with $\neg\neg_E$ with is equivalent to the statement:
+\begin{equation*}\text{\emph{Every consistent set of sentences is satisfiable}}.\tag{$\dagger$}\end{equation*}
+\end{lemma}
+\begin{proof}
+Completeness can be stated as $\Gamma\models \phi\implies \Gamma\vdash \phi$ for all sets of sentences $\Gamma$, and ($\dagger$) translates as $\Gamma\models \bot \implies \Gamma\vdash \bot$ for all sets of sentences $\Gamma$.
+
+Now, assuming $(\dagger)$, and using lemma \ref{L:equiv}(1), we have 
+\begin{align*}
+\Gamma\models \phi &\iff \Gamma\models \neg\neg\phi\\
+&\iff\Gamma \cup\{\neg\phi\}\models \bot \\
+&\implies \Gamma \cup\{\neg\phi\}\vdash \bot \\
+&\iff \Gamma\vdash \neg\neg\phi \\
+&\iff \Gamma\vdash \phi
+\end{align*}
+So $\Gamma\models \phi \implies \Gamma\vdash \phi$, which is the statement of completeness.
+
+Conversely, assume completeness, and suppose $\Gamma\models \bot$. Then $\Gamma$ cannot be empty, so let $\phi\in \Gamma$. Then, using lemma \ref{L:equiv}(2), we have  
+
+\begin{align*}
+\Gamma \models \bot &\iff \Gamma\setminus\{\phi\}\cup\{\phi\}\models \bot \\
+&\iff  \Gamma\setminus\{\phi\}\models \neg\phi \\
+&\implies \Gamma\setminus\{\phi\}\vdash \neg\phi \\
+&\iff \Gamma\setminus\{\phi\}\cup\{\phi\}\vdash \bot \\
+&\iff \Gamma\vdash\bot
+\end{align*}
+
+So $\Gamma\vdash \bot \implies \Gamma\models \bot$, which is $(\dagger)$.
+\end{proof}
+
+\begin{definition}[maximal consistent]
+A consistent set of sentences $\Gamma$ is maximal consistent if for every sentence $\phi$, either $\phi\in\Gamma$ or $\neg\phi\in \Gamma$.
+\end{definition}
+
+Note that if $\Gamma$ is maximal consistent, then a sentence is deducible from $\Gamma$ if and only if it is actually in $\Gamma$. I.e. for all sentences $\phi$ we have $\Gamma\vdash \phi \iff \phi\in \Gamma$.
+
+\begin{lemma}\label{L:max}
+For every consistent $\Gamma$ there is a maximal consistent $\Gamma'$ with $\Gamma\subseteq \Gamma'$.
+\end{lemma}
+\begin{proof}
+Let $\phi_0,\phi_1,\phi_2,\ldots$ be an enumeration of all the sentences. It may not be obvious that we can arrange all the sentences in a list like this, but we will prove that it can be done as part of the Counting course, in the class on cardinal numbers. Now we use recursion to define sets $\Gamma_n$ for $n\in\bN$ as follows.
+\begin{itemize}
+\item $\Gamma_0 = \Gamma$.
+\item $\Gamma_{n+1} = \Gamma_n\cup\{\phi_n\}$, if this is consistent, and $\Gamma_n\cup\{\neg\phi_n\}$ otherwise.
+\end{itemize}
+Note that $\Gamma_n$ is consistent for all $n$, because $\Gamma_0$ is consistent by definition, and, by lemma \ref{L:equiv}, if $\Gamma_{n}\cup\{\phi_n\}$ is not consistent then $\Gamma_{n}\vdash \neg\phi_n$, and so consistency of $\Gamma_{n}\cup\{\neg\phi_n\}$ follows from consistency of $\Gamma_{n}$.
+
+We define $\Gamma'=\bigcup_{n\in\bN} \Gamma_n$. Then $\Gamma'$ is consistent, because if $\Gamma'\vdash \bot$, then, as every derivation involves a finite proof tree, there must be $n\in\bN$ such that every sentence used in the derivation of $\bot$ from $\Gamma'$ appears in $\Gamma_n$. But then $\Gamma_n\vdash \bot$, which is a contradiction as $\Gamma_n$ is consistent.
+
+Since $\Gamma'$ is clearly maximal consistent we are done. 
+\end{proof}
+
+\paragraph{Proof of theorem \ref{T:complete}.}
+Let $\Gamma$ be a consistent set of sentences. By lemma \ref{L:sat}, to complete the proof we need to show that $\Gamma$ is satisfiable, i.e. that there is an assignment that makes every sentence in $\Gamma$ true. We can suppose without loss of generality that $\Gamma$ is maximal consistent (using lemma \ref{L:max} we know $\Gamma$ can be extended to a maximal consistent $\Gamma'$, and an assignment that makes every sentence in $\Gamma'$ true must make every sentence in $\Gamma$ true).  We construct an assignment $v$ as follows. For all basic propositions $p$, let $v(p)$ be true if $p\in\Gamma$, and let $v(p)$ be false otherwise. Then $v$ is well defined, by maximality of $\Gamma$. We want to show that, for all sentences $\phi$, if $\phi\in \Gamma$ then $v(\phi)$ is true. 
+
+We proceed by induction on sentence length, and we assume first that $\phi$ is constructed using only the connectives $\neg$ and $\vee$. We will show that for such sentences we have $\phi\in\Gamma\iff v(\phi)$ is true. We will use this to prove the result for general sentences. In the base case $\phi$ is just a basic proposition, so the result holds by definition of $v$. The inductive step has two cases.
+
+\begin{enumerate}
+\item[$\neg$:] Let $\phi=\neg\psi$. Then $v(\phi)$ is true $\iff v(\psi)$ is false $\iff \psi\not\in \Gamma\iff\phi\in\Gamma$.
+\item[$\vee$:] Let $\phi=\psi\vee\chi$. Then $v(\phi)$ is true $\iff$ ($v(\psi)$ is true and/or $v(\chi)$ is true) $\iff (\psi\in\Gamma$ and/or $\chi\in\Gamma)\iff \phi\in\Gamma$. 
+\end{enumerate} 
+In the last step in the proof for $\vee$ we are implicitly using the fact that $\psi\in \Gamma$ or $\chi\in \Gamma$ if and only if $\psi\vee \chi\in\Gamma$. To see that this is indeed true note first that if $\Gamma\vdash \psi$ then $\Gamma\vdash \psi\vee \chi$, by the deduction rule $\vee_{I_l}$, and similarly $\Gamma\vdash \psi\implies\Gamma\vdash \psi\vee \chi$. Conversely, if $\psi\vee \chi\in \Gamma$, then, by example \ref{E:notor}, if $\psi\not\in\Gamma$ then $\Gamma\vdash\chi$, and similarly if $\chi\notin\Gamma$ then $\Gamma\vdash\psi$. 
+
+To complete the proof, let $\phi\in \Gamma$ be constructed using the full set of connectives, and let $\phi'$ be a sentence using only connectives $\neg$ and $\vee$ such that $\phi\lequiv \phi'$ (such a $\phi'$ exists because $\{\neg,\vee\}$ is functionally complete). Suppose $v(\phi)$ is false. Then $v(\phi')$ is also false. So, by the induction we've just done, we have $\phi'\not\in\Gamma$. But then by maximality of $\Gamma$ we have $\neg\phi'\in\Gamma$. So $\Gamma\vdash \phi\wedge\neg\phi'$, and so $\Gamma\models \phi\wedge\neg\phi'$ by soundness. But this is a contradiction, as $\phi\lequiv\phi'$ by choice of $\phi'$. Therefore $v(\phi)$ is true, and so $v$ is an assignment satisfying $\Gamma$ as required.
+
+\paragraph{Compactness.}
+There's another important fundamental result for propositional logic known as the compactness theorem. You will see a precise statement of this in the exercises. Compactness type results occur frequently in mathematics (many of them are even proved as applications of the compactness theorems for propositional or first-order logic). Roughly speaking, the theme of these results is translating statements about infinite structures into statements about finite ones. This is very useful, because it allows us to use our understanding of finite structures to understand infinite ones. When we have a compactness result, we can investigate something infinite by decomposing it into finite pieces in some way. Induction over $\bN$ is a bit like this. If we want to prove something for all natural numbers, we don't have to deal with them all at the same time. Using induction, we can get the general result by looking at numbers `one at a time'. So we can prove results about the infinite set of natural numbers while only ever directly working with finite sets of numbers. Compactness in logic applies this concept to proofs and satisfiability.
+\end{document}
