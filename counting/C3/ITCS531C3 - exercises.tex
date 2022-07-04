@@ -1,0 +1,102 @@
+\documentclass{article}
+
+\usepackage{amsmath, mathrsfs, amssymb, stmaryrd, cancel, hyperref, relsize,tikz,amsthm,comment,enumerate}
+\usepackage{graphicx}
+\usepackage{xfrac}
+\hypersetup{pdfstartview={XYZ null null 1.25}}
+\usepackage[all]{xy}
+\usepackage[normalem]{ulem}
+\usepackage{tikz-cd}
+
+
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}{\bfseries}{\itshape}
+\newtheorem{proposition}{Proposition}{\bfseries}{\itshape}
+\newtheorem{definition}{Definition}{\bfseries}{\upshape}
+\newtheorem{lemma}{Lemma}{\bfseries}{\upshape}
+\newtheorem{example}{Example}{\bfseries}{\upshape}
+\newtheorem{corollary}{Corollary}{\bfseries}{\upshape}
+\newtheorem{remark}{Remark}{\bfseries}{\upshape}
+\newtheorem{fact}{Fact}{\bfseries}{\upshape}
+\newtheorem{Q}{Exercise}{\bfseries}{\upshape}
+
+\newtheorem*{theorem*}{Theorem}
+
+\newcommand{\bN}{\mathbb{N}}
+\newcommand{\bZ}{\mathbb{Z}}
+\newcommand{\bQ}{\mathbb{Q}}
+\newcommand{\bR}{\mathbb{R}}
+\newcommand{\bP}{\mathbb{P}}
+\newcommand{\HCF}{\mathbf{HCF}}
+\DeclareMathOperator{\ISp}{\downarrow \mathit{p}}
+\DeclareMathOperator{\ISq}{\downarrow \mathit{q}}
+
+
+
+\title{ITCS 531 \\Counting 3: Ordinal numbers exercises}
+\author{Rob Egrot}
+\date{}
+
+\begin{document}
+\maketitle
+%\includecomment{comment}
+
+\begin{Q}\label{Q:injective}
+Prove that an order embedding must be 1-1. Give a simple example of an order preserving 1-1 function between posets that is not an order embedding.
+\end{Q} 
+\begin{comment}
+\textbf{Solution:}
+
+\end{comment} 
+
+\begin{Q}\label{Q:init}
+Let $P$ be a well ordered set and let $p\in P$. Suppose $f:P\to \ISp$ is an order preserving map.
+\begin{enumerate}[(a)]
+\item Let $S=\{q\in P: f(q)< q\}$. Prove that $S$ has a smallest element.
+\item Let $q'$ be the smallest element of $S$. Prove that $f(f(q')) = f(q')$.
+\item Explain why this proves lemma 1.11.
+\end{enumerate} 
+\end{Q}
+\begin{comment}
+\textbf{Solution:}
+Let $f:P\to \ISp$ be an order preserving map. Let $S=\{q\in P: f(q)< q\}$. Then $S$ is non-empty as it must contain $p$, so, as $P$ is well ordered, $S$ has a least element, $q'$ say. Since $f(q')<q$, we have $f(q')\notin S$, and so $f(f(q'))\not< f(q')$. But, as $f$ is order preserving we have $f(f(q'))\leq f(q')$, and thus $f(f(q'))= f(q')$. Thus $f$ is not 1-1, and so cannot be an order embedding.
+\end{comment}
+
+\begin{Q}\label{Q:successor}
+Let $P$ and $Q$ be well orders, let $p\in P$, and suppose $h:P\to Q$ is an order isomorphism. Suppose $p^+$ exists in $P$.
+\begin{enumerate}[(a)]
+\item Suppose there is $q\in Q$ with $h(p)<q<h(p^+)$. Prove there must be $p'\in P$ with $p<p'<p^+$.
+\item Explain why this proves lemma 1.12.
+\end{enumerate}
+\end{Q}
+\begin{comment}
+\textbf{Solution:}
+Suppose $p$ is not the greatest element of $P$. Then $p^+$ exists. Suppose there is $q\in Q$ with $h(p)< q < h(p^+)$. Then there is $p'\in P$ with $h(p')= q$. But as $h(p)< q$ we must have $p < p'$, and as $q < h(p^+)$ we must have $p' < p^+$. So $p< p' < p^+$. But this contradicts the definition of $p^+$. 
+\end{comment}
+
+\begin{Q}\label{Q:isom}
+Let $P$ and $Q$ be well orders, let $p\in P$, let $q\in Q$, and suppose $h:\ISp \to \ISq$ is an order isomorphism. Let $p'< p$.
+\begin{enumerate}[(a)]
+\item Prove that $h$ restricts to an order isomorphism from $\ISp'$ to $\downarrow h(p')$.
+\item Let $g$ be an order isomorphism from $\ISp'$ to $\downarrow h(p')$. Define $S = \{x\in \ISp' : g(x)\neq h(x)\}$, and suppose $S$ is non-empty. Let $x'$ be the minimal element of $S$.
+\begin{enumerate}[(i)]
+\item Suppose $h(x')< g(x')$. Show that there is $y\in \ISp'$ with $x' < y$ and $h(y) = g(x')$. 
+\item Using this value $y$, prove that the assumption that $h(x')< g(x')$ leads to a contradiction. 
+\end{enumerate}
+\item Using the results of the previous parts of this exercise, prove lemma 1.13.
+\end{enumerate}
+\end{Q}
+\begin{comment}
+\textbf{Solution:}
+Clearly $h$ restricts to an order isomorphism as required, so all we must do is prove that this is only such order isomorphism. So let $g$ be an order isomorphism from $\ISp'$ to $\downarrow h(p')$, and suppose $\{x\in \ISp' : g(x)\neq h(x)\}\neq \emptyset$. Then, by the well ordering property, there is a least $x\in \ISp'$ such that $h(x)\neq g(x)$. Suppose $h(x)< g(x)$. Then, as $g$ is an order isomorphism, there must be $y\in P$ with $g(y) = h(x)$, and $y< x$. But then, by minimality of $x$, we must have $g(y)=h(y)\neq h(x)$, as $h$ is also an order isomorphism. This is, of course, a contradiction. If $g(x)< h(x)$ then we can make a similar argument.  
+\end{comment}
+
+\begin{Q}\label{Q:c}
+Prove corollary 1.15.
+\end{Q}
+\begin{comment}
+\textbf{Solution:}
+
+\end{comment}
+
+\end{document}

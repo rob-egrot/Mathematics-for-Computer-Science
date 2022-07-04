@@ -1,0 +1,198 @@
+\documentclass{article}
+
+\usepackage{amsmath, mathrsfs, amssymb, stmaryrd, cancel, hyperref, relsize,tikz,amsthm,comment}
+\usepackage{graphicx}
+\usepackage{xfrac}
+\hypersetup{pdfstartview={XYZ null null 1.25}}
+\usepackage[all]{xy}
+\usepackage[normalem]{ulem}
+\usepackage{tikz-cd}
+
+
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}[section]{\bfseries}{\itshape}
+\newtheorem{proposition}[theorem]{Proposition}{\bfseries}{\itshape}
+\newtheorem{definition}[theorem]{Definition}{\bfseries}{\upshape}
+\newtheorem{lemma}[theorem]{Lemma}{\bfseries}{\upshape}
+\newtheorem{example}[theorem]{Example}{\bfseries}{\upshape}
+\newtheorem{corollary}[theorem]{Corollary}{\bfseries}{\upshape}
+\newtheorem{remark}[theorem]{Remark}{\bfseries}{\upshape}
+\newtheorem{fact}[theorem]{Fact}{\bfseries}{\upshape}
+\newtheorem{Q}[theorem]{Exercise}{\bfseries}{\upshape}
+
+\newtheorem*{theorem*}{Theorem}
+
+\newcommand{\bN}{\mathbb{N}}
+\newcommand{\bZ}{\mathbb{Z}}
+\newcommand{\bQ}{\mathbb{Q}}
+\newcommand{\bR}{\mathbb{R}}
+\newcommand{\bP}{\mathbb{P}}
+\newcommand{\HCF}{\mathbf{HCF}}
+\newcommand{\lequiv}{\models\text{\reflectbox{$\models$}}}
+
+\title{ITCS 531 \\Counting 2: Introduction to enumerative combinatorics}
+\author{Rob Egrot}
+\date{}
+
+
+\begin{document}
+%\includecomment{comment}
+\maketitle
+
+\section{Enumerative combinatorics}
+\paragraph{What is enumerative combinatorics?}
+Enumerative combinatorics is the art of counting in finite sets. For example, counting the number of ways 3 balls can be chosen from a bag of 20 balls (an easy question), or how many $n\times n$ matrices there are whose entries are $0$ or $1$ and such that every row and every column contains exactly 3 ones (a very hard question for most values of $n$). 
+
+In this section we first cover some important basic results producing formulas we can use to easily count things like combinations and permutations (e.g. to answer the `balls from a bag' question above). Then we'll introduce the simple but deceptively powerful `pigeon hole principle'. This is an essentially obvious statement that nevertheless is the key to answering all kinds of difficult combinatorial questions. Most of this section will be devoted to examples of applications of this idea. We will end by briefly introducing the subject of `Ramsey numbers', and finally answering a more difficult version of the `balls from a bag' question.  
+
+\paragraph{Very basics.}
+
+\begin{proposition}[Inclusion-exclusion]
+If $A$ and $B$ are finite sets, then \[|A\cup B|=|A|+|B|-|A\cap B|.\]
+More generally, if $A_1,\ldots,A_n$ are finite sets, then
+\begin{align*}|A_1\cup\ldots\cup A_n| & =\sum_{i=1}^n |A_i| \\
+&- \sum _{i_1\neq i_2} |A_{i_1}\cap A_{i_2}| \\
+&+ \sum_{i_1\neq i_2\neq i_3} |A_{i_1}\cap A_{i_2}\cap A_{i_3}|\\
+&.\\
+&.\\
+&+ (-1)^{k-1} \sum _{i_1\neq\ldots\neq i_k}|A_{i_1}\cap\ldots \cap A_{i_k}|\\
+&.\\
+&.\\
+&+(-1)^{n-1} |A_1\cap\ldots \cap A_n|.
+\end{align*}
+\end{proposition}
+\begin{proof}
+The basic case is obvious. You count the number of elements in $A$ and $B$ separately, then correct for double counting by subtracting the number of elements that are in both $A$ and $B$. 
+
+The general version can be proved by induction on $n$, using the basic version as the base case. For the inductive step we start by noticing that 
+\begin{align*}
+|A_1\cup\ldots\cup A_n| &= |(A_1\cup\ldots\cup A_{n-1})\cup A_n| \\
+&= |A_1\cup\ldots\cup A_{n-1}| +|A_n| - |(A_1\cup\ldots\cup A_{n-1})\cap A_n |\\
+&= |A_1\cup\ldots\cup A_{n-1}| +|A_n| - |(A_1\cap A_n)\cup\ldots\cup (A_{n-1}\cap A_n)|. 
+\end{align*}
+By the inductive hypothesis the claimed formula works for $|A_1\cup\ldots\cup A_{n-1}|$ and $|(A_1\cap A_n)\cup\ldots\cup (A_{n-1}\cap A_n)|$, and the proof is completed by writing it all out and matching up expressions so that the claimed formula is obtained for $|A_1\cup\ldots\cup A_n|$. The details are purely an exercise in working through ugly notation, and we omit them. 
+\end{proof}
+
+\begin{proposition}[Permutations and combinations]
+Let $k\leq n\in\bN$. Then:
+\begin{enumerate}
+\item The number of ways we can select $k$ objects from a set of $n$ objects, where the order of selection is important, is given by the formula
+\[P(n,k) = \frac{n!}{(n-k)!}.\]
+\item The number of ways we can select $k$ objects from a set of $n$ objects, where the order of selection is \emph{not} important, is given by the formula
+\[C(n,k) = {n \choose k} = \frac{n!}{(n-k)! k!}.\]
+\end{enumerate}
+\end{proposition}
+\begin{proof}
+The formula $\frac{n!}{(n-k)!}$ reflects the fact that we have $n$ possibilities for the first selection, $n-1$ for the second, and so on down to the $k$th selection when we have $(n-(k-1))$ possibilities. Thus we have $n\times (n-1)\times\ldots\times (n-(k-1)) = \frac{n!}{(n-k)!}$ total possibilities.
+
+The formula $\frac{n!}{(n-k)! k!}$ reflects the fact that if we don't care about the order, an ordered selection of $k$ objects is equivalent to all the other selections of the same objects but in a different order. There are $k!$ different ways to order a collection of $k$ elements, so we get the formula for $C(n,k)$ by dividing the formula for $P(n,k)$ by $k!$.  
+\end{proof}
+
+\paragraph{Pigeon hole principle.}
+
+\begin{lemma}[Pigeon hole principle]
+If $k < n$ and you have $n$ balls in $k$ bags, there must be at least one bag containing at least two balls. More precisely, there must be at least one bag containing at least $\lceil \frac{n}{k}\rceil$ balls.
+\end{lemma}
+This lemma gets its name from the fact that it is often stated in terms of pigeons and pigeon holes, rather than balls and bags. The following is a restatement of the pigeon hole principle that can be more useful in some situations.
+
+\begin{lemma}\label{L:Dij}
+In any finite collection of natural numbers, the maximum must be at least as large as the mean, and the minimum must be at most as large as the mean.
+\end{lemma}
+
+\begin{example}
+If you choose five distinct numbers between 1 and 8, then two of those numbers must sum to 9.
+\end{example}
+\begin{proof}
+The four sets $\{1,8\}$, $\{2,7\}$, $\{3,6\}$, $\{4,5\}$ partition $\{1,\ldots,8\}$. Each one of our five numbers must be in one of these sets, so there must be one set containing two, and thus two elements that sum to 9.
+\end{proof}
+
+\begin{example}
+In a city of 200,000 people, at least 547 people will have the same birthday. 
+\end{example}
+\begin{proof}
+There are 366 possible birthdays (including leap years). Since there are 200,000 people, the average number of people born on a day will be $\frac{200,000}{366}= 546.45$. By lemma \ref{L:Dij}, the day that has the most birthdays must have a larger number of birthdays than this, so at least 547.
+\end{proof}
+
+\begin{example}
+For every integer $n$ there is a multiple of $n$ that has only $0$s and $1s$ in its decimal expansion.
+\end{example}
+\begin{proof}
+Consider the numbers $x_1,x_2,\ldots,x_{n}$, where $x_1=1$, $x_2=11$, and $x_k$ is $1$ repeated $k$ times. There are $n-1$ non-zero values in $\bZ_n$, so either $n|x_k$ for some $k$ (in which case we are done), or there are $i<j\leq n$ such that the value of $x_i \mod n$ is the same as the value of $x_j \mod n$. But then $n|(x_j-x_i)$, and $x_j-x_i$ has the required form, so the proof is complete.
+\end{proof}
+
+\begin{example}
+A baseball team plays every day for 30 days. They can play more than once each day, but they play at most 45 games in total. There is some period of consecutive days where they play exactly 14 games.
+\end{example}
+\begin{proof}
+Let $a_j$ be the number of games played up to and including the $j$th day. Then $a_1,a_2,\ldots,a_{30}$ is a strictly increasing sequence bounded by 45. Moreover, $a_1 + 14,a_2+14,\ldots, a_{30}+14$ is a strictly increasing sequence bounded by 59. Combining these two sequences gives us 60 elements, each with values between 1 and 59. So, by the pigeon hole principle, there must be two terms in the long sequence with the same value. Since the team plays everyday, the two terms must be from different halves. In other words, we can't have $a_i = a_j$ or $a_i+14 = a_j +14$ unless $i=j$. So there are $i < j$ with $a_j=a_i+14$. But this just means that exactly 14 games are played between the $i$th day and the $j$th day, which is what we want to prove. 
+\end{proof}
+
+\begin{example}
+If we have $n+1$ positive integers, each less than or equal to $2n$, there must be one number that divides another one.
+\end{example}
+\begin{proof}
+Every positive integer can be written as $q2^k$, where $q$ is an odd number and $k$ is some natural number. We prove this subclaim by induction. It is obviously true when $n=1$, so let $n>1$.  If $n$ is odd there is nothing to prove, so suppose $n = 2l$ for some $l$. Then $l=q2^k$ by the inductive hypothesis, and so $n=q2^{k+1}$. 
+
+Now, there are only $n$ odd numbers less than or equal to $2n$, so, given a list of $n+1$ numbers there must be numbers $a\neq b$ in the list with $a=q2^{k_1}$, and $b= q2^{k_2}$ for the same $q$. If $k_1< k_2$ then $a|b$, otherwise $b|a$. 
+\end{proof}
+
+\begin{example}
+In any group of more than 2 people, at least two people must have the same number of friends (assuming friendship is symmetric). 
+\end{example}
+\begin{proof}
+Suppose there are $n$ people, and $n\geq 2$. Then each person can have between 0 and $n-1$ friends. There are two cases.
+\begin{enumerate}
+\item Everyone has at least one friend. In this case each person has between 1 and $n-1$ friends, so there are $n$ people and $n-1$ possibilities, so at least two people must have the same number of friends.
+\item Someone has no friends. In this case each person has between 0 and $n-2$ friends, so there are again $n$ people and $n-1$ possibilities.
+\end{enumerate}
+\end{proof}
+
+\begin{example}
+In any sequence of $n^2+1$ distinct real numbers, there must either be a strictly increasing subsequence of size $n+1$, or a strictly decreasing subsequence of size $n+1$.
+\end{example}
+\begin{proof}
+Suppose our set of numbers is $(a_0,a_1,\ldots,a_{n^2})$. For each $k\in\{0,\ldots,n^2\}$ define the pair $(i_k,d_k)$, where $i_k$ is the length of the longest strictly increasing subsequence starting at $a_k$, and $d_k$ is the length of the longest strictly decreasing subsequence starting at $a_k$. Suppose there are no strictly increasing or decreasing subsequences of size $n+1$. Then $i_k$ and $d_k$ are both less than or equal to $n$ for all $k$. Since the minimum possible value for $i_k$ and $d_k$ is 1, this means there are $n^2$ possible distinct values for $(i_k,d_k)$. But there are $n^2+1$ terms in the sequence, so there must be $l<k\in\{0,\ldots,n^2\}$ with $(i_l,d_l)=(i_k,d_k)$. But this is impossible, because if $a_l<a_k$ we must have $i_l>i_k$, and if $a_l > a_k$ we must have $d_l > d_k$. 
+\end{proof}
+
+
+\paragraph{Ramsey numbers.}
+
+\begin{proposition}\label{P:Ramsey}
+Suppose two people can either be friends or enemies. In any group of 6 people, either there are three mutual friends, or three mutual enemies.
+\end{proposition}
+\begin{proof}
+Choose an arbitrary member of the group, and call this person $x$. Out of the five remaining people, there must either be three who are friends with $x$, or three who are not. Suppose there are three people who are friends with $x$. If any two of them are friends with each other then this provides a group of three mutual friends. If no two of them are friends then they are a group of three mutual enemies. In either case, we are done. The case where there are three enemies of $x$ is the same by symmetry. 
+\end{proof}
+
+\begin{definition}[Ramsey numbers]
+Let $m$ and $n$ be natural numbers greater than or equal to 2. We define the \emph{Ramsey number} $R(m,n)$ to be the minimum number of people at a party so that there are either $m$ mutual friends, or $n$ mutual enemies.  
+\end{definition}
+
+It's obvious that $R(m,n)=R(n,m)$, for all $m$ and $n$. By proposition \ref{P:Ramsey}, we know $R(3,3)=6$ (as we can find an example of a group of 5 where there are neither three mutual friends, nor three mutual enemies - see exercise 2.1. In general, it is very difficult to find Ramsey numbers, and surprisingly few are known. For example $R(4,4) = 18$, but $R(5,5)$ is only known to lie somewhere in the range 43-48, and $R(10,10)$ is only known to be between 798 and 23556. Calculating Ramsey numbers exactly is a far away goal for combinatorics researchers, and merely making the possible range smaller is a major breakthrough. This is not because Ramsey numbers are themselves particularly important, but because the problem is so difficult that progress requires significantly new ideas.
+ 
+\paragraph{Combinations with repetition.}
+
+\begin{theorem}\label{T:balls}
+Suppose we have an infinite supply of balls in $n$ different colours. Suppose we choose $k$ balls, and the only distinguishing feature of the balls is their colour. Then there are ${n+k-1 \choose k}$ different possible outcomes if we don't care about the order the balls are chosen.
+\end{theorem}
+\begin{proof}
+We use a trick. Choosing $k$ balls in $n$ different colours is like putting $k$ different balls into $n$ different boxes. We will represent this graphically using $*$ to represent balls, and $|$ to represent the boundaries of the boxes. For example 
+\[**|*|***||*\]
+would represent a choice of 7 balls in 5 different colours, with details in the table below. 
+
+\begin{center}
+\begin{tabular}{ c | c  }
+  Colour no. & No. balls with colour  \\
+  1 & 2  \\
+  2 & 1 \\
+	3 & 3\\
+	4 & 0\\
+	5 & 1
+\end{tabular}
+\end{center}
+
+Given $n$ colours and $k$ balls, every string of $k$ stars and $n-1$ vertical lines represents a possible choice, and every choice can be represented using this system. So there are the same number of choices as there are strings with $k$ stars and $n-1$ lines. We can think of this as starting with $n+k-1$ vertical lines, then choosing $k$ of them to change to stars. But this is just ${n+k -1 \choose k}$, which is what we aimed to prove.
+\end{proof}
+
+
+\end{document}

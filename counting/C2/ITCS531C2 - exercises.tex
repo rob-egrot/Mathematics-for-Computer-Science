@@ -1,0 +1,114 @@
+\documentclass{article}
+
+\usepackage{amsmath, mathrsfs, amssymb, stmaryrd, cancel, hyperref, relsize,tikz,amsthm,comment}
+\usepackage{graphicx}
+\usepackage{xfrac}
+\hypersetup{pdfstartview={XYZ null null 1.25}}
+\usepackage[all]{xy}
+\usepackage[normalem]{ulem}
+\usepackage{tikz-cd}
+
+
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}{\bfseries}{\itshape}
+\newtheorem{proposition}{Proposition}{\bfseries}{\itshape}
+\newtheorem{definition}{Definition}{\bfseries}{\upshape}
+\newtheorem{lemma}{Lemma}{\bfseries}{\upshape}
+\newtheorem{example}{Example}{\bfseries}{\upshape}
+\newtheorem{corollary}{Corollary}{\bfseries}{\upshape}
+\newtheorem{remark}{Remark}{\bfseries}{\upshape}
+\newtheorem{fact}{Fact}{\bfseries}{\upshape}
+\newtheorem{Q}{Exercise}{\bfseries}{\upshape}
+
+\newtheorem*{theorem*}{Theorem}
+
+\newcommand{\bN}{\mathbb{N}}
+\newcommand{\bZ}{\mathbb{Z}}
+\newcommand{\bQ}{\mathbb{Q}}
+\newcommand{\bR}{\mathbb{R}}
+\newcommand{\bP}{\mathbb{P}}
+\newcommand{\HCF}{\mathbf{HCF}}
+
+% Uncomment below to create stand-alone file
+% \newcommand*{\prefix}{}
+
+
+\title{ITCS 531 \\Counting 2: Introduction to enumerative combinatorics exercises}
+\author{Rob Egrot}
+\date{}
+
+\begin{document}
+\maketitle
+%\includecomment{comment}
+
+\begin{Q}\label{\prefix Q:Ram}
+Show that there is a group of five people containing neither three mutual friends, nor three mutual enemies.
+\end{Q}
+\begin{comment}
+\textbf{Solution:}
+Look at the graph in the picture, where edges represent friendship, and consider the vertex $x$. Then $x$ cannot be part of a group of three mutual friends, because $x$ only has two friends, and they are not friends with each other. Also, $x$ can't be part of a group of three mutual enemies, because $x$ only has two enemies, and they are friends with each other. From the shape of the graph, this reasoning obviously applies to every vertex, so the graph has the required property.
+\[\xymatrix{ & \bullet_x\ar@{-}[dr]\ar@{-}[dl] \\
+\bullet\ar@{-}[d] & & \bullet\ar@{-}[d] \\
+\bullet\ar@{-}[rr] & & \bullet
+}\] 
+\end{comment}
+
+\begin{Q}
+Show that $R(2,n)= n$ for all $n\in\bN$ with $n\geq 2$. 
+\end{Q}
+\begin{comment}
+\textbf{Solution:}
+Given a group of $n$ people, if none of the people are friends, then the whole group is mutual enemies. This proves $R(2,n)\leq n$. Also, given a group of $n-1$ people, if none of them are friends than there are only $n-1$ mutual enemies. This proves $R(2,n) \geq n$, and so $R(2,n)= n$ as claimed. 
+\end{comment}
+
+\begin{Q}
+Suppose there are 5 points in a $1cm\times 1cm$ square. Prove that there must be two points at most $\frac{\sqrt 2}{2}cm$ apart.
+\end{Q}
+\begin{comment}
+\textbf{Solution:}
+Divide the square into four quarters. Since there are five points, at least two must be in the same quarter. If two points are in the same quarter then they are both inside a square whose edges are 0.5cm long. The furthest apart they can be is the length of the diagonal of this square, which is $\sqrt{(\frac{1}{2})^2+ (\frac{1}{2})^2}cm$, which is $\frac{\sqrt 2}{2}cm$.
+\end{comment}
+
+\begin{Q}
+Suppose we have a chessboard with two diagonally opposite squares removed. Is it possible to tile the board using domino pieces?  
+\end{Q}
+\begin{comment}
+\textbf{Solution:}
+No. Every domino must cover one white square and one black square, so we can only ever cover the same number of black and white squares with dominoes.  If we remove two diagonally opposite squares then we remove two squares that are the same colour, and there are not the same number of squares for each colour anymore.  
+\end{comment}
+
+\begin{Q}[Pascal's identity]
+Prove that ${n+1\choose k} = {n \choose k-1} + {n\choose k}$.
+\end{Q}
+\begin{comment}
+\textbf{Solution:}
+There are two basic ways to do this. First, a purely formal proof:
+\begin{align*}
+{n \choose k-1} + {n\choose k} &= \frac{n!}{(k-1)!(n-(k-1))!} + \frac{n!}{k!(n-k)!} \\
+&= \frac{n!}{(k-1)!(n+1 - k)!} + \frac{n!}{k!(n-k)!} \\
+&=\frac{kn! + (n+1 - k)n!}{k!(n+1 - k)!}\\
+&= \frac{(n+1)n!}{k!(n+1 - k)!}\\
+&= \frac{(n+1)!}{k!((n+1) - k)!}\\
+&= {n+1\choose k}.
+\end{align*}
+Alternatively, we can think conceptually. Let $X$ be a set of $n+1$ objects. Then ${n+1\choose k}$ is the number of ways we can choose $k$ objects from $X$ when the order doesn't matter. Let $x$ be some element of $X$. When we choose $k$ elements of $X$, we can either choose $x$ or not. This gives two cases. First, if we choose $x$, then we have to choose $k-1$ elements from the remaining $n$ elements of $X\setminus\{x\}$. There are ${n \choose k-1}$ ways to do this. Alternatively, if we don't choose $x$, then we choose all $k$ elements from the remaining $n$ elements of $X\setminus\{x\}$. There are ${n\choose k}$ ways to do this. It follows that ${n+1\choose k} = {n \choose k-1} + {n\choose k}$ as claimed. 
+\end{comment}
+
+\begin{Q}
+Use theorem \ref{T:balls} to find the number of solutions to the equation $a+b+c+d = 17$, where $a,b,c,d$ must all be natural numbers (HINT: think about distributing 17 pebbles into boxes marked $a,b,c,d$). How many solutions are there if we demand that $a,b,c,d$ are all greater than or equal to 2?
+\end{Q}
+\begin{comment}
+\textbf{Solution:}
+This is putting 17 balls in 4 boxes. Using theorem 2.14 the answer is ${4+17-1 \choose 17} = {20 \choose 17} = 1140$. Forcing each of $a,b,c,d$ to be at least 2 is equivalent to fixing 8 of the pebbles, which leaves 9. So the answer to the second part is ${4+9-1 \choose 9} = {12 \choose 9} = 220$. 
+\end{comment}
+
+\begin{Q}
+Suppose we have 5 points in the $xy$ plane, all with integer coordinates. Show that the midpoint of one of the straight lines connecting pairs of these points also has integer coordinates.
+\end{Q}
+\begin{comment}
+\textbf{Solution:}
+Given two points, $(x_1,y_1)$ and $(x_2,y_2)$, the midpoint is $(\frac{x_1+x_2}{2},\frac{y_1+y_2}{2})$. So, to have a midpoint with integer coordinates we require $x_1+x_2$ and $y_1+y_2$ to both be even. The \emph{parity} of an integer is another word for saying whether it is odd or even. Now, $x_1+x_2$ is even if and only if the parity of $x_1$ is the same as the parity of $x_2$. The same is true for $y_1+y_2$. So the exact values of the coordinates for each point is not important, just their parities. For a point, there are four possible parity combinations: (odd, odd), (odd, even), (even, odd), (even, even). So, if we have five points, then, by the pigeon hole principle, at least two of the points must have the same parity in each coordinate. This will produce a midpoint with integer coordinates as required. 
+\end{comment}
+
+
+\end{document}

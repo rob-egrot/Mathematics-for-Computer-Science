@@ -1,0 +1,176 @@
+\documentclass{article}
+
+\usepackage{amsmath, mathrsfs, amssymb, stmaryrd, cancel, hyperref, relsize,tikz,amsthm}
+\usepackage{graphicx}
+\usepackage{xfrac}
+\hypersetup{pdfstartview={XYZ null null 1.25}}
+\usepackage[all]{xy}
+\usepackage[normalem]{ulem}
+\usepackage{tikz-cd}
+
+
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}[section]{\bfseries}{\itshape}
+\newtheorem{proposition}[theorem]{Proposition}{\bfseries}{\itshape}
+\newtheorem{definition}[theorem]{Definition}{\bfseries}{\upshape}
+\newtheorem{lemma}[theorem]{Lemma}{\bfseries}{\upshape}
+\newtheorem{example}[theorem]{Example}{\bfseries}{\upshape}
+\newtheorem{corollary}[theorem]{Corollary}{\bfseries}{\upshape}
+\newtheorem{remark}[theorem]{Remark}{\bfseries}{\upshape}
+\newtheorem{fact}[theorem]{Fact}{\bfseries}{\upshape}
+\newtheorem{Q}[theorem]{Exercise}{\bfseries}{\upshape}
+
+\newtheorem*{theorem*}{Theorem}
+
+
+\newcommand{\bN}{\mathbb{N}}
+\newcommand{\bZ}{\mathbb{Z}}
+\newcommand{\bQ}{\mathbb{Q}}
+\newcommand{\bR}{\mathbb{R}}
+\newcommand{\bP}{\mathbb{P}}
+\newcommand{\HCF}{\mathbf{HCF}}
+\newcommand{\lequiv}{\models\text{\reflectbox{$\models$}}}
+
+\title{ITCS 531 \\Counting 1: Cardinal numbers}
+\author{Rob Egrot}
+\date{}
+
+\begin{document}
+\maketitle
+
+\section{Cardinal numbers}
+
+\paragraph{Set theory.}
+In mathematics, we often want to group objects together to form a collection known as a \emph{set}. For example, the set of natural numbers, the set of propositional variables, a set of axioms, and so on. It seems intuitively obvious what a set is, and it's hard to define it in English without using a word that is essentially equivalent (such as \emph{collection}). 
+
+Most programming languages implement a \emph{set} data structure. These are collections that are unordered, contain no duplicates, and are defined completely by the things they contain. In other words, two sets are equal if they contain exactly the same things. There is a special set called \emph{the empty set} that contains nothing. This is denoted by the symbol $\emptyset$. Mathematicians think of sets like this too, and for finite sets this is all we really need to know. For infinite sets, we need to be a bit more careful, as we shall see. 
+
+The modern subject of set theory emerged in the 19th century from the work of Georg Cantor. As part of his work on trigonometric series (roughly speaking, infinite sums of sin and cos terms), Cantor found it necessary to take seriously the sizes of different infinite sets. Up till this point, mathematicians had assumed that all infinite sets were, essentially, `the same size'. Of course, the concept of size as associating a set with a natural number telling us how many things are in it doesn't make sense for infinite sets, so when mathematicians `assumed infinite sets were the same size' we should take that to mean that they didn't see how the notion of size could be extended beyond `not finite' to meaningfully distinguish between infinite sets. Cantor realized that this was not true, and defined a concept of `size' for sets which makes intuitive sense, agrees with the obvious concept of size for finite sets, and, crucially, applies just as well to infinite sets. Starting from this new definition, which we will see soon, Cantor was able to prove many surprising results about the sizes of many familiar infinite sets. Despite his revolutionary work on what he came to call \emph{transfinite numbers}, Cantor left the basic notion of a set essentially undefined. This is what we know today as \emph{naive set theory}. This naive treatment of set theory is perhaps understandable, given what we have said about the intuitive nature of the concept of a collection, but this intuitive nature hides some deep and troubling paradoxes. These paradoxes started with the intuitive concept of a set and showed in various ways that if you allow anything you want to form a set, then you will end up proving something impossible, a contradiction. We will illustrate these paradoxes with a single, famous, example. 
+ 
+In the late 19th century, some mathematicians, particularly Gottlob Frege and Bertrand Russell, tried to use the naive set concept to formalize mathematical reasoning. In this theory, a set is just the collection formed by taking every object that satisfies some property. So, for example, we can form the set of every collection with exactly three members. That is,
+\[\{X : |X|= 3\}.\] From here, the idea was that the number three could be \emph{defined} as the set of every collection with exactly three members. The underlying assumption, which Frege and Russell took to be a fact of logic, was that every abstract property could be extended to a set, by taking all the things that satisfy the property. The problem with this assumption is that it leads to a contradiction.
+
+\begin{example} [Russell's paradox]
+In naive set theory, every property can be extended to a set, so it is possible for sets to be members of themselves. For example, according to naive set theory, the set of all sets is a set, and so is a member of itself. So, let $X$ be the set of all sets that \emph{are not} members of themselves. Is $X$ a member of itself? If $X$ is a member of itself, then by its own definition it must \emph{not} be a member of itself. Conversely, if $X$ is not a member of itself then it must be a member of itself. This is a contradiction, and illustrates a deep problem with naive set theory.   
+\end{example} 
+
+To deal with problems like Russell's paradox, mathematicians are very careful what they define sets to be. The most common system used today is $ZFC$ set theory. This is named after two mathematicians involved with its creation (Zermelo and Fraenkel), and the $C$ stands for the axiom of choice. We will not worry about the details, but we note that $ZFC$ is designed to be powerful enough to define lots of the set constructions mathematicians are interested in (e.g. powersets, unions etc.), but not powerful enough that it can construct a paradoxical set, such as the one in Russell's paradox. 
+
+It cannot be proved that there is no paradox hiding somewhere in $ZFC$, but so far none has been found, and most mathematicians are reasonably confident that this is because $ZFC$ is consistent, that is, it cannot be used to prove a contradiction. The results here assume we are using something equivalent to $ZFC$ as our base set theory. We don't worry about the details because we're not going to be using the complicated set constructions mathematicians need for their research. What we will do, however, is introduce the theory of sets as developed by Cantor, and see how his concept of \emph{cardinality} applies to some important sets and useful set constructions.
+
+\paragraph{Cardinal numbers.} 
+First we review some basic concepts. Then we can introduce Cantor's concept of `bigger' and `smaller' for sets.
+\begin{definition}[functions]
+If $X$ and $Y$ are sets, then a \emph{function} $f:X\to Y$ is a rule assigning to each element of $X$ a single element of $Y$. Given $x\in X$ and $y\in Y$, we write $f:x\mapsto y$ to denote that $f(x)=y$. 
+\begin{itemize}
+\item $f$ is $1-1$ (or \emph{injective}) if $f(x_1)=f(x_2)\implies x_1=x_2$.
+\item $f$ is \emph{onto} (or \emph{surjective}) if for all $y\in Y$ there is an $x\in X$ such that $f(x)=y$.
+\item $f$ is \emph{bijective} if it is 1-1 and onto.
+\end{itemize}
+\end{definition}
+
+If $X$ and $Y$ are sets we say $|X|\leq |Y|$ if there is a 1-1 function from $X$ to $Y$. In words, we say \emph{the cardinality of $X$ is less than or equal to the cardinality of $Y$}, or, informally, \emph{$Y$ is at least as big as $X$}. If $|X|\leq |Y|$ and $|Y|\leq|X|$ then we say $|X|=|Y|$. Note that this defines an equivalence relation between  sets, where $X$ and $Y$ are equivalent iff $|X|=|Y|$. Actually, technically this isn't an equivalence relation, because in $ZFC$ the collection of all sets is not a set, but something called a \emph{proper class}, which, informally, is a collection \emph{too big} to be a set. It is, however, essentially the same as an equivalence relation, so we gloss over the issue. 
+
+\begin{fact}\label{Fa:card}\mbox{}
+\begin{enumerate}
+\item $|X|\leq|Y|\iff$ there is an onto (surjective) function from $Y$ to $X$.
+\item (Cantor-Bernstein theorem). $|X|=|Y|\iff$ there is a bijection between $X$ and $Y$.
+\item Given two sets $X$ and $Y$, either $|X|\leq |Y|$ or $|Y|\leq|X|$, or both.
+\end{enumerate}
+\end{fact}
+
+\begin{definition}[cardinality]\label{D:card}
+We define the \emph{cardinality} of $X$ to be the equivalence class defined by $|X|$.
+\end{definition}
+Definition \ref{D:card} essentially defines a cardinal number to be the class of all sets of a certain `size'. This is a refinement of the original idea to define numbers in terms of sets discussed earlier. The reason this is ok while the previous idea failed is that in this version we are careful about exactly what is a `set' and what is not, but in the original version we let everything be a set, which led to a contradiction. 
+
+\begin{definition}[cardinal number]
+We define the \emph{cardinal numbers} to be the distinct cardinalities of sets.
+\end{definition}
+
+\paragraph{Cardinalities of familiar sets.}
+\begin{theorem}\label{T:Z}
+$|\bN|=|\bZ|$.
+\end{theorem}
+\begin{proof}
+We define a bijection $f:\bZ\to\bN$ as follows.
+\[f(z)=\begin{cases}2z \text{ when $z\geq 0$} \\
+2|z| - 1 \text{ when $z<0$} \end{cases}\]
+\end{proof}
+
+\begin{theorem}\label{T:NtimesN}
+$|\bN|=|\bN\times\bN|$.
+\end{theorem}
+\begin{proof}
+The function $f:\bN\to\bN\times\bN$ defined by $f(n)=(n,n)$ is clearly 1-1. We complete the proof by defining a 1-1 function $g:\bN\times \bN\to \bN$, which we illustrate in the diagram below, and then appealing to fact \ref{Fa:card}(2). 
+\[\xymatrix{ 
+\bullet_{(0,4)} & \bullet_{(1,4)}\ar@{.>}[dr] & \bullet_{(2,4)} & \bullet_{(3,4)}\ar@{.>}[dr] & \bullet_{(4,4)}\\
+\bullet_{(0,3)}\ar@{.>}[dr]  & \bullet_{(1,3)}\ar@{.>}[ul] & \bullet_{(2,3)}\ar@{.>}[dr]  & \bullet_{(3,3)}\ar@{.>}[ul] & \bullet_{(4,3)} \\
+\bullet_{(0,2)}\ar@{.>}[u]  & \bullet_{(1,2)}\ar@{.>}[dr]  & \bullet_{(2,2)}\ar@{.>}[ul] & \bullet_{(3,2)}\ar@{.>}[dr]  & \bullet_{(4,2)}\ar@{.>}[ul]  \\
+\bullet_{(0,1)}\ar@{.>}[dr]  & \bullet_{(1,1)}\ar@{.>}[ul]  & \bullet_{(2,1)}\ar@{.>}[dr]  & \bullet_{(2,1)}\ar@{.>}[ul] & \bullet_{(4,1)} \\
+\bullet_{(0,0)}\ar@{.>}[u] & \bullet_{(1,0)}\ar@{.>}[r]  & \bullet_{(2,0)}\ar@{.>}[ul] & \bullet_{(3,0)}\ar@{.>}[r]  & \bullet_{(4,0)}\ar@{.>}[ul]  }\]
+The meaning of this diagram is that $g(0,0) = 0$, $g(0,1)=1$, $g(1,0) = 2$, $g(2,0) = 3$ etc. I.e. The value of $g(x,y)$ is determined by where $(x,y)$ comes in the list produced by traveling along the path represented by the arrows in the diagram. 
+\end{proof}
+
+\begin{corollary}
+$|\bN|=|\bQ|$.
+\end{corollary}
+\begin{proof}
+Since $\bN\subset\bQ$ the inclusion function is an injection from $\bN$ to $\bQ$. We note that the function $h:\bQ\to\bZ\times\bZ$ defined by 
+\[h(q) = \begin{cases}
+(0,0) \text{ when $q = 0$}\\
+(a,b) \text{ when $\frac{a}{b}$ is the most reduced form of $q$ }
+\end{cases}\]
+is 1-1. Composing this with the injection from $g:\bN\times \bN\to \bN$ from theorem \ref{T:NtimesN} and copies $f_1$ and $f_2$ of the function $f$ from theorem \ref{T:Z} gives an injection from $\bQ$ to $\bN$ as required. 
+\[\xymatrix{\bQ\ar[r]^h & \bZ\times \bZ\ar[r]^{(f_1,f_2)} & \bN\times \bN\ar[r]^g & \bN}\] 
+Here we are using the easily proved fact that if $g:A\to B$ and $h:B\to C$ are 1-1 functions, then the composition $g\circ h:A\to C$ is also 1-1.
+
+\end{proof}
+
+\begin{theorem}
+$|\bN|<|\bR|$.
+\end{theorem}
+\begin{proof}
+Since $\bN\subset \bR$ we know that $|\bN|\leq |\bR|$ as the inclusion function is 1-1. We show that $|\bN|\neq |\bR|$ by proving that there is no onto function from $\bN$ to $\bR$. We will show that, if $f$ is a function from $\bN$ to the interval $(0,1)\subset \bR$, there is an $x\in(0,1)$ such that $f(n)\neq x$ for all $n\in\bN$. In other words, $f:\bN\to(0,1)$ cannot be onto. If there is no onto function from $\bN$ to $(0,1)$ then there is certainly no onto function from $\bN$ to $\bR$, and so this will prove the claim. This proof technique is known as \emph{Cantor's diagonal argument}, or just \emph{the diagonal argument}. 
+
+We proceed as follows. Every number in $(0,1)$ can be expressed as an infinite decimal expansion, e.g. $0.x_1x_2x_3\ldots$, where $x_n$ is the $n$th digit. Define $y=0.y_1y_2y_3\ldots$ by defining the digits as follows. 
+\[y_n = \begin{cases} 7 \text{ if the $n$th digit of $f(n)$ is not $7$}\\
+3  \text{ if the $n$th digit of $f(n)$ is $7$}\end{cases}\]  
+
+Then, by definition, the $n$th digit of $y$ is different from the $n$th digit of $f(n)$ for all $n$, and so $y\neq f(n)$ for all $n\in\bN$, which is what we wanted to show.
+\end{proof}
+
+\begin{definition}[countable]
+A set $X$ is \emph{countable} if $|X|\leq|\bN|$. Otherwise it is \emph{uncountable}.
+\end{definition}
+
+\paragraph{Cardinal arithmetic.}
+Given disjoint sets $X$ and $Y$, we extend the familiar arithmetic operations as follows:
+\begin{itemize}
+\item $|X|+|Y|=|X\cup Y|$.
+\item $|X|\times |Y| = |X\times Y|$.
+\item $|X|^{|Y|} = |X^Y|$ (here $X^Y$ stands for the set of functions from $Y$ to $X$).
+\end{itemize}
+
+\begin{proposition}\label{P:power}
+If $X$ is a set, then $|\wp(X)|=|2^X|$, where $2$ is the two element set $\{0,1\}$.
+\end{proposition}
+\begin{proof}
+We define a bijection $g$ from $\wp(X)$ to $2^X$ by $g(S) = f_S$, where $f_S:X\to \{0,1\}$ is defined by setting 
+\[f_S(x)=\begin{cases} 1 \text{ when $x\in S$} \\
+0 \text{ otherwise.}\end{cases}\]
+This $f_S$ is sometimes known as the \emph{characteristic function} of $S$. Note that $g$ is well defined because every set $S\subseteq X$ defines a unique $f_S$. Moreover, it is clearly 1-1, and it is onto because given $f:X\to 2$ we can define $S_f=\{x\in X: f(x)=1\}$, and then $g(S_f)=f$.
+\end{proof}
+
+\paragraph{The Continuum Hypothesis.}
+
+\begin{fact}\label{Fa:R}
+$|\bR|=|2^\bN|$.
+\end{fact}
+
+We know that $|\bN|<|\bR|$. A question that early set theorists asked was ``is there a set $Y$ such that $|\bN|<|Y|<|\bR|$?". Cantor, the founder of set theory, believed the answer was `no'. This idea that there is no such $Y$ is the \emph{continuum hypothesis}. Cantor devoted a lot of time trying to prove it from established principles of set theory. However, it turned out that the continuum hypothesis can neither be proved nor disproved using the $ZFC$ axioms. G\"odel showed that it can not be disproved in 1940, and, in 1963, Cohen showed that it can not be proved either. The details of these proofs are well beyond the scope of this course, but the basic idea comes down to simple model theory. G\"odel's result showed that there is a model of $ZFC$ where the continuum hypothesis holds, and Cohen showed that there is also a model of $ZFC$ where it does not.  
+
+
+
+
+\end{document}

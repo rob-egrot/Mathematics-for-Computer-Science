@@ -1,0 +1,241 @@
+\documentclass{article}
+
+\usepackage{amsmath, mathrsfs, amssymb, stmaryrd, cancel, hyperref, relsize,tikz,amsthm,comment,enumerate}
+\usepackage{graphicx}
+\usepackage{xfrac}
+\hypersetup{pdfstartview={XYZ null null 1.25}}
+\usepackage[all]{xy}
+\usepackage[normalem]{ulem}
+\usepackage{tikz-cd}
+
+
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}[section]{\bfseries}{\itshape}
+\newtheorem{proposition}[theorem]{Proposition}{\bfseries}{\itshape}
+\newtheorem{definition}[theorem]{Definition}{\bfseries}{\upshape}
+\newtheorem{lemma}[theorem]{Lemma}{\bfseries}{\upshape}
+\newtheorem{example}[theorem]{Example}{\bfseries}{\upshape}
+\newtheorem{corollary}[theorem]{Corollary}{\bfseries}{\upshape}
+\newtheorem{remark}[theorem]{Remark}{\bfseries}{\upshape}
+\newtheorem{fact}[theorem]{Fact}{\bfseries}{\upshape}
+\newtheorem{Q}[theorem]{Exercise}{\bfseries}{\upshape}
+
+\newtheorem*{theorem*}{Theorem}
+
+\newcommand{\bN}{\mathbb{N}}
+\newcommand{\bZ}{\mathbb{Z}}
+\newcommand{\bQ}{\mathbb{Q}}
+\newcommand{\bR}{\mathbb{R}}
+\newcommand{\bP}{\mathbb{P}}
+\newcommand{\HCF}{\mathbf{HCF}}
+\newcommand{\lequiv}{\models\text{\reflectbox{$\models$}}}
+\DeclareMathOperator{\ISp}{\downarrow \mathit{p}}
+\DeclareMathOperator{\ISq}{\downarrow \mathit{q}}
+
+\title{ITCS 531 \\Counting 3: Ordinal numbers}
+\author{Rob Egrot}
+\date{}
+
+
+\begin{document}
+%\includecomment{comment}
+\maketitle
+
+\section{Ordinal numbers}
+\paragraph{Partially ordered sets.}
+\begin{definition}[partial order]
+A \emph{partial order} on  a set $X$ is a binary relation $\leq$ between elements of $X$ that satisfies the following properties.
+\begin{enumerate}
+\item $x\leq x$ for all $x\in X$ (reflexive). 
+\item $x\leq y$ and $y\leq x\implies x=y$ for all $x,y\in X$ (antisymmetric).
+\item $x\leq y$ and $y\leq z\implies x\leq z$ (transitive).
+\end{enumerate}
+A set $P$ with a partial order $\leq$ is know as a \emph{partially ordered set} (or \emph{poset}). We often write $x<y$ when $x\leq y$ and $x\neq y$.
+\end{definition}
+
+\begin{example}
+The following diagram represents a poset. Here $b,c\leq e$, and $d\leq a,e$.
+\[\xymatrix{& & e\ar@{-}[dr]\ar@{-}[d]\ar@{-}[ddl] \\
+a\ar@{-}[rd] & & b & c \\
+& d
+}\] 
+\end{example}
+
+
+\begin{definition}[total order]
+A \emph{totally ordered set} is a partially ordered set $P$ with the additional property that, for all $x,y\in P$, we have either $x\leq y$ or  $y\leq x$.
+\end{definition}
+
+\begin{example}\label{E:total}\mbox{}
+\begin{enumerate}
+\item $\bN$, $\bZ$, $\bQ$ and $\bR$ are all totally ordered by their usual orders.
+\item The following diagram represents a three element total order.
+\[\xymatrix{\bullet\ar@{-}[d] \\
+\bullet\ar@{-}[d]  \\
+\bullet 
+}\] 
+
+\item We can also represent an infinite total order with a similar diagram. For example: 
+\[\xymatrix{\bullet\ar@{-}[d] \\
+\bullet\ar@{-}[d]  \\
+\bullet\ar@{..}[d] \\
+\text{\phantom{x}}
+}\] 
+
+Here the small dots signify that the chain continues down without stopping.
+\end{enumerate}
+\end{example}
+
+\begin{definition}[well order]
+A \emph{well ordered set} is a totally ordered set $P$ with the additional property that every non-empty subset of $P$ has a smallest element with respect to the ordering on $P$.
+\end{definition}
+
+\begin{example}\mbox{}
+\begin{enumerate}
+\item $\bN$ is well ordered by the usual ordering.
+\item $\bZ$, $\bQ$ and $\bR$ are \emph{not} well ordered by their usual orders.
+\item Example \ref{E:total}(3) is not well ordered as it has no least element.
+\item Take two disjoint copies of $\bN$ and call them $\bN_1$ and $\bN_2$. Order $\bN_1$ and $\bN_2$ with the usual order for $\bN$, and extend this to an order on $\bN_1\cup\bN_2$ by setting $x< y$ for all $x\in\bN_1$ and $y\in \bN_2$. The result is a well ordered set.
+\end{enumerate}
+\end{example}
+
+
+
+\begin{definition}[order embeddings]
+If $P$ and $Q$ are posets then we say a function $f:P\to Q$ is:
+\begin{itemize}
+\item \emph{Order preserving} if $x\leq y \in P\implies f(x)\leq f(y)\in Q$.
+\item An \emph{order embedding} if $x\leq y \in P\iff f(x)\leq f(y)\in Q$.
+\item An \emph{order isomorphism} if it is a bijective order embedding. If there is an order isomorphism from $P$ to $Q$, then its inverse is an order isomorphism from $Q$ to $P$. We write $P\cong Q$.
+\end{itemize}
+Note that an order embedding is always 1-1 (see exercise 3.1). 
+\end{definition}
+
+
+\paragraph{Ordinal numbers.}
+Mathematicians usually formalize mathematical structures using $ZFC$ set theory, and ordinal numbers are defined as particular kinds of sets. To avoid the set theoretic details, we will define ordinal numbers in terms of well ordered sets, as this can be shown to be equivalent to the usual set theoretic definition.
+
+
+\begin{definition}[Order type]
+Given well ordered sets $P$ and $Q$, we define $P\leq Q$ if there is an order embedding of $P$ into $Q$. We say $P \equiv Q$ if $P\leq Q$ and $Q\leq P$. We say $P$ and $Q$ have the same \emph{order type} iff $P\equiv Q$.
+\end{definition}
+
+Note that $\equiv$ defines an equivalence relation between well ordered sets. Again, this isn't technically an equivalence relation as the well ordered sets form a proper class, but we don't worry about that here. 
+
+\begin{lemma}\label{L:C3succ}
+Let $P$ be a well ordered set, and let $p\in P$. Then, either $p$ is the greatest element of $P$, or $p$ has a unique successor, which we denote $p^+$. 
+\end{lemma}
+\begin{proof}
+If $\{x\in P: x > p\}=\emptyset$, then $p$ is the greatest element of $P$, otherwise $p^+$ is the smallest element of this set (which exists by definition of well ordered). 
+\end{proof}
+
+\begin{definition}[initial segment]
+Let $P$ be a well ordered set, and let $p\in P$. Then we define the \emph{initial segment} $\ISp$ to be $\{q\in P: q<p\}$ 
+\end{definition}
+
+It's easy to see that every initial segment of a well ordered set is also well ordered. We need some technical results on initial segments.
+
+\begin{lemma}\label{L:init}
+If $P$ is a well order then, for all $p\in P$, there is no order embedding from $P$ to $\ISp$.
+\end{lemma}
+\begin{proof}
+Exercise 3.2.
+\end{proof}
+
+\begin{lemma}\label{L:successor}
+Let $P$ and $Q$ be well orders, let $p\in P$, and suppose $h:P\to Q$ is an order isomorphism. Then either $p$ is the greatest element of $P$, or $h(p^+)=h(p)^+$
+\end{lemma}
+\begin{proof}
+Exercise 3.3.
+\end{proof}
+
+Following lemma \ref{L:C3succ}, if $p\in P$, then $p^+$ is known as the \emph{successor} of $p$. Elements which are not successors are known as \emph{limits}.
+
+\begin{lemma}\label{L:isom}
+Let $P$ and $Q$ be well orders, let $p\in P$, let $q\in Q$, and suppose $h:\ISp \to \ISq$ is an order isomorphism. Let $p'< p$. Then there is a unique order isomorphism from $\ISp'$ to $\downarrow h(p')$, and this is just the restriction of $h$ to $\ISp'$. 
+\end{lemma}
+\begin{proof}
+Exercise 3.4.
+\end{proof}
+
+The next theorem is extremely important. It tells us that well ordered sets are all comparable to each other in a strong sense.
+
+\begin{theorem}\label{T:ordsize}
+Let $P$ and $Q$ be well ordered sets. Then exactly one of the following holds.
+\begin{enumerate}
+\item $P\cong Q$.
+\item $P\cong \ISq$ for some $q\in Q$.
+\item $\ISp \cong Q$ for some $p\in P$.
+\end{enumerate}
+\end{theorem}
+\begin{proof}
+Define $P^+=P\cup\{\top_P\}$ to be $P$ with a new greatest element $\top_P$, and define $Q^+=Q\cup\{\top_Q\}$ similarly. We break the proof down into cases. 
+\begin{itemize}
+\item[] Case 1. For all $p\in P^+$ there is $q\in Q^+$ with $\ISp \cong \ISq$. Then $P= \downarrow\top_P\cong \ISq$ for some $q\in Q^+$. If $q=\top_Q$ then $P\cong Q$, and so option 1 holds, otherwise option 2 holds.
+\item[] Case 2. For all $q\in Q^+$ we have $\ISq \cong \ISp$ for some $p\in P^+$. Then, as in case 1, either $P\cong Q$ or $Q\cong \ISp$ for some $p\in P$.
+\item[] Case 3. There is a minimal $p_0\in P^+$ such that $\ISp_0 \not\cong \ISq$ for all $q\in Q^+$, and a minimal $q_0\in Q^+$ such that $\ISp \not\cong \ISq_0$ for all $p\in P^+$. Then we define a map $h : \ISp_0 \to Q^+$ by $h(x) =y$, where $y$ is the unique element of $Q$ with $\downarrow x \cong \downarrow y$. Note that this element $y$ is indeed unique, because if there were $y_1< y_2$ with $\downarrow x \cong \downarrow y_1$ and $\downarrow x \cong \downarrow y_2$, then $\downarrow y_1 \cong \downarrow y_2$, which would contradict lemma \ref{L:init}.  We show now that $h:\ISp_0\to \ISq_0$ is an order isomorphism, contradicting the definition of $p_0$.
+\begin{itemize}
+\item Let $p< p_0$. Then $\ISp \cong \ISq$ for some $q\in Q^+$. If $q> q_0$ it would imply that $\ISq_0$ is order isomorphic to some $p' < p$ (by lemma \ref{L:isom}), which would contradict the definition of $q_0$. Since we cannot have $q=q_0$ we must have $q<q_0$. This shows that $h$ maps $\ISp_0$ to $\ISq_0$.
+\item Let $q < q_0$. Then, by definition of $q_0$, there is $p\in P^+$ with $\ISp\cong \ISq$. If $p> p_0$, then, again by lemma \ref{L:isom}, we would have $\ISp_0\cong \ISq'$ for some $q'< q$, which would be a contradiction. This shows that $h$ is onto (surjective).
+\item Now, let $p_1\leq p_2 \in \ISp_0$, and suppose $\ISp_1 \cong \ISq_1$ and $\ISp_2 \cong \ISq_2$ for some $q_1,q_2\in \ISq_0$. If $q_1> q_2$ then there is an order embedding, $e$ say, from $\ISq_2$ to $\ISq_1$ (by lemma \ref{L:isom}). Then we have 
+\[\ISp_2\cong \ISq_2\xrightarrow{e}\ISq_1\cong \ISp_1.\]  
+But this gives us an order embedding from $\ISp_2$ to $\ISp_1$, contradicting lemma \ref{L:init}. So we must have $q_1\leq q_2$.
+
+Similarly, if $p_1,p_2\in \ISp_0$ and $\ISp_1 \cong \ISq_1$ and $\ISp_2 \cong \ISq_2$ for some $q_1,q_2\in \ISq_0$ with $q_1\leq q_2$, then we cannot have $p_2< p_1$, as this would produce an order embedding from $\ISq_2$ to $\ISq_1$.  It follows from this that $h$ is an order embedding, and by combining this with the fact that $h$ is surjective we see that $h$ is an order isomorphism between $\ISp_0$ and $\ISq_0$. This contradicts the choice of $p_0$ as an element of $P$ such that there is no $q\in Q$ with $\ISp_0\cong \ISq$. We conclude that this case is actually impossible.
+\end{itemize}
+\end{itemize}
+Since case 3 cannot happen, we must have either case 1 or case 2, and so one of the three options must hold. Moreover, by lemma \ref{L:init} the options are mutually exclusive. In other words, one and only one can be true.  
+\end{proof}
+
+\begin{corollary}\label{C:isom}\mbox{}
+\begin{enumerate}
+\item If $P$ and $Q$ are well ordered sets, then either $P\leq Q$, or $Q\leq P$, or both.
+\item If $P$ and $Q$ are well ordered sets, then $P\equiv Q\iff P\cong Q$.
+\end{enumerate}
+\end{corollary}
+\begin{proof}
+Exercise 3.5.
+\end{proof}
+
+\begin{definition}[ordinal number]
+We define the \emph{ordinal numbers} to be the distinct order types of well ordered sets.  
+\end{definition}
+
+\begin{example}\mbox{}
+\begin{enumerate}
+\item $\bN$ with its usual order defines an ordinal
+\item Every natural number defines an ordinal. E.g. 3 is the well ordered set from example \ref{E:total}(2), and defines the corresponding ordinal. 
+\end{enumerate}
+\end{example}
+
+\paragraph{Ordinal addition.} 
+Given two disjoint well ordered sets $P$ and $Q$, we define the sum $P+Q$ to be $P\cup Q$, ordered by extending the orders on $P$ and $Q$ so that $p<q$ for all $p\in P$ and $q\in Q$. 
+
+\begin{example}Let $P= \bN$, and let $Q= \{q\}$. Then both $P$ and $Q$ are well ordered.
+\begin{enumerate}
+\item $P+Q$ is an infinite increasing chain, with an additional element at the top. 
+\[\xymatrix{
+q\\
+2\ar@{-}[d]\ar@{..}[u]  \\
+1\ar@{-}[d]  \\
+0 
+}\] 
+\item $Q+P$ is just an infinite increasing chain. So $Q+P\cong \bN$.
+\[\xymatrix{
+\text{\phantom{x}}\\
+1\ar@{-}[d]\ar@{..}[u]  \\
+0 \ar@{-}[d]  \\
+q 
+}\] 
+\end{enumerate}
+Note that $P+Q\not\cong Q+P$. This tells us that ordinal addition is not commutative for infinite sets.
+\end{example}
+
+\paragraph{Ordinals and cardinals.} 
+In $ZFC$ it can be shown that every cardinal is in bijection with an ordinal. In other words, every set can be well ordered. This is a counterintuitive consequence of the axiom of choice. This combined with theorem \ref{T:ordsize} gives us a proof for fact \ref{Fa:card}(3) (that given two cardinals, either they have the same size or one is bigger than the other). 
+
+Without the axiom of choice it is not true that every set can be well ordered, and it also becomes possible to have sets that are incomparable in size. This may seem counterintuitive, but the way to think about it is that ordering between sets is based on the existence of certain functions. Just because two sets can be defined does not mean we should expect to be able to construct a 1-1 function from one to the other. The axiom of choice lets us assume certain functions exist, even though we can't construct them explicitly. 
+
+
+
+\end{document}

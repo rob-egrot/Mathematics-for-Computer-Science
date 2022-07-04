@@ -1,0 +1,90 @@
+\documentclass{article}
+
+\usepackage{amsmath, mathrsfs, amssymb, stmaryrd, cancel, hyperref, relsize,tikz,amsthm,comment,enumerate}
+\usepackage{graphicx}
+\usepackage{xfrac}
+\hypersetup{pdfstartview={XYZ null null 1.25}}
+\usepackage[all]{xy}
+\usepackage[normalem]{ulem}
+\usepackage{tikz-cd}
+
+
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}{\bfseries}{\itshape}
+\newtheorem{proposition}{Proposition}{\bfseries}{\itshape}
+\newtheorem{definition}{Definition}{\bfseries}{\upshape}
+\newtheorem{lemma}{Lemma}{\bfseries}{\upshape}
+\newtheorem{example}{Example}{\bfseries}{\upshape}
+\newtheorem{corollary}{Corollary}{\bfseries}{\upshape}
+\newtheorem{remark}{Remark}{\bfseries}{\upshape}
+\newtheorem{fact}{Fact}{\bfseries}{\upshape}
+\newtheorem{Q}{Exercise}{\bfseries}{\upshape}
+
+\newtheorem*{theorem*}{Theorem}
+
+\newcommand{\bN}{\mathbb{N}}
+\newcommand{\bZ}{\mathbb{Z}}
+\newcommand{\bQ}{\mathbb{Q}}
+\newcommand{\bR}{\mathbb{R}}
+\newcommand{\bP}{\mathbb{P}}
+\newcommand{\HCF}{\mathbf{HCF}}
+
+% Uncomment below to create stand-alone file
+% \newcommand*{\prefix}{}
+
+
+
+\title{ITCS 531 \\Counting 1: Cardinal numbers exercises}
+\author{Rob Egrot}
+\date{}
+
+\begin{document}
+\maketitle
+%\includecomment{comment}
+
+\begin{Q}
+Prove that if $X$ and $Y$ are disjoint finite sets, then the cardinal arithmetic operations agree with the usual arithmetic operations on $|X|$ and $|Y|$. In other words, prove that $|X\cup Y|$ is equal to the result of adding $|X|$ and $|Y|$ as normal, and do similar for the other two arithmetic operations we have defined.
+\end{Q}
+\begin{comment}
+\textbf{Solution:} \begin{enumerate}[]
+\item $|X|+|Y|$: Since $X$ and $Y$ are disjoint, if $z\in X\cup Y$ then either $z\in X$, or $z\in Y$, but not both. So, if $|X| = m$ and $|Y|=n$, we have $|X\cup Y| = m+n = |X|+|Y|$ as required.
+\item $|X|\times|Y|$: $X\times Y = \{(x,y):x\in X \text{ and } y\in Y\}$. If $|X| = m$ and $|Y|=n$ then $|X\times Y| = m\times n = |X|\times|Y|$.
+\item $|X|^{|Y|}$: $X^Y$ is the set of all functions from $Y$ to $X$. How many functions are there? Well, such a function must map each element of $Y$ to exactly one element of $X$. So, for each $y\in Y$ there are exactly $|X|$ choices. So, if $|X| = m$ and $|Y|=n$, we get $m^n$ different functions. So $|X^Y|=m^n$ as required.
+\end{enumerate}
+\end{comment}
+
+\begin{Q}
+Let $X_i$ be countable for all $i\in \bN$, and suppose $X_i\cap X_j=\emptyset$ for all $i\neq j\in \bN$. Prove that $\bigcup_{i\in\bN} X_i$ is countable. HINT: We don't need the condition that $X_i\cap X_j=\emptyset$, but it makes the notation slightly simpler. Think about the proof that $|\bN|=|\bN\times\bN|$. 
+\end{Q}
+\begin{comment}
+\textbf{Solution:} 
+We need to find an injective function from $\bigcup_{i\in\bN} X_i$ to $\bN$. Since $\bN\times\bN$ is countable, there is an injective $f:\bN\times\bN\to \bN$. Since each $X_i$ is countable, there are injective functions $g_i:X_i\to \bN$ for all $i\in\bN$. Define a function $g:\bigcup_{i\in\bN} X_i\to \bN\times\bN$ by $g(x) = (i,g_i(x))$, where $x\in X_i$. This is well defined because $X_i\cap X_j = \emptyset$ for all $i\neq j$. Then $g$ is injective, because, given $x_1\in X_i$ and $x_2\in X_j$ with $x_1\neq x_2$, if $i\neq j$ then $(i,g_i(x_1))\neq (j,g_j(x_2))$, as $i\neq j$, and if $i=j$ then $g_i(x_1)\neq g_i(x_2)$, as $g_i$ is injective. So $f\circ g:\bigcup_{i\in\bN} X_i\to \bN$ is the composition of two injective functions, and so is injective. This gives us the injective function we need.   
+\end{comment}
+
+\begin{Q}
+Let $X$ be a countable set. Prove that the set of all finite subsets of $X$ is countable. 
+\end{Q}
+\begin{comment}
+\textbf{Solution:} 
+Let $f:X\to \bN$ be injective. Arrange the prime numbers in a list as $p_0,p_1,\ldots$. We know from number theory that the set of primes is infinite, so this is a countably infinite list. Given $S=\{x_1,\ldots,x_n\}\subseteq X$, define $g(S)= p_{f(x_0)}\times p_{f(x_1)}\times\ldots\times p_{f(x_n)}$. Then $g$ is a function from the set of all finite subsets of $X$ to $\bN$. Moreover, $g$ is injective, because if $S_1\neq S_2$ then $g(S_1)$ and $g(S_2)$ will have different prime factorizations, and so we know from the Fundamental Theorem of Arithmetic that this means they must be different numbers.
+\end{comment}
+
+\begin{Q}\label{\prefix E:power}
+Let $X$ be a set, let $\wp(X)$ be the powerset of $X$.
+\begin{enumerate}
+\item[a)] Define a simple injective function from $X$ to $\wp(X)$.
+\item[b)] Prove that there is no surjective function from $X$ to $\wp(X)$. HINT: Suppose such a function exists. Can you derive a contradiction? The argument used here is similar to the one used in Russell's paradox. 
+\item[c)] What does this tell us about the relationship between $|X|$ and $|\wp(X)|$?
+\end{enumerate}
+\end{Q}
+\begin{comment}
+\textbf{Solution:}
+\begin{enumerate}[a)]
+\item Use e.g. $x\mapsto \{x\}$.
+\item Suppose $f:X\to \wp(X)$ is surjective. Let $Z=\{x\in X: x\notin f(x)\}$. Then, as $f$ is surjective, there is $z\in X$ with $f(z) = Z$. Suppose $z\in Z$. Then, by definition of $Z$ and $z$, we must have $z\notin Z$. On the other hand, if $z\notin Z$, then $z\in f(z)=Z$, which is also a contradiction. We conclude there can be no such surjective function.
+\item We see that $|X|<|\wp(X)|$. In other words, $X$ is strictly smaller than $\wp(X)$.
+\end{enumerate} 
+\end{comment}
+
+
+\end{document}
