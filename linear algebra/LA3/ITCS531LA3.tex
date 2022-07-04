@@ -1,0 +1,347 @@
+\documentclass{article}
+
+\usepackage{amsmath, mathrsfs, amssymb, stmaryrd, cancel, hyperref, relsize,tikz,amsthm}
+\usepackage{graphicx}
+\usepackage{xfrac}
+\hypersetup{pdfstartview={XYZ null null 1.25}}
+\usepackage[all]{xy}
+\usepackage[normalem]{ulem}
+\usepackage{tikz-cd}
+
+
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}[section]{\bfseries}{\itshape}
+\newtheorem{proposition}[theorem]{Proposition}{\bfseries}{\itshape}
+\newtheorem{definition}[theorem]{Definition}{\bfseries}{\upshape}
+\newtheorem{lemma}[theorem]{Lemma}{\bfseries}{\upshape}
+\newtheorem{example}[theorem]{Example}{\bfseries}{\upshape}
+\newtheorem{corollary}[theorem]{Corollary}{\bfseries}{\upshape}
+\newtheorem{remark}[theorem]{Remark}{\bfseries}{\upshape}
+\newtheorem{fact}[theorem]{Fact}{\bfseries}{\upshape}
+\newtheorem{Q}[theorem]{Exercise}{\bfseries}{\upshape}
+
+\newtheorem*{theorem*}{Theorem}
+
+\newcommand{\bN}{\mathbb{N}}
+\newcommand{\bZ}{\mathbb{Z}}
+\newcommand{\bQ}{\mathbb{Q}}
+\newcommand{\bC}{\mathbb{C}}
+\newcommand{\bR}{\mathbb{R}}
+\newcommand{\bF}{\mathbb{F}}
+\newcommand{\spa}{\mathrm{span}}
+\newcommand{\cL}{\mathcal{L}}
+\DeclareMathOperator{\nul}{\mathrm{null}}
+\DeclareMathOperator{\ran}{\mathrm{ran}}
+
+
+\title{ITCS 531 \\Linear Algebra 3: Linear maps and matrices}
+\author{Rob Egrot}
+\date{}
+
+\begin{document}
+\maketitle
+\section{Linear maps and matrices}
+\paragraph{What is a linear map?}
+
+\begin{definition}\label{D:LA3map}
+Let $V$ and $W$ be vector spaces over the same field $\bF$. A function $T:V\to W$ is a \emph{linear map} if the following linearity conditions are satisfied:
+\begin{enumerate}
+\item $T(u+v) = T(u) + T(v)$ for all $u,v\in V$.
+\item $T(\lambda v)= \lambda T(v)$ for all $v\in V$ and for all $\lambda\in\bF$.
+\end{enumerate}
+\end{definition}
+
+The definition above is abstract, but hopefully it should be understandable why linear maps are called \emph{linear}. Think of an equation $y = ax$ defining a straight line through the origin in the Euclidean plane (straight lines are, of course, the archetypal linear object). Think of two real numbers $x_1$ and $x_2$. Then, at the point $x_1+ x_2$, the value of $y$ is given by $a(x_1+x_2)$, which is just $ax_1$ + $ax_2$. Similarly, if $b$ is another real number then the value of $y$ at the point $bx_1$ is given by $a(bx_1)$, which is equal to $ba(x_1)$. Linear maps `behave like' straight lines, in the sense that the value a linear map takes at the sum of two vectors is the same as the sum of the values it takes at each individual vector, and the value it takes at the scalar multiple of a vector is the same as the scalar multiple of the value it takes at that vector.
+
+\begin{definition}[$\cL(V,W)$]
+If $V$ and $W$ are vector spaces over the same field, then we denote the set of all linear maps from $V$ to $W$ by $\cL(V,W)$.
+\end{definition}
+
+\begin{example}\label{E:LA3maps}\mbox{}
+\begin{enumerate}
+\item We've already seen the example of a straight line of form $y = ax$. This can be thought of as a linear map from $\bR$ (considered as a vector space over itself) to itself.
+\item More generally, we could replace $\bR$ with $\bF$ and the previous example would still hold.
+\item  For any vectors spaces $V$ and $W$ over the same field, there is a special linear map, the zero map $0:V\to W$, given by $0(v) = 0$ for all $v\in V$.
+\item For any vector space $V$ there is a special linear map, the identity map $I:V\to V$ for $V$, given by $I(v) = v$ for all $v\in V$. 
+\item Remember that $\bR[x]$ stands for the vector space of polynomials over $\bR$ with the variable $x$. The map $D:\bR(x)\to \bR(x)$ defined by taking first derivatives is a linear map. The same is true if we restrict to $\bR_n(x)$ (recall exercise 2.1 for this notation).
+\end{enumerate}
+\end{example}
+
+\begin{lemma}\label{L:LA3zero}
+If $T:V\to W$ is a linear map, then $T(0) = 0$.
+\end{lemma}
+\begin{proof}
+$0 = 0+0$, so, by linearity, 
+\[T(0)=T(0+0) = T(0)+ T(0),\]
+and so by subtracting $T(0)$ from both sides we see $T(0)=0$ as required.
+\end{proof}
+
+Example \ref{E:LA3maps} has some important linear maps, but given arbitrary vector spaces $V$ and $W$ (over the same field), how can we define a linear map $T$ between them? Do we have to specify the value $T(v)$ for every vector $v\in V$? Fortunately the answer to this is no, at least, it is no so long as we know a basis for $V$. The next result makes this more precise.   
+
+\begin{proposition}\label{P:LA3mapdef}
+Let $V$ be a finite dimensional vector space over $\bF$, and let $(v_1,\ldots,v_n)$ be a basis for $V$. Let $W$ be another vector space over $\bF$. Then for any $w_1,\ldots,w_n\in W$, there is a unique linear map $T:V\to W$ such that $T(v_i)=w_i$ for all $i\in\{1,\ldots,n\}$.
+\end{proposition}
+\begin{proof}
+By the definition of a basis, given an element $v\in V$ we have $v = a_1v_1+\ldots +a_nv_n$ for some $a_1,\ldots,a_n\in\bF$. Then the requirement that $T$ is linear tells us what value $T$ must take at on $v$. I.e. 
+\[T(v) = a_1T(v_1)+\ldots+a_nT(v_n) = a_1w_1+\ldots +a_n w_n. \]
+
+It's straightforward to show that $T$ defined in this way is a linear map (we just have to check the two conditions from definition \ref{D:LA3map}).
+\end{proof}
+
+ Proposition \ref{P:LA3mapdef} tells us that a linear map from a finite dimensional vector space $V$ is completely determined by what it does to the basis vectors of $V$ (this is also true for infinite dimensional vector spaces, and the proof is essentially the same). More than that, it tells us that a linear map can take any values on the basis vectors of $V$. We could sum this up by saying that, if $\{v_1,\ldots,v_n\}$ provides a basis for $V$, then the set of linear maps $\cL(V,W)$ is in bijection with the set of functions from $\{v_1,\ldots,v_n\}$ to $W$. 
+
+\begin{definition}
+If $S\in \cL(U,V)$, and $T\in\cL(V,W)$, then it's easy to check that the composition $TS\in \cL(U,W)$, where $TS$ is defined by $TS(u) = T(S(u))$ for all $u\in U$.
+\end{definition}
+
+\paragraph{Null spaces}
+\begin{definition}
+Given $T\in\cL(V,W)$, the \emph{null space} of $T$, denoted $\nul T$, is defined by
+\[\nul T = \{v\in V: T(v) = 0\}.\]
+\end{definition}
+
+\begin{lemma}\label{L:LA3null}
+$\nul T$ is a subspace of $V$.
+\end{lemma}
+\begin{proof}
+This is exercise \ref{Q:LA3null}.
+\end{proof}
+
+\begin{lemma}
+Let $T\in\cL(V,W)$. Then $T$ is injective if and only if $\nul T = \{0\}$.
+\end{lemma}
+\begin{proof}
+Clearly if $T$ is injective then only $0$ can be mapped to $0$ by $T$, so we have the forward implication. For the converse, suppose $T$ is not injective. Then there are $u,v\in V$ with $u\neq v$ and $T(u)=T(v)$. But then by linearity of $T$ we have $T(u-v) = T(u) - T(v) =0$, and so $u-v\in \nul T$.
+\end{proof}
+
+\paragraph{The range of a linear map}
+\begin{definition}
+Given $T\in\cL(V,W)$, the \emph{range} of $T$ is defined by
+\[\ran T = \{T(v) : v\in V\}.\]
+\end{definition}
+
+So $\ran T$ is just the range of $T$, just like we can define the range for any function. What makes $\ran T$ special in the context of vector spaces, is the following result.
+
+\begin{lemma}
+If $T\in \cL(V,W)$ then $\ran T$ is a subspace of $W$.
+\end{lemma}
+\begin{proof}
+We just need to check the conditions of definition \ref{D:LA1subs} are satisfied: 
+\begin{enumerate}
+\item Since $0= T(0)$ we have $0\in \ran T$.
+\item $T(u) + T(v) = T(u + v)$, so $\ran T$ is closed under vector addition.
+\item $\lambda T(v) = T(\lambda v)$, so $\ran T$ is closed under scalar multiplication.
+\end{enumerate}
+\end{proof}
+
+\paragraph{The Rank-Nullity Theorem}
+The Rank-Nullity Theorem is the first big result in linear algebra. In \cite{Ax15} it is referred to as the \emph{fundamental theorem of linear maps}. 
+
+
+\begin{theorem}[Rank-Nullity]
+Let $V$ be finite dimensional, and let $T\in\cL(V,W)$. Then $\ran T$ is finite dimensional, and
+\[\dim V = \dim \ran T + \dim \nul T.\]
+In other words, the dimension of $V$ is equal to the rank of $T$ plus the nullity of $T$.
+\end{theorem}
+\begin{proof}
+Let $(u_1,\ldots,u_m)$ be a basis for $\nul T$. We know such a basis exists as $V$ is finite dimensional and $\nul T$ is a subspace of $V$. By theorem \ref{T:LA2basis} we can extend $(u_1,\ldots,u_m)$ to a basis $(u_1,\ldots,u_m,v_1,\ldots,v_n)$ for $V$. We complete the proof by showing that $(T(v_1),\ldots, T(v_n))$ is a basis for $\ran T$. 
+
+First we check that $(T(v_1),\ldots, T(v_n))$ is linearly independent. So suppose $0 = a_1T(v_1)+\ldots + a_n T(v_n)$. Then $T(a_1v_1+\ldots +a_n v_n) = 0$, by the linearity of $T$. But this means $a_1v_1+\ldots +a_n v_n\in \nul T$, and so there are $b_1,\ldots, b_m$ with $a_1v_1+\ldots +a_n v_n = b_1u_1+\ldots + b_m u_m$. Rearranging this we have 
+\[a_1v_1+\ldots +a_n v_n - b_1u_1-\ldots - b_m u_m = 0,\] 
+and as $(u_1,\ldots,u_m,v_1,\ldots,v_n)$ is a basis for $V$ (and so is linearly independent), the only way this can happen is if 
+\[a_1=\ldots =a_n = b_1=\ldots = b_m = 0.\] 
+In particular we have $a_1=\ldots =a_n = 0$, and so $(T(v_1),\ldots, T(v_n))$ is indeed linearly independent.
+
+To complete the proof we must show that $(T(v_1),\ldots, T(v_n))$ spans $\ran T$. Now, if $w\in \ran T$ then, by definition of range, there must be $v\in V$ with $w = T(v)$. Since $(u_1,\ldots,u_m,v_1,\ldots,v_n)$ is a basis for $V$, it follows that there must be $a_1,\ldots,a_m,b_1,\ldots,b_n$ with 
+\[v = a_1u_1 + \ldots + a_mu_m+ b_1 v_1+\ldots + b_n v_n.\] 
+
+Since $u_i\in \nul T$ for all $i\in\{1,\ldots,m\}$, and so $T(u_i)=0$, we have 
+\[w = T(v) = b_1T(v_1)+\ldots + b_n T(v_n).\] 
+So $w\in \spa(T(v_1),\ldots, T(v_n))$ as required. 
+\end{proof} 
+
+The Rank-Nullity theorem gets its name from the following old definitions:
+
+\begin{definition}\label{D:LA3RN}
+Given $T\in\cL(V,W)$, the \emph{rank} of $T$  is the dimension of $\ran T$, and the \emph{nullity} of $T$ is the dimension of $\nul T$.
+\end{definition}
+
+\paragraph{A review of matrix algebra}
+
+
+An $m\times n$ matrix over a field $\bF$ is an array of elements of $\bF$. We can express matrices explicitly, using the following form:
+\[
+\begin{bmatrix}
+a_{11} & a_{12} & \dots & a_{1n}\\
+a_{21} & a_{22} & \dots & a_{2n} \\
+\vdots & \vdots & \ddots & \vdots \\
+a_{m1} & a_{m2} & \dots & a_{mn}
+\end{bmatrix}
+\]
+Here the element $a_{ij}$ is the one in the $i$th row and the $j$th column. We sometimes use the shorthand $(a_{ij})$ to express a matrix of the form above.
+
+
+Given an $m\times n$ matrix $A$ over $\bF$, and $\lambda\in\bF$, we define the scalar product $\lambda A$ to be
+\[
+\begin{bmatrix}
+\lambda a_{11}  & \dots & \lambda a_{1n} \\
+\lambda a_{21}  &  \dots & \lambda a_{2n} \\
+\vdots & \ddots & \vdots \\
+\lambda a_{m1}  & \dots & \lambda a_{mn} 
+\end{bmatrix}
+\]
+
+Given $m\times n$ matrices $A = (a_{ij})$ and $B=(b_{ij})$ over the same field $\bF$, we define the sum $A+B$ to be 
+\[
+\begin{bmatrix}
+a_{11} + b_{11} & \dots & a_{1n} + b_{1n}\\
+a_{21} + b_{21} &  \dots & a_{2n} + b_{2n} \\
+\vdots & \ddots & \vdots \\
+a_{m1} + b_{m2}  & \dots & a_{mn} + b_{mn}
+\end{bmatrix}
+\]
+
+Given an $m\times n$ matrix $A = (a_{ij})$ and an $n\times p$ matrix $B = (b_{jk})$, both over $\bF$, we define the matrix product $AB$ to be the $m\times p$ matrix $(c_{ik})$, where for each $i\in \{1,\ldots m\}$ and $k\in \{1,\ldots, p\}$, the entry $c_{ik}$ is defined by
+\[c_{ik} = \sum_{j=1}^n a_{ij}b_{jk}.\]
+
+In other words, the element $c_{ik}$ is defined using the $i$th row of $A$, and the $k$th column of $B$.
+
+In particular, if $A$ is an $m\times n$ matrix, and $v$ is a $n\times 1$ matrix (so $v$ a column vector in $\bF^n$), then the product $Av$ is calculated using
+\[Av = \begin{bmatrix}
+a_{11}  & \dots & a_{1n} \\
+\vdots & \ddots & \vdots \\
+a_{m1}  & \dots & a_{mn} 
+\end{bmatrix}
+\begin{bmatrix}
+b_1\\
+\vdots\\
+b_n
+\end{bmatrix}
+=
+\begin{bmatrix}
+b_1a_{11} + b_2a_{12}+ \ldots + b_na_{1n} \\
+b_1a_{21} + b_2a_{22}+ \ldots + b_na_{2n}\\
+\vdots\\
+b_1a_{m1} + b_2a_{m2}+ \ldots + b_na_{mn}
+\end{bmatrix}\]
+
+Matrix multiplication as defined here is quite mysterious, and seemingly arbitrary. However, as we shall soon see, this definition is actually extremely natural.
+
+\paragraph{Matrices and linear maps}
+
+From the definitions of matrix addition and scalar multiplication above, we see that every $m\times n$ matrix over $\bF$ defines a linear map from $\bF^n$ to $\bF^m$. That is, an $m\times n$ matrix over $\bF$ takes a vector from $\bF^n$ and transforms it into a vector from $\bF^m$. Moreover, this transformation is linear. The correspondence between linear maps and matrices actually goes both ways, in that every linear map between finite dimensional vector spaces can be represented by a matrix, as we now explain. 
+
+Let $T\in \cL(V,W)$, and suppose $V$ and $W$ are both finite dimensional. Let $(v_1,\ldots,v_n)$ be a basis for $V$, and let $(w_1,\ldots,w_m)$ be a basis for $W$. By proposition \ref{P:LA3mapdef}, the map $T$ is defined by what it does to $v_1,\ldots,v_n$. Moreover, as $(w_1,\ldots,w_m)$ is a basis for $W$, each $T(v_j)$ can be written as a linear combination of elements of $\{w_1,\ldots,w_m\}$. In other words, for each $j\in\{1,\ldots,n\}$, we have 
+\[\tag{$\dagger$} T(v_j) = a_{1j}w_1 + \ldots + a_{mj} w_m.\]
+
+Let $A=(a_{ij})$ be the matrix defined using the $a_{ij}$ defined in $(\dagger)$, with $i\in\{1,\ldots,m\}$. 
+
+\[
+\begin{bmatrix}
+a_{11}  & \dots & a_{1n} \\
+\vdots & \ddots & \vdots \\
+a_{m1}  & \dots & a_{mn} 
+\end{bmatrix}
+\]
+
+Now, think of the column vector of $\bF^n$ that has 1 in it's $j$th place and 0 everywhere else. What happens when we multiply this vector with $A$? The definition of matrix multiplication says the result is given by
+
+\[
+\begin{bmatrix}
+a_{11}  & \dots & a_{1n} \\
+\vdots & \ddots & \vdots \\
+\vdots & \ddots & \vdots \\
+\vdots & \ddots & \vdots \\
+a_{m1}  & \dots & a_{mn} 
+\end{bmatrix}
+\begin{bmatrix}
+0\\
+\vdots\\
+1\\
+\vdots\\
+0
+\end{bmatrix}
+= 
+\begin{bmatrix}
+a_{1j}\\
+a_{2j}\\
+\vdots\\
+a_{mj}
+\end{bmatrix}
+\]
+
+Now, we can interpret the vector
+
+\[
+\begin{bmatrix}
+0\\
+\vdots\\
+1\\
+\vdots\\
+0
+\end{bmatrix}\]
+as the element $v_j$ of $V$, and we can interpret the vector
+\[\begin{bmatrix}
+a_{1j}\\
+a_{2j}\\
+\vdots\\
+a_{mj}
+\end{bmatrix}
+\]
+as the element of $W$ defined by $a_{1j}w_1+\ldots + a_{mj}w_m$, which is $T(v_j)$, because of how we defined the $a_{ij}$ values. According to this translation, the matrix multiplication we have just performed says that when $v_j$ is transformed by $A$ the result equals $T(v_j)$. This is true for all $j\in\{1,\ldots,n\}$, so the matrix $A$ corresponds to the action of $T$ on every basis vector $v_i$. From this we see that $A$ corresponds to the action of $T$ on every element of $V$, because matrix multiplication has a distributivity property and $T$ is linear, and so 
+\[A(au+bv) = aAu + bAv = aTu + bTv = T(au+bv)\]
+for any vectors $u,v\in V$ and scalars $a,b\in\bF$. In particular it's true for basis vectors of $V$, and all vectors in $V$ are linear combinations of basis vectors.
+
+ 
+In other words, the matrix $A$ represents $T$ with respect to the translation given by the choice of bases for $V$ and $W$. Note that if we chose a different basis for $V$ or $W$ then we would usually get a different matrix corresponding to $T$, because the $a_{ij}$ values depend on the basis we are using.
+
+This explains why matrix multiplication is defined the way it is. Matrices are motivated by a desire to represent linear maps. This means that they must multiply vectors of form 
+\[\begin{bmatrix}
+0\\
+\vdots\\
+1\\
+\vdots\\
+0
+\end{bmatrix}\]
+in a very specific way. Moreover, because every column vector can be thought of as a linear combination of vectors in this form, the linearity of the transformation determines how $A$ must act when multiplying column vectors. We can think of the product $AB$ of two matrices as being the list of vectors we get from applying the transformation defined by $A$ to each of the columns of $B$. From this perspective, the $j$th column of $AB$ is the result of applying $A$ to the $j$th column of $B$.
+
+A nice property of correspondence between matrices and linear maps is that it also extends to compositions of linear maps.
+
+\begin{proposition}\label{P:LA3mult}
+Let $S\in \cL(U,V)$ and let $T\in\cL(V,W)$. Let $(u_1,\ldots,u_n)$, $(v_1,\ldots,v_m)$ and $(w_1,\ldots, w_p)$ be bases for $U$, $V$ and $W$ respectively. Suppose that $B$ is the matrix of $T$ with respect to $(v_1,\ldots,v_m)$ and $(w_1,\ldots, w_p)$, and that $A$ is the matrix of $S$ with respect to $(u_1,\ldots,u_n)$ and $(v_1,\ldots,v_m)$. Then $BA$ is the matrix of $TS$ with respect to $(u_1,\ldots,u_n)$ and $(w_1,\ldots, w_p)$.
+\end{proposition}  
+\begin{proof}
+Exercise \ref{Q:LA3mult}. 
+\end{proof}
+
+\paragraph{What is a linear map, really?}
+We should understand linear maps as linear transformations of space. In other words, transformations of space that keep straight lines straight. The connection between linear maps and matrices is helpful for this. Think of Euclidean space $\bR^3$. The vectors $(1,0,0)$, $(0,1,0)$ and $(0,0,1)$ define a cube of volume one with one vertex at the origin (the point $(0,0,0)$) in $\bR^3$. This cube is known as a \emph{unit cube}. 
+
+If $A=(a_{ij})$ is a $3\times 3$ matrix, then the action of $A$ on the vectors $(1,0,0)$, $(0,1,0)$ and $(0,0,1)$ produces three vectors $(a_{11}, a_{21}, a_{31})$, $(a_{12}, a_{22}, a_{32})$ and $(a_{13}, a_{23}, a_{33})$. These vectors also define a shape in Euclidean space. This shape is the result of transforming the unit cube by the transformation defined by $A$. Now, the linearity of $A$ means it can stretch vectors, and change their directions, but it can't bend them.
+
+\begin{example}
+Let $A$ be the real valued matrix
+\[\begin{bmatrix}
+0 & -1 \\
+1 & 0
+\end{bmatrix}\]
+
+Think of $A$ as a linear transformation of the Euclidean plane. What does $A$ do to $(1,0)$? Well, according to the definition of matrix multiplication, $A$ takes $(1,0)$ to $(0,1)$, and $A$ takes $(0,1)$ to $(-1,0)$. If $(1,0)$ and $(0,1)$ have their usual meanings as vectors in $\bR^2$, then this corresponds to an anticlockwise rotation by $\frac{\pi}{2}$ radians ($90^\circ$).
+\end{example}
+
+\paragraph{A comment on determinants} 
+Here we assume the reader has already seen a definition for a determinant, but would like to understand how it fits into the framework of linear maps between vector spaces. 
+
+\begin{definition}
+A linear map $T\in\cL(V,W)$ is \emph{invertible} if there is a map $T^{-1}\in\cL(W,V)$ such that the map $T^{-1}T$ is the identity map on $V$, and the map $TT^{-1}$ is the identity map on $W$.   
+\end{definition}
+
+Appealing to the correspondence between linear maps and matrices, a linear map $T$ is invertible if and only if the corresponding matrix is invertible. Thinking about a linear map as a transformation of space, such a map $T:V\to W$ should be invertible so long as no information is `lost' during the transformation. With vector spaces, this `information loss' happens when $\dim \ran T < \dim V$. In other words, when the effect of $T$ is to compress $V$ into a space with lower dimension. 
+
+This brings us to the determinant. One method that students are often taught for checking whether a matrix is invertible or not is to calculate its determinant and see whether it is 0. We are not going to go into detail about how determinants are calculated here, but we will try to build some intuition about what the determinant represents. 
+
+In the previous section, we thought about a linear map as a transformation of space, and we tried to understand this by imagining the effect of such a map on the `unit cube' in $\bR^3$. Building on this idea, the determinant of a matrix representing a transformation of $\bR^3$ corresponds to the volume of the unit cube after being transformed. So the determinant of a $3\times 3$ matrix being zero corresponds to the associated linear map `compressing' $\bR^3$ into a lower dimensional space, thus losing information. Now, the determinant can be positive or negative, so it actually gives us more information than just the volume of the transformed unit cube (what is known as a \emph{signed volume}), but the absolute value of the determinant is always equal to this volume. 
+
+This also applies to $n\times n$ matrices for all $n\geq 1$. We just have to be comfortable generalizing the idea of `space' and `volume' into higher dimensions.   
+
+\end{document}

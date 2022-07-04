@@ -1,0 +1,262 @@
+\documentclass{article}
+
+\usepackage{amsmath, mathrsfs, amssymb, stmaryrd, cancel, hyperref, relsize,tikz,amsthm}
+\usepackage{graphicx}
+\usepackage{xfrac}
+\hypersetup{pdfstartview={XYZ null null 1.25}}
+\usepackage[all]{xy}
+\usepackage[normalem]{ulem}
+\usepackage{tikz-cd}
+
+
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}[section]{\bfseries}{\itshape}
+\newtheorem{proposition}[theorem]{Proposition}{\bfseries}{\itshape}
+\newtheorem{definition}[theorem]{Definition}{\bfseries}{\upshape}
+\newtheorem{lemma}[theorem]{Lemma}{\bfseries}{\upshape}
+\newtheorem{example}[theorem]{Example}{\bfseries}{\upshape}
+\newtheorem{corollary}[theorem]{Corollary}{\bfseries}{\upshape}
+\newtheorem{remark}[theorem]{Remark}{\bfseries}{\upshape}
+\newtheorem{fact}[theorem]{Fact}{\bfseries}{\upshape}
+\newtheorem{Q}[theorem]{Exercise}{\bfseries}{\upshape}
+
+\newtheorem*{theorem*}{Theorem}
+
+\newcommand{\bN}{\mathbb{N}}
+\newcommand{\bZ}{\mathbb{Z}}
+\newcommand{\bQ}{\mathbb{Q}}
+\newcommand{\bC}{\mathbb{C}}
+\newcommand{\bR}{\mathbb{R}}
+\newcommand{\bF}{\mathbb{F}}
+\newcommand{\spa}{\mathrm{span}}
+
+\title{ITCS 531 \\Linear Algebra 1: Vector spaces over fields}
+\author{Rob Egrot}
+\date{}
+
+\begin{document}
+\maketitle
+\section{Vector spaces over fields}
+
+Linear algebra is an abstract approach to thinking about Euclidean space. In other words, to points existing in a typically two or three dimensional grid defined by axes. The benefit of an abstract approach is that it lets us recognize structures that are not obviously `space like' as being essentially Euclidean spaces in disguise. This allows us to take techniques and insights from geometric reasoning about Euclidean space and apply them in many diverse situations. In the opposite direction, the powerful machinery of linear algebra can also be used to get easy proofs of geometric facts about Euclidean space.
+
+For example, linear algebra is used in computer graphics to correctly translate three dimensional information into images on a two dimensional screen. In addition, linear algebra underpins several techniques in machine learning, such as artificial neural networks and support vector machines. The Google page rank algorithm has linear algebra at its core. On this short course we will only scratch the surface of this deep subject, but the aim is to lay the foundations for a rigorous understanding of the theory and its applications. We will begin with very general and abstract definitions, and we will end the course by showing how the abstract approach allows us to easily prove some concrete results in Euclidean geometry. 
+ 
+\paragraph{Complex numbers}
+We should all be familiar with the set of real numbers, $\bR$. Not all polynomials with real coefficients have real roots. For example, there is no real value of $x$ for which $x^2 + 1 = 0$. We express this fact by saying that $\bR$ is not \emph{algebraically closed}, which is just a fancy way of saying that not every polynomial with real coefficients can be factorized into linear factors with real coefficients. For example, we can't express $x^2 +1$ as $(x +a)(x+b)$ for any $a,b\in\bR$. 
+
+Often it is convenient to work in an algebraically closed setting, and for this reason we define the complex numbers, $\bC$.
+
+\begin{definition}[$\bC$]
+$\bC$ is the set of numbers of form $a +bi$ such that $a,b\in\bR$. Addition and multiplication in $\bC$ are defined by:
+\begin{itemize}
+\item $a + bi + c + di = a+c + (b+d)i$.
+\item $(a+bi)\times(c+di) = ac - bd +(ad+bc)i$. 
+\end{itemize}
+\end{definition}
+
+Another way of putting this is that $i$ is treated as a solution to $x^2+1 = 0$. I.e. $i^2 = -1$. Obviously, $i$ is not a real number, and extending $\bR$ by $i$ lets us factorize polynomials that we could not factorize before. For example, $x^2+1 = (x-i)(x+i)$. In fact, $\bC$ is algebraically closed, so every polynomial with complex coefficients can be factorized into linear complex pieces. Since $\bR = \{a+ bi \in \bC: b = 0\}$, this means every polynomial with real coefficients can be factorized in $\bC$ too. 
+
+This is a deep fact, and not obvious at all, and is often referred to as the \emph{fundamental theorem of algebra}. We are not going to prove it on this course, but hopefully it gives some indication of why complex numbers are useful and interesting.
+
+We don't need to remember the law for multiplying complex numbers, because we can reconstruct it just by remembering that $i^2 = -1$.
+\begin{example}
+\begin{align*}
+(2-4i)(1+7i) &= 2 +14i -4i -28i^2 \\
+&= 2 + 28 +10i \\
+&= 30 + 10i 
+\end{align*}
+\end{example}
+
+Apart from containing extra roots for polynomials, complex numbers are like real numbers in many ways:
+
+\begin{lemma}\label{L:LA1props}
+Let $\alpha$, $\beta$ and $\gamma$ be complex numbers. Then:
+\begin{enumerate}
+\item $\alpha + \beta = \beta + \alpha$, and $\alpha\beta = \beta\alpha$ (commutativity).
+\item $\alpha + (\beta + \gamma) = (\alpha + \beta) +\gamma$, and $\alpha(\beta\gamma) = (\alpha\beta)\gamma$ (associativity).
+\item $0 + \alpha = \alpha$, and $1\alpha = \alpha$ (identities).
+\item There is a unique $-\alpha\in\bC$ such that $\alpha + (-\alpha) = 0$ (inverse for addition).
+\item If $\alpha\neq 0$ there is a unique $\alpha^{-1}$ such that $\alpha\alpha^{-1} = 1$ (inverse for multiplication).
+\item $\alpha(\beta + \gamma) = \alpha\beta + \alpha\gamma$ (distributivity). 
+\end{enumerate}
+\end{lemma}
+\begin{proof}
+We'll prove 1-5, and leave 6 for exercise \ref{Q:LA1props}. 
+\begin{enumerate}[1)]
+\item $(a+ bi) + (c+di) = (a+c) + (b+d)i = ( c+di) + (a+ bi)$, so $+$ is commutative. Also, $(a+ bi)(c+di) = ac - bd +(ad+bc)i = (c+di)(a+ bi)$, so $\times$ is commutative.
+\item \begin{align*}((a+ bi) + (c+di)) + (e+fi) &= ((a+c) + (b+d)i) + (e+fi)\\
+ &= (a+c+e)+(b+d+f)i\\
+&= (a+ bi) + ((c+di) + (e+fi)),\end{align*} so $+$ is associative. Also, 
+\begin{align*}((a+ bi)(c+di))(e+fi) &= ((ac - bd) +(ad+bc)i)(e+fi)\\ 
+&= (ace - bde -adf - bcf) +(ade +bce + acf - bdf)i \\
+&= (a+ bi)((c+di)(e+fi)),\end{align*}
+so $\times$ is also associative.
+\item It's obvious that $0 + a + bi = a+ bi$, and also that $1(a+bi) = a+bi$.
+\item Given $\alpha = a + bi$ define $-\alpha= -a - bi$. Then clearly $\alpha +(-\alpha) = 0$. Moreover, if $a + bi + c +di = 0$ then we must have $c = - a$ and $d = -b$, so $-\alpha$ as we have defined it is unique.
+\item given $\alpha = a + bi$, suppose $(a+bi)(c+di) = 1$. Then $ac - bd + (ad + bc)i = 1$, and so 
+\[\tag{$\dagger$}ac - bd = 1,\]
+and 
+\[\tag{$\ddagger$}ad = - bc.\] If $b = 0 $ then $\alpha^{-1}=\frac{1}{a}$ (we can do this as, since $\alpha\neq 0$, we must have $a\neq 0$), so we assume $b\neq 0$. So we can rewrite $(\ddagger)$ as $c = \frac{-ad}{b}$. Substituting this into $(\dagger)$ and rearranging gives $d = \frac{-b}{a^2+ b^2}$ (we can divide by $a^2+b^2$ because we are assuming $b\neq 0$). Substituting this value for $d$ into $(\ddagger)$ produces $c = \frac{a}{a^2+b^2}$. 
+
+So, we define $\alpha^{-1} = \frac{a-bi}{a^2+b^2}$, and since these values of $c$ and $d$ are the only possible choices, this is the unique multiplicative inverse, $\alpha^{-1}$, for $\alpha$.   
+\end{enumerate}
+\end{proof}
+
+Notice that the properties of $\bC$ proved in lemma \ref{L:LA1props} are the same as the properties of $\bR$, and also as those of $\bZ_p$ when $p$ is prime. Actually, $\bR$, $\bC$ and $\bZ_p$ are all examples of a mathematical structure known as a \emph{field}. We will not go into the details of the abstract definition of a field, but we will say that most of the results we prove on this course apply to fields in general, and do not rely on any special properties of $\bR$ and $\bC$, except those that make them fields of course. We will use $\bF$ to denote a general (infinite field). For us, this just means that $\bF$ can stand for $\bR$ or $\bC$. 
+
+We define subtraction and division in $\bC$ using lemma \ref{L:LA1props}, in particular parts 4 and 5:
+
+\begin{definition}
+Let $\alpha,\beta\in\bC$, and suppose $\beta\neq 0$. Then:
+\begin{itemize}
+\item $\alpha - \beta = \alpha + (-\beta)$.
+\item $\frac{\alpha}{\beta} = \alpha\beta^{-1}$.
+\end{itemize}
+\end{definition}
+
+\paragraph{Vector spaces}
+
+We define vector spaces abstractly, but example \ref{E:LA1vec} below provides some motivating, hopefully familiar examples.
+
+\begin{definition}\label{D:LA1vec}
+Let $\bF$ be a field. Then a \emph{vector space over $\bF$} is a set $V$ equipped with a vector addition operation from $V\times V$ to $V$ and a scalar multiplication operation from $\bF\times V$ to $V$ that obey the following rules:
+\begin{enumerate}
+\item $u + v = v + u$ for all $u,v\in V$.
+\item $u + (v + w) = (u + v) + w$ for all $u,v,w\in V$.
+\item $(ab)v = a(bv)$ for all $a,b\in\bF$ and for all $v\in V$.
+\item There is a special element $0\in V$ such that $0 + v = v$ for all $v\in V$.
+\item For all $v\in V$ there is $w\in V$ such that $v + w = 0$.
+\item $1v = v$ for all $v\in V$ (i.e. scalar multiplication by $1$ does not change $v$).
+\item $a(u+v) = au + av$ for all $a\in\bF$ and for all $u,v\in V$.
+\item $(a+b)v = av + bv$ for all $a,b\in\bF$ and for all $v\in V$.
+\end{enumerate}
+When $\bF=\bR$ we say $V$ is a \emph{real vector space}. When $\bF=\bC$ we say $V$ is a \emph{complex vector space}. We sometimes refer to elements of $V$ as \emph{vectors}, or \emph{points}.
+\end{definition}
+
+\begin{example}\label{E:LA1vec}\mbox{}
+\begin{enumerate}
+\item We can think of any field as a vector space over itself. E.g. $\bR$ is a real vector space (vector addition and scalar multiplication are just ordinary addition and multiplication in $\bR$).
+\item $\bR\times \bR$, i.e. the Euclidean plane, is a real vector space.
+\item More generally, for any $n\in\bN\setminus\{0\}$ we can think of $\bF^n$ as a vector space over $\bF$ by defining $(x_1,\ldots,x_n)+(y_1,\ldots,y_n) = (x_1+y_1,\ldots,x_n+ y_n)$, and $a(x_1,\ldots x_n)=(ax_1,\ldots,ax_n)$.
+\item Let $\bR[x]$ be the set of all polynomials with the variable $x$. So 
+\[\bR[x] = \{ a_0 + a_1x + \ldots +a_nx^n: n\in\bN\text{ and } a_i\in\bR\text{ for all }i\in\{1,\ldots,n\}\}.\]
+Then $\bR[x]$ is a vector space over $\bR$.
+\end{enumerate}
+\end{example}
+
+The following result sums up some important basic properties of vector spaces.
+
+\begin{proposition}\label{P:LA1props}
+Let $V$ be a vector space over $\bF$ as described in definition \ref{D:LA1vec}. Then:
+\begin{enumerate}
+\item The additive identity $0$ is unique.
+\item The additive inverse of $v$ is unique for all $v\in V$ (we call it $-v$).
+\item $0v = 0$ for all $v\in V$.
+\item $-1v = -v$ for all $v\in V$.
+\end{enumerate}
+\end{proposition}
+\begin{proof}\mbox{}
+\begin{enumerate}
+\item Suppose $0$ and $0'$ are both additive identities for $V$. Then $0 = 0 + 0' = 0'$.
+\item Suppose $v+u = 0$ and $v + u' =0$. Then $(v + u) + u' = u'$, and so $(v + u') + u = u'$, which means $u = u'$.
+\item $0v = (0+0)v = 0v + 0v$, so $0v +(-0v) = (-0v) + 0v + 0v$, and so $0 = 0v$.
+\item Exercise \ref{Q:LA1inv}.
+\end{enumerate}
+\end{proof}
+
+\paragraph{Subspaces}
+
+\begin{definition}\label{D:LA1subs}
+Let $V$ be a vector space over $\bF$. Then a subset $U$ of $V$ is a \emph{subspace} of $V$ if it has the following properties:
+\begin{enumerate}
+\item $0\in U$.
+\item $u + v \in U$ for all $u,v\in U$ (closure under vector addition). 
+\item $au\in U$ for all $a\in \bF$ and for all $u\in U$ (closure under scalar multiplication).
+\end{enumerate}
+\end{definition}
+
+\begin{lemma}
+If $V$ is a vector space over $\bF$ then $U\subseteq V$ is a subspace of $V$ if and only if it is also a vector space over $\bF$ with the addition and scalar multiplication inherited from $V$.
+\end{lemma}
+\begin{proof}
+If $U$ is a vector space with the inherited operations then it must obviously be closed under the inherited operations and contain $0$. Conversely, if $U$ satisfies the conditions of definition \ref{D:LA1subs} then it automatically satisfies all conditions of definition \ref{D:LA1vec} except (5). To see that (5) also holds in $U$ note that, by proposition \ref{P:LA1props}(4), given $u\in U$ we have $-u = -1u$, which is in $U$ by definition \ref{D:LA1subs}(3).
+\end{proof}
+
+\begin{definition}
+Given subspaces $U_1,\ldots,U_n$ of $V$, the \emph{sum} $U_1+\ldots +U_n$ is the smallest subspace of $V$ containing $\bigcup_{i=1}^n U_i$.
+\end{definition}
+
+\begin{lemma}
+If $U_1,\ldots,U_n$ are subspaces of $V$, then 
+\[U_1+\ldots +U_n = \{u_1+\ldots +u_n: u_i\in U_i\text{ for all }i\in\{1,\ldots,n\}\}.\]
+\end{lemma}
+\begin{proof}
+$\{u_1+\ldots +u_n: u_i\in U_i\text{ for all }i\in\{1,\ldots,n\}\}$ contains $\bigcup_{i=1}^n U_i$ because $u_i = 0+\ldots +0 + u_i + 0 +\ldots + 0$ for all $u_i\in U_i$. That it is a subspace follows from the definition of a vector space. It must be the smallest subspace containing $\bigcup_{i=1}^n U_i$, because any such subspace must be closed under vector addition. 
+\end{proof}
+
+\begin{definition}
+If $U_1,\ldots,U_n$ are subspaces of $V$, then the sum $U_1+\ldots +U_n$ is a \emph{direct sum} if, for all $u\in U_1+\ldots +U_n$, there is exactly one choice of $\{u_1,\ldots, u_n\}$ such that $u_i\in U_i$ for all $i$ and $u = u_1+\ldots +u_n$. In this case we write $U_1\oplus\ldots\oplus U_n$.
+\end{definition}
+
+So direct sum is a sum where there is no redundancy. Every element in a direct sum is formed in exactly one way using the subspaces that make up the sum. The next lemma says that to check if a sum is direct all we need to do is check there is no redundancy in the expression of 0.
+
+\begin{lemma}\label{L:LA1direct}
+If $U_1,\ldots,U_n$ are subspaces of $V$, then $U_1+\ldots +U_n$ is a direct sum if and only if there is exactly one choice of $\{u_1,\ldots, u_n\}$ such that $u_i\in U_i$ for all $i$ and $0 = u_1+\ldots +u_n$. 
+\end{lemma}
+\begin{proof}
+If $U=U_1+\ldots +U_n$ is a direct sum, then by definition there is only one way to express $0$ (i.e. $0= 0+\ldots + 0$). Conversely, suppose there is only one way to express $0$, let $u\in U$, and suppose $u = u_1+\ldots + u_n = u'_1+\ldots + u'_n$. Then 
+\[0 = u_1+\ldots + u_n - (u'_1+\ldots + u'_n) = (u_1-u_1') + \ldots + (u_n-u_n').\]
+So $(u_i- u'_i) = 0$ for all $i$, as there is only one way to express $0$, and thus $u_i = u_i'$ for all $i$.  
+\end{proof}
+
+In the special case of sums of two subspaces we have the following result:
+
+\begin{lemma}\label{L:LA1cap}
+Let $U$ and $W$ be subspaces of $V$. Then $U+W$ is a direct sum if and only if $U\cap W = \{0\}$.
+\end{lemma}
+\begin{proof}
+If there is $v\in U\cap W$ then $v = 0 +v$ and $v = v + 0$, so $U+W$ is not a direct sum, as $v$ is not uniquely expressible. Conversely, suppose $U\cap W=\{0\}$ and that $v = u + w$ and $v = u' + w'$. Then $u-u' = w' -w$, and so $u - u'$ and $w'-w$ are both in $U\cap W$, and thus are both $0$. This implies $u= u'$ and $w = w'$, and so $U+W$ is a direct sum.
+\end{proof}
+
+\begin{example}
+Let $V = \bR^3$, let $U_1 = \{(2x, 0, z): x,z\in \bR\}$, let $U_2 = \{(0,y,0): y\in \bR\}$, and let $U_3 = \{(0,z,z): z\in\bR\}$. Then $\bR^3 = U_1 + U_2 + U_3$, because given $(a,b,c)\in\bR^3$ we have 
+\[(a,b,c) = (2(\frac{a}{2}), 0, 0) + (0, b-c, 0) + (0,c,c).\]
+
+However, $U_1+U_2+U_3$ is not a direct sum as 
+\[(0,0,0) = (0,0,1) + (0,1,0) + (0,-1,-1).\] 
+I.e., $0$ is not uniquely expressible.
+
+However, $U_i\cap U_j = \{0\}$ for all $i\neq j$, which indicates that lemma \ref{L:LA1cap} is a special result for binary sums, and does not hold in general for sums involving more than two subspaces.
+\end{example}
+
+\paragraph{Linear independence and span}
+
+\begin{definition}
+Given a vector space $V$ over $\bF$, and vectors $v_1,\ldots v_n\in V$, we say the \emph{span} of $(v_1,\ldots,v_n)$ is the smallest subspace of $V$ containing $\{v_1,\ldots,v_n\}$. By convention we define $\spa() = \{0\}$. If $\spa(v_1,\ldots,v_n) = V$ we say $(v_1,\ldots,v_n)$ \emph{spans} $V$.
+\end{definition}
+
+\begin{lemma}
+If $V$ is vector space over $\bF$, and $v_1,\ldots v_n\in V$, then 
+\[\spa(v_1,\ldots v_n) = \{a_1v_1+\ldots + a_nv_n: a_i \in \bF\text{ for all }i\}.\]
+\end{lemma}
+\begin{proof}
+Let $U = \{a_1v_1+\ldots + a_nv_n: a_i \in \bF$ for all $i\}$. Then clearly $U\subseteq \spa(v_1,\ldots v_n)$, as $\spa(v_1,\ldots v_n)$ is closed under vector addition and scalar multiplication. Moreover, $U$ is closed under vector addition and scalar multiplication, so $U$ is a subspace of $V$. Since $\{v_1,\ldots,v_n\}\subseteq U$, it follows from the definition of $\spa(v_1,\ldots v_n)$ as the smallest such subspace that $\spa(v_1,\ldots v_n)\subseteq U$. Thus $U = \spa(v_1,\ldots v_n)$ as required.  
+\end{proof}
+
+
+\begin{definition}
+Let $V$ be vector space over $\bF$, and let $v_1,\ldots v_n\in V$. Then $(v_1,\ldots,v_n)$ is \emph{linearly independent} if whenever $a_1v_1+\ldots + a_n v_n = 0$ we have $a_1=\ldots=a_n=0$. If $(v_1,\ldots,v_n)$ is not linearly independent then we say it is \emph{linearly dependent}.
+\end{definition}
+
+\begin{example}\mbox{}
+\begin{enumerate}
+\item The vectors $(1,0,0)$, $(0,1,0)$ and $(0,0,1)$ are linearly independent and span $\bR^3$ and $\bC^3$.
+\item The span of a single vector $v$ is $\{av:a\in \bF\}$. Single vectors are always linearly independent.
+\item The vectors $(2,3,1)$, $(1,-1,2)$ and $(7,3,c)$ are linearly independent so long as $c\neq 8$.
+\item Every list of vectors containing $0$ is linearly dependent, by convention.
+\end{enumerate}
+\end{example}
+
+
+\end{document}

@@ -1,0 +1,128 @@
+\documentclass{article}
+
+\usepackage{amsmath, mathrsfs, amssymb, stmaryrd, cancel, hyperref, relsize,tikz,amsthm,comment}
+\usepackage{graphicx}
+\usepackage{xfrac}
+\hypersetup{pdfstartview={XYZ null null 1.25}}
+\usepackage[all]{xy}
+\usepackage[normalem]{ulem}
+\usepackage{tikz-cd}
+
+
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}{\bfseries}{\itshape}
+\newtheorem{proposition}{Proposition}{\bfseries}{\itshape}
+\newtheorem{definition}{Definition}{\bfseries}{\upshape}
+\newtheorem{lemma}{Lemma}{\bfseries}{\upshape}
+\newtheorem{example}{Example}{\bfseries}{\upshape}
+\newtheorem{corollary}{Corollary}{\bfseries}{\upshape}
+\newtheorem{remark}{Remark}{\bfseries}{\upshape}
+\newtheorem{fact}{Fact}{\bfseries}{\upshape}
+\newtheorem{Q}{Exercise}{\bfseries}{\upshape}
+
+\newtheorem*{theorem*}{Theorem}
+
+% Uncomment below to create stand-alone file
+% \newcommand*{\prefix}{}
+
+\newcommand{\bN}{\mathbb{N}}
+\newcommand{\bZ}{\mathbb{Z}}
+\newcommand{\bQ}{\mathbb{Q}}
+\newcommand{\bR}{\mathbb{R}}
+\newcommand{\bP}{\mathbb{P}}
+\newcommand{\bF}{\mathbb{F}}
+\newcommand{\spa}{\mathrm{span}}
+\newcommand{\cL}{\mathcal{L}}
+\DeclareMathOperator{\ran}{\mathrm{ran}}
+\DeclareMathOperator{\nul}{\mathrm{null}}
+
+
+\title{ITCS 531 \\Linear Algebra 3: Linear maps and matrices exercises}
+\author{Rob Egrot}
+\date{}
+
+\begin{document}
+\maketitle
+%\includecomment{comment}
+
+\begin{Q}
+Let $b,c\in \bR$. Define $T:\bR^3\to \bR^2$ by 
+\[T(x,y,z) = (2x-4y+3z+b, 6x +cxyz).\]
+Prove that $T$ is linear if and only if $b=c=0$.
+\end{Q}
+\begin{comment}
+\textbf{Solution:}
+If $b=c=0$ then $T(x,y,z) = (2x-4y+3z, 6x)$. We check the conditions of definition \ref{D:LA3map}. First,
+\begin{align*}
+T(x_1 + x_2,y_1+y_2,z_1+z_2) &= (2(x_1+x_2) - 4(y_1+y_2) +3(z_1+z_2), 6(x_1+x_2))\\
+&= (2x_1 - 4y_1 +3z_1, 6x_1) + (2x_2 - 4y_2 +3z_2, 6x_2)\\
+&= T(x_1,y_1,z_1) + T(x_2,y_2,z_2).
+\end{align*} 
+Second,
+\begin{align*}
+T(\lambda x, \lambda y, \lambda z) &= (2\lambda x-4\lambda y+3 \lambda z, 6\lambda x)\\
+&= \lambda (2 x-4 y+3 z, 6 x)\\
+&= \lambda T(x,y,z).
+\end{align*} 
+Conversely, if $T$ is linear then $2T(1,0,0) = T(2,0,0)$, and so $2(2+b,6) = (4+b,12)$. I.e. $(4+2b,12) = (4+b,12)$, and so $b$ must be zero. Also, $T(1,1,1) = T(1,0,0) + T(0,1,1)$. So
+\[(2-4+3,6 + c) = (2, 6) + (-4+3,0) = (2-4+3,6),\]
+so $c=0$. 
+\end{comment}
+
+\begin{Q}
+Let $T\in \cL(V,W)$. Let $v_1,\ldots, v_n\in V$ and suppose that \[(T(v_1),\ldots, T(v_n))\] is linearly independent in $W$. Prove that $(v_1,\ldots, v_n)$ is linearly independent in $V$.
+\end{Q}
+\begin{comment}
+\textbf{Solution:}
+Suppose $a_1v_1+\ldots+a_nv_n = 0$. Then, as $T$ is linear, we have
+\[a_1T(v_1)+\ldots +a_nT(v_n)=T(a_1v_1+\ldots+a_nv_n) = T(0) = 0.\]
+As $T(v_1),\ldots, T(v_n)$ is linearly independent, it follows that $a_1=\ldots=a_n=0$. So $(v_1,\ldots, v_n)$ is also linearly independent.   
+\end{comment}
+
+\begin{Q}\label{\prefix Q:LA3null}
+Prove lemma \ref{L:LA3null}.
+\end{Q}
+\begin{comment}
+\textbf{Solution:}
+We have $0\in \nul T$ by lemma \ref{L:LA3zero}. Also, if $T(v) = 0$ then 
+\[T(\lambda v) = \lambda T(v) = \lambda.0 = 0,\]
+so $\null T$ is closed under scalar multiplication. Also, if $T(u)=T(v)=0$, then
+\[T(u+v) = T(u)+T(v) = 0+0 = 0,\]
+so $\null T$ is closed under addition.
+\end{comment}
+
+\begin{Q}\label{\prefix Q:LA3mult}
+Prove proposition \ref{P:LA3mult}.
+\end{Q}
+\begin{comment}
+\textbf{Solution:}
+What should the transformation $TS$ do to the basis vector $u_i$ of $U$? As $A$ is the matrix of $S$, to find $Su_i$ we look at what $A$ does to the column vector that is zeroes except for 1 in the $i$th place. So the result is $a_{1i}v_1 + \ldots + a_{mi}v_m$. What does $T$ do to a basis vector $v_j$ of $V$? Now we look at the matrix $B$, which tells us that $T(v_j) = b_{1j}w_1+\ldots+ b_{pj}w_p$. So, 
+\begin{align*}TS(u_i) &= T(a_{1i}v_1 + \ldots + a_{mi}v_m)\\
+&= a_{1i}T(v_1)+\ldots + a_{mi}T(v_m)\\
+&=a_{1i}(b_{11}w_1+\ldots+ b_{p1}w_p) + \ldots + a_{mi}(b_{1m}w_1+\ldots+ b_{pm}w_p). \end{align*}
+
+We can rearrange this as
+\begin{align*}&(a_{1i}b_{11} + \ldots + a_{mi}b_{1m})w_1\\
++&(a_{1i}b_{21} + \ldots + a_{mi}b_{2m})w_2\\ 
++& \ldots\\
++&(a_{1i}b_{p1}+\ldots +a_{mi}b_{pm})w_p.\end{align*}
+But 
+\[\begin{bmatrix}
+a_{1i}b_{11} + \ldots + a_{mi}b_{1m}\\
+a_{1i}b_{21} + \ldots + a_{mi}b_{2m}\\
+\vdots\\
+a_{1i}b_{p1}+\ldots +a_{mi}b_{pm}
+\end{bmatrix}
+\]
+is the $i$th column of the matrix $BA$. Since this is true for every basis vector $u_i$ of $U$, the transformation $TS$ is given by the matrix $BA$ as claimed.
+\end{comment}
+
+\begin{Q}
+Let $T\in\cL(V,W)$, and suppose both $V$ and $W$ are finite dimensional. Prove that, whatever the choice of bases for $V$ and $W$, the matrix of $T$ with respect to these bases must have at least $\dim \ran T$ entries that are not equal to $0$.
+\end{Q}
+\begin{comment}
+\textbf{Solution:}
+Let $A$ be the matrix of $T$ with respect to some pair of bases. If the $i$th column of $A$ is all zeroes, then this means $T(v_i)=0$, where $v_i$ is the $i$th basis vector for $V$. Since $(T(v_1),\ldots,T(v_n))$ spans $\ran T$, there must be at least $\dim\ran T$ columns of $A$ that are not all zeroes. This requires at least $\dim\ran T$ non-zero entries.
+\end{comment}
+
+\end{document}

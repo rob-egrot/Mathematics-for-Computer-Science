@@ -1,0 +1,101 @@
+\documentclass{article}
+
+\usepackage{amsmath, mathrsfs, amssymb, stmaryrd, cancel, hyperref, relsize,tikz,amsthm,comment,enumerate}
+\usepackage{graphicx}
+\usepackage{xfrac}
+\hypersetup{pdfstartview={XYZ null null 1.25}}
+\usepackage[all]{xy}
+\usepackage[normalem]{ulem}
+\usepackage{tikz-cd}
+
+
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}{\bfseries}{\itshape}
+\newtheorem{proposition}{Proposition}{\bfseries}{\itshape}
+\newtheorem{definition}{Definition}{\bfseries}{\upshape}
+\newtheorem{lemma}{Lemma}{\bfseries}{\upshape}
+\newtheorem{example}{Example}{\bfseries}{\upshape}
+\newtheorem{corollary}{Corollary}{\bfseries}{\upshape}
+\newtheorem{remark}{Remark}{\bfseries}{\upshape}
+\newtheorem{fact}{Fact}{\bfseries}{\upshape}
+\newtheorem{Q}{Exercise}{\bfseries}{\upshape}
+
+\newtheorem*{theorem*}{Theorem}
+
+% Uncomment below to create stand-alone file
+% \newcommand*{\prefix}{}
+
+\newcommand{\bN}{\mathbb{N}}
+\newcommand{\bZ}{\mathbb{Z}}
+\newcommand{\bQ}{\mathbb{Q}}
+\newcommand{\bR}{\mathbb{R}}
+\newcommand{\bP}{\mathbb{P}}
+\newcommand{\bF}{\mathbb{F}}
+\newcommand{\spa}{\mathrm{span}}
+\newcommand{\cL}{\mathcal{L}}
+\DeclareMathOperator{\ran}{\mathrm{ran}}
+
+
+\title{ITCS 531 \\Linear Algebra 4:  Inner products on real vector spaces}
+\author{Rob Egrot}
+\date{}
+
+\begin{document}
+\maketitle
+%\includecomment{comment}
+
+\begin{Q}
+Let $a,b,c,d$ be positive real numbers. Use Cauchy-Schwarz (theorem \ref{T:LA4CS}) to prove that 
+\[16 \leq (a+b+c+d)(\frac{1}{a} + \frac{1}{b} + \frac{1}{c} + \frac{1}{d}).\]
+\end{Q}
+\begin{comment}
+\textbf{Solution:}
+Let $u = (\sqrt{a} , \sqrt b, \sqrt{c}, \sqrt{d})$, and let $v = (\frac{1}{\sqrt a},\frac{1}{\sqrt b}\frac{1}{\sqrt c},\frac{1}{\sqrt d})$. Then $\langle u, v \rangle^2 = (1+1+1+1)^2 = 16$. Also, $\| u\|^2 = \langle u,u\rangle = a+b+c+d$, and $\| v\|^2 = \langle v,v\rangle = \frac{1}{a}+\frac{1}{b}+\frac{1}{c}+\frac{1}{d}$. By Cauchy-Schwarz we have $\langle u, v \rangle^2\leq\| u\|^2\| v\|^2$. I.e. $16\leq (a+b+c+d)(\frac{1}{a}+\frac{1}{b}+\frac{1}{c}+\frac{1}{d})$, which is what we want to prove.   
+\end{comment}
+
+\begin{Q}
+Let $x_1,\ldots ,x_n\in\bR$. Prove that $(x_1+\ldots +x_n)^2\leq n(x_1^2+\ldots +x_n^2)$. 
+\end{Q}
+\begin{comment}
+\textbf{Solution:}
+Let $u = (x_1,\ldots,x_n)$, and let $v = (1,\ldots,1)$. So $\langle u, v\rangle^2 = (x_1+\ldots+x_n)^2$. Also, $\|u\|^2 = x_1^2+\ldots+ x_n^2$, and $\|v\|^2 = 1+1+\ldots+1 = n$. So, by Cauchy-Schwarz, we have $(x_1+\ldots+x_n)^2\leq n( x_1^2+\ldots+ x_n^2)$ as claimed. 
+\end{comment}
+
+\begin{Q}
+Is there an inner product on $\bR^2$ such that the associated norm is given by $\|(x,y)\| = \max\{x, y\}$? Provide a proof for your answer.
+\end{Q}
+\begin{comment}
+\textbf{Solution:}
+No. For example, think about when both $x$ and $y$ are negative. Then $\max\{x, y\}$ is also negative, but norms are never negative. 
+\end{comment}
+
+\begin{Q}
+Let $V$ be a real inner product space.
+\begin{enumerate}[(a)]
+\item Prove that $\langle u+v, u-v\rangle = \|u\|^2 -\|v\|^2$ for all $u,v\in V$.
+\item A rhombus is a parallelogram whose four sides all have equal length. Prove that the diagonals of a rhombus are orthogonal to each other.
+\item  Prove that
+\[\langle u, v\rangle = \frac{\|u+v\|^2-\|u-v\|^2}{4}\]
+for all $u,v\in V$.
+\end{enumerate}
+\end{Q}
+\begin{comment}
+\textbf{Solution:}
+\begin{enumerate}[(a)]
+\item \begin{align*}
+\langle u+v,u-v\rangle &= \langle u, u-v\rangle + \langle v,u-v \rangle\\
+&=\langle u, u \rangle - \langle u,v \rangle + \langle v, u \rangle - \langle v, v \rangle\\
+&= \|u\|^2 - \|v\|^2.
+\end{align*}
+\item Think about this picture:
+\[\xymatrix{ & &\ar[rrr]^{u}\ar@{..>}[ddr] & & &\\
+\\
+\ar@{..>}[uurrrrr]\ar[uurr]^v\ar[rrr]_u & && \ar[uurr]_{v} 
+}\]
+This is a rhombus. The up-right diagonal is given by $u+v$, and the down-right diagonal is given by $u-v$. By part (a) we have $\langle u+v, u-v\rangle = \|u\|^2 -\|v\|^2$, and by the assumption that $u$ and $v$ are the same length we have $\|u\|^2 =\|v\|^2$. So $\langle u+v, u-v\rangle = 0$, which means the diagonals are orthogonal to each other.
+\item We could work through this calculation directly, but with a little cleverness we can use a trick and save some effort. Set $x = \frac{u+v}{2}$, and set $y = \frac{u-v}{2}$. Then $\langle u, v\rangle  = \langle x+y, x-y \rangle$, and by part (a) we have 
+\[\langle x+y, x-y \rangle = \|x\|^2 -\|y\|^2 = \frac{\|u+v\|^2}{4} - \frac{\|u-v\|^2}{4}.\] 
+\end{enumerate}
+\end{comment}
+
+\end{document}

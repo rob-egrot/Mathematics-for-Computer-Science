@@ -1,0 +1,95 @@
+\documentclass{article}
+
+\usepackage{amsmath, mathrsfs, amssymb, stmaryrd, cancel, hyperref, relsize,tikz,amsthm,comment}
+\usepackage{graphicx}
+\usepackage{xfrac}
+\hypersetup{pdfstartview={XYZ null null 1.25}}
+\usepackage[all]{xy}
+\usepackage[normalem]{ulem}
+\usepackage{tikz-cd}
+
+
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}{\bfseries}{\itshape}
+\newtheorem{proposition}{Proposition}{\bfseries}{\itshape}
+\newtheorem{definition}{Definition}{\bfseries}{\upshape}
+\newtheorem{lemma}{Lemma}{\bfseries}{\upshape}
+\newtheorem{example}{Example}{\bfseries}{\upshape}
+\newtheorem{corollary}{Corollary}{\bfseries}{\upshape}
+\newtheorem{remark}{Remark}{\bfseries}{\upshape}
+\newtheorem{fact}{Fact}{\bfseries}{\upshape}
+\newtheorem{Q}{Exercise}{\bfseries}{\upshape}
+
+\newtheorem*{theorem*}{Theorem}
+
+% Uncomment below to create stand-alone file
+% \newcommand*{\prefix}{}
+
+\newcommand{\bN}{\mathbb{N}}
+\newcommand{\bZ}{\mathbb{Z}}
+\newcommand{\bQ}{\mathbb{Q}}
+\newcommand{\bR}{\mathbb{R}}
+\newcommand{\bP}{\mathbb{P}}
+\newcommand{\bF}{\mathbb{F}}
+\newcommand{\spa}{\mathrm{span}}
+
+
+
+\title{ITCS 531 \\Linear Algebra 2: Dimension exercises}
+\author{Rob Egrot}
+\date{}
+
+\begin{document}
+\maketitle
+%\includecomment{comment}
+
+\begin{Q}\label{\prefix Q:LA2pol}
+For $n\in \bN$, define $\bR_n[x]$ to be the set of all polynomials of degree at most $n$. Write down a basis for $\bR_6[x]$. Is it possible for a list of 8 polynomials over $\bR$ of degree at most 6 to be linearly independent?
+\end{Q}
+\begin{comment}
+\textbf{Solution:}
+We can use $(1,x,x^2,\ldots,x^6)$. It is not possible for a list of 8 polynomials of degree at most 6 to be linearly independent. To prove, this notice that we have shown that there is a spanning set of 7 elements, and by proposition 2.4 a linearly independent list can't be bigger than a spanning list.
+\end{comment}
+
+\begin{Q}
+Let $(v_1,v_2,v_3,v_4)$ be a basis for $V$. Prove that 
+\[(v_1+ v_2, v_2+ v_3, v_3+v_4, v_4)\] 
+is also a basis for $V$. 
+\end{Q}
+\begin{comment}
+\textbf{Solution:}
+By theorem \ref{T:span_ind}, a linearly independent list with the right size is also a basis. Since $(v_1+ v_2, v_2+ v_3, v_3+v_4, v_4)$ has the right size, we just need to show it is linearly independent (alternatively we could show it spans). Suppose
+\[a_1(v_1+ v_2)+ a_2(v_2+ v_3) + a_3(v_3+v_4) + a_4v_4 = 0.\]
+Then
+\[a_1v_1 + (a_1+a_2)v_2 + (a_2+a_3)v_3 + (a_3+a_4)v_4 = 0,\]
+and, as $(v_1,v_2,v_3,v_4)$ is linearly independent, it follows that $a_1 = (a_1+a_2) = (a_2+a_3) = (a_3+a_4) = 0$. From this we easily see that $a_i = 0$ for all $i=1,2,3,4$. Thus $(v_1+ v_2, v_2+ v_3, v_3+v_4, v_4)$ is linearly independent as required.
+\end{comment}
+
+\begin{Q}
+Let $U$ and $W$ be subspaces of $V$ and suppose that $V = U\oplus W$. Let $(u_1,\ldots,u_k)$ be  a basis for $U$, and let $(w_1,\ldots,w_m)$ be a basis for $W$. Prove that $(u_1,\ldots,u_k,w_1,\ldots,w_m)$ is a basis for $V$.
+\end{Q}
+\begin{comment}
+\textbf{Solution:}
+We will first show that $(u_1,\ldots,u_k,w_1,\ldots,w_m)$ is linearly independent. Suppose $0 = a_1u_1+\ldots + a_ku_k + b_1w_1 + \ldots + b_mw_m$. Since $U\oplus W$ is a direct sum, by definition there is a unique $u\in U$ and $w\in W$ with $u+w=0$, and this must be $u = 0$ and $w= 0$. So $b_1w_1 + \ldots + b_mw_m = 0$ and $a_1u_1+\ldots + a_ku_k = 0$. But as $(u_1,\ldots,u_k)$ is a basis for $U$ and $(w_1,\ldots,w_m)$ is a basis for $W$, we must have $a_1=\ldots = a_k=b_1=\ldots = b_m=0$. But this means $(u_1,\ldots,u_k,w_1,\ldots,w_m)$ is linearly independent as claimed.
+
+All we need to do now is show the list spans $V$. Let $v\in V$. Then by lemma \ref{L:LA1cap} there is $u\in U$ and $w\in W$ with $v = u+w$. So, as $(u_1,\ldots,u_k)$ and $(w_1,\ldots,w_m)$ span $U$ and $W$ respectively, we have $b_1w_1 + \ldots + b_mw_m = w$ and $a_1u_1+\ldots + a_ku_k = u$, for some choice of coefficients. But this means $v = a_1u_1+\ldots + a_ku_k+b_1w_1 + \ldots + b_mw_m$, so the list does span $v$.   
+\end{comment}
+
+\begin{Q}
+Let $U$ and $W$ be subspaces of $\bR^8$, and suppose $\dim(U) = 5$, $\dim(W)= 3$, and $U\cap W =\{0\}$. Prove that $\bR^8 = U\oplus W$.
+\end{Q}
+\begin{comment}
+\textbf{Solution:}
+ Let $(u_1,\ldots,u_5)$ be  a basis for $U$, and let $(w_1,w_2,w_3)$ be a basis for $W$. By lemma \ref{L:LA1cap}, $U+W$ is a direct sum, so $(u_1,\ldots,u_5,w_1,w_2,w_3)$ is linearly independent. It also has 8 elements, which is the same as the dimension of $\bR^8$. So, by theorem \ref{T:span_ind}, $(u_1,\ldots,u_5,w_1,w_2,w_3)$ is a basis for $\bR^8$, and so $U\oplus W = \bR^8$.
+\end{comment}
+
+\begin{Q}
+Let $V$ be a finite dimensional vector space and $\dim(V)= n>0$. Show that $V= U_1\oplus\ldots\oplus U_n$, for some set $\{U_1,\ldots,U_n\}$ of one-dimensional subspaces. 
+\end{Q}
+\begin{comment}
+\textbf{Solution:}
+Let $(v_1,\ldots,v_n)$ be a basis for $V$. For each $i\in \{1\ldots,n\}$, let $U_i = \spa(v_i)$. Then $V=U_1+\ldots+ U_n$, as a basis spans $V$, by definition. Also, if $0 = a_1v_n+\ldots+a_nv_n$ then $a_1=\ldots= a_n = 0$, by linear independence, so the sum is direct, by lemma \ref{L:LA1direct}.
+
+\end{comment}
+
+\end{document}

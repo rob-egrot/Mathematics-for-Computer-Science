@@ -1,0 +1,125 @@
+\documentclass{article}
+
+\usepackage{amsmath, mathrsfs, amssymb, stmaryrd, cancel, hyperref, relsize,tikz,amsthm,comment,enumerate}
+\usepackage{graphicx}
+\usepackage{xfrac}
+\hypersetup{pdfstartview={XYZ null null 1.25}}
+\usepackage[all]{xy}
+\usepackage[normalem]{ulem}
+\usepackage{tikz-cd}
+
+
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}{\bfseries}{\itshape}
+\newtheorem{proposition}{Proposition}{\bfseries}{\itshape}
+\newtheorem{definition}{Definition}{\bfseries}{\upshape}
+\newtheorem{lemma}{Lemma}{\bfseries}{\upshape}
+\newtheorem{example}{Example}{\bfseries}{\upshape}
+\newtheorem{corollary}{Corollary}{\bfseries}{\upshape}
+\newtheorem{remark}{Remark}{\bfseries}{\upshape}
+\newtheorem{fact}{Fact}{\bfseries}{\upshape}
+\newtheorem{Q}{Exercise}{\bfseries}{\upshape}
+
+\newtheorem*{theorem*}{Theorem}
+
+% Uncomment below to create stand-alone file
+% \newcommand*{\prefix}{}
+
+\newcommand{\bN}{\mathbb{N}}
+\newcommand{\bZ}{\mathbb{Z}}
+\newcommand{\bQ}{\mathbb{Q}}
+\newcommand{\bR}{\mathbb{R}}
+\newcommand{\bP}{\mathbb{P}}
+\newcommand{\bF}{\mathbb{F}}
+\newcommand{\spa}{\mathrm{span}}
+
+
+
+\title{ITCS 531 \\Linear Algebra 1: Vector spaces over fields exercises}
+\author{Rob Egrot}
+\date{}
+
+\begin{document}
+\maketitle
+%\includecomment{comment}
+
+\begin{Q}\label{\prefix Q:LA1props}
+Prove lemma \ref{L:LA1props}(6).
+\end{Q}
+\begin{comment}
+\textbf{Solution:} Let $\alpha = a+bi$, let $\beta = c+di$, and let $\gamma = e +fi$.
+\begin{enumerate}[]
+\item 6) \begin{align*}
+(a+ bi)((c+di)+ (e+fi)) &= (a+bi)((c+e) + (d+f)i) \\
+&= a(c+e) - b(d+f) + (b(c+e) + a(d+f))i\\
+&=ac + ae -bd - bf +(bc+be + ad +af)i.
+\end{align*}
+Also,
+\begin{align*}
+(a+ bi)(c+di) + (a+ bi)(e+fi) &= (ac - bd) +(ad + bc)i + (ae - bf) + (af + be)i \\
+&= ac+ ae - bd - bf +(ad + bc +af + be)i.
+\end{align*}
+These two things are the same, so we have distributivity.
+\end{enumerate}
+\end{comment}
+
+\begin{Q}
+Consider the following `proof'. What is wrong with it?
+\[-1 = i^2 = i.i = \sqrt{-1}\sqrt{-1} = \sqrt{(-1)(-1)} = \sqrt 1 = 1.\]
+\end{Q}
+\begin{comment}
+\textbf{Solution:}
+The problem is that $(-1\times -1)^\frac{1}{2}$ does not equal $(-1)^\frac{1}{2}(-1)^\frac{1}{2}$. We think it should because when $a,b,c\in\bR$ are all positive we have $(ab)^c = a^cb^c$ (it's not obvious that this is true for irrational values of $c$, or even exactly what it means to take an irrational power, but it's obviously true for rational $c$, and it turns out to be true for irrational values too). What the argument above shows it that this is no longer always true when we have negative values for $a$ and $b$. 
+\end{comment}
+
+\begin{Q}\label{\prefix Q:LA1inv}
+Complete the proof of proposition \ref{P:LA1props}. 
+\end{Q}
+\begin{comment}
+\textbf{Solution:}
+We must show $-1v = -v$ for all $v\in V$. By proposition \ref{P:LA1props}(3) we have $0v = 0$. So $(1-1)v = 0$, and so $v + (-1)v = 0$ by definition \ref{D:LA1vec}(8) and (6). So $(-1)v = - v$ by proposition \ref{P:LA1props}(2). 
+
+\end{comment}
+
+\begin{Q}
+Given $v\in V$, prove that $-(-v)= v$.
+\end{Q}
+\begin{comment}
+\textbf{Solution:}
+We know $v+ (-v) = 0$, so $-(-v) = v$, as additive inverses are unique, by proposition \ref{P:LA1props}(2).
+\end{comment}
+
+\begin{Q}
+Given $a\in \bF$ and $v\in V$ prove that $av = 0$ if and only if either $a=0$ or $v=0$.
+\end{Q}
+\begin{comment}
+\textbf{Solution:}
+If $a=0$ then $av = 0$ by proposition \ref{P:LA1props}(3). Now, let $v=0$, and suppose $a\neq 0$. Let $w$ be any vector. Then $a0 + w = a0 + aa^{-1}w = a(0+a^{-1}w) = a(a^{-1}w)= 1w = w$. So $a0 = 0$, as the zero of a vector space is unique (by proposition \ref{P:LA1props}(1)). Conversely, suppose $av = 0 $ and that $a\neq 0$. Then $a^{-1}a v = a^{-1} 0 = 0$, and so $v = 0$, as $aa^{-1}=1$.
+\end{comment}
+
+\begin{Q}\label{\prefix Q:LA1cap}
+Let $U$ and $W$ be subspaces of $V$. Prove that $U\cap W$ is a subspace of $V$.
+\end{Q}
+\begin{comment}
+\textbf{Solution:}
+We need to check the three conditions of definition \ref{D:LA1subs}. First, $0$ is obviously in $U\cap W$, as both $U$ and $W$ are subspaces. Second, if $u,v\in U\cap W$, then $u,v\in U$ and $u,v\in W$, and, as both $U$ and $W$ are closed under addition (as they are subspaces), we have $u+v\in U\cap W$. Finally, if $v\in U\cap W$ then $v\in U$ and $v\in W$, so $\alpha v\in U\cap W$ for all $\alpha$ as both $U$ and $W$ are closed under scalar multiplication. 
+\end{comment}
+
+\begin{Q}(Optional)
+Let $U$ and $W$ be subspaces of $V$. Prove that if $U\cup W$ is a subspace of $V$, then either $U\subseteq W$ or $W\subseteq U$.
+\end{Q}
+\begin{comment}
+\textbf{Solution:}
+Suppose $U\cup W$ is a subspace of $V$, and suppose $U$ is not a subspace of $W$. Choose $u\in U\setminus W$, and let $w\in W$. Then $u + w \in U\cup W$, as $U\cup W$ is a subspace, and so is closed under $+$. So either $u+w \in U$ or $u+w \in W$. If $u+w\in W$, then $u+w-w = u$ is also in $W$, but this contradicts the choice of $u$. So $u+w\in U$, and so $u+w-u = w\in U$. This is true for all $w\in W$, so $W$ is a subspace of $U$.
+\end{comment}
+
+\begin{Q}(Optional)
+Let $V$ be vector space over $\bF$, and let $v_1,\ldots v_n\in V$ such that $(v_1,\ldots,v_n)$ is linearly independent. Let $w\in V$. Prove that $(v_1,\ldots,v_n, w)$ is linearly independent if and only if $w\not\in \spa(v_1,\ldots,v_n)$.
+\end{Q}
+\begin{comment}
+\textbf{Solution:}
+If $w\in \spa(v_1,\ldots,v_n)$, then $w = a_1v_1+\ldots +a_n v_n$ for some $a_1,\ldots,a_n$, and so $0 = (-1)w + a_1v_1+\ldots +a_n v_n$, and so $(v_1,\ldots,v_n, w)$ is not linearly independent. Conversely, if $(v_1,\ldots,v_n, w)$ is not linearly independent then we have $a_0w + a_1v_1+\ldots + a_n v_n = 0$ for some $a_0,\ldots, a_n$ not all zero, and $a_0$ cannot be zero, as $(v_1,\ldots,v_n)$ is linearly independent. So $w = \frac{-a_1}{a_0}v_1 + \ldots + \frac{-a_n}{a_0}v_n$, and is therefore in $\spa(v_1,\ldots,v_n)$. 
+\end{comment}
+
+
+\end{document}
