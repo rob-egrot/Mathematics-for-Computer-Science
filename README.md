@@ -11,3 +11,5 @@ This command is used as a kind of hack in the main document to avoid duplicating
 Some exercises reference results in the notes, so these will have to be changed manually to avoid unknown references in a stand-alone file.
 
 There are also files for slides and solutions for selected homework problems (created with Beamer).
+
+LaTex purists be warned, I make no promises about the style or quality of my code.
