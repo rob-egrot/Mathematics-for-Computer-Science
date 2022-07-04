@@ -1,0 +1,174 @@
+\documentclass{article}
+
+\usepackage{amsmath, mathrsfs, amssymb, stmaryrd, cancel, hyperref, relsize,tikz,amsthm}
+\usepackage{graphicx}
+\usepackage{xfrac}
+\hypersetup{pdfstartview={XYZ null null 1.25}}
+\usepackage[all]{xy}
+\usepackage[normalem]{ulem}
+\usepackage{tikz-cd}
+
+
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}[section]{\bfseries}{\itshape}
+\newtheorem{proposition}[theorem]{Proposition}{\bfseries}{\itshape}
+\newtheorem{definition}[theorem]{Definition}{\bfseries}{\upshape}
+\newtheorem{lemma}[theorem]{Lemma}{\bfseries}{\upshape}
+\newtheorem{example}[theorem]{Example}{\bfseries}{\upshape}
+\newtheorem{corollary}[theorem]{Corollary}{\bfseries}{\upshape}
+\newtheorem{remark}[theorem]{Remark}{\bfseries}{\upshape}
+\newtheorem{fact}[theorem]{Fact}{\bfseries}{\upshape}
+\newtheorem{Q}[theorem]{Exercise}{\bfseries}{\upshape}
+
+\newtheorem*{theorem*}{Theorem}
+
+\newcommand{\bN}{\mathbb{N}}
+\newcommand{\bZ}{\mathbb{Z}}
+\newcommand{\bQ}{\mathbb{Q}}
+\newcommand{\bR}{\mathbb{R}}
+\newcommand{\bP}{\mathbb{P}}
+\newcommand{\HCF}{\mathbf{HCF}}
+
+\newcommand*{\prefix}{}
+
+\title{ITCS 531 \\Number Theory 1: Prime numbers}
+\author{Rob Egrot}
+\date{}
+
+\begin{document}
+\maketitle
+
+\section{Prime numbers}
+Prime numbers are like the elementary particles of arithmetic, in the sense that they cannot be non-trivially divided into smaller pieces, and they form the building blocks from which the other numbers are constructed. Mathematicians have been fascinated by prime numbers for thousands of years, and there are many simple questions about them that need very advanced techniques from abstract mathematics to solve, or are even unsolved to this day. For example, do you know if there are an infinite number of primes $p$ such that $p+2$ is also prime? Well, nobody does at the time of writing, and this is known as the \emph{twin prime conjecture}. In fact, it was only as recently as 2013 that mathematicians were able to prove that there is any finite number $k$ with an infinite number of pairs of primes whose difference is less than $k$. The first proof of this (published by Yitang Zhang) has this bounding number $k$ set at 70,000,000, but collaborative work building on this proof quickly reduced the possible value of $k$ to 246.
+
+More relevant in computer science, prime numbers and their properties give us important techniques for encryption. Understanding this will be the focus of this course, but to do this we will need some abstract theory. 
+\paragraph{Notation}
+\begin{itemize}
+\item $\bN$ is the set \emph{natural numbers}, so $\bN=\{0,1,2,\ldots\}$.
+\item $\bZ$ is the set of \emph{integers}, so $\bZ=\{\ldots,-2,-1,0,1,2,\ldots\}$.
+\item $\bQ$ is the set of \emph{rational numbers}. $\bQ$ can be thought of as the set of fractions of two integers.
+\item $\bR$ is the set of \emph{real numbers}. $\bR$ can be thought of as the set of all numbers expressible as a (possibly infinite) decimal. Every real number that is not rational is \emph{irrational}.
+\item If $X$ is a set and $x$ is an element, we use $x\in X$ to say that $x$ is a member of $X$. Note that in ZF set theory, all objects are sets, and there are various rules saying which sets exist and when they can be elements of other sets. We don't need to worry about this now.
+\item Given two integers $a,b\in \bZ$, we say $a$ divides $b$ if there is $c\in \bZ$ with $b=ac$. We write $a\mid b$ if $a$ divides $b$. If $a$ does not divide $b$ we write $a\nmid b$.
+\end{itemize}
+\begin{definition}[Prime number]
+$n\in \bN$ is \emph{prime} if $n>1$ and, whenever $a,b\in \bN$, if $ab=n$ then either $a=1$ and $b= n$ or vice-versa. We use $\bP$ for the set of prime numbers. So $\bP=\{2,3,5,7,11,\ldots\}$.  Numbers that are not prime are \emph{composite}.
+\end{definition}
+
+The aim in this section is to prove the following two important results about prime numbers. Both these theorems were known to the ancient Greeks.
+
+\begin{theorem}[Fundamental Theorem of Arithmetic]\label{\prefix \prefix T:fund}
+Every natural number greater than 1 can be expressed as a product of primes. Moreover, this product is unique up to reordering.
+\end{theorem}
+
+\begin{theorem}\label{\prefix T:inf}
+The set of prime numbers is infinite.
+\end{theorem}
+
+We will prove these at the end of the section, but first we need some facts about numbers.
+\begin{lemma}\label{\prefix L:plus}
+Let $a,b_1,\ldots,b_n\in\bZ$. Then, if $a|b_i$ for all $i\in \{1,\ldots,n\}$, we have $a|(b_1+\ldots +b_n)$.
+\end{lemma}
+\begin{proof}
+For each $i\in\{1,\ldots,n\}$ there is $k_i$ with $b_i=k_ia_i$ (by definition of $a|b_i$). So $b_1+\ldots +b_n = k_1a+\ldots + k_n a = (k_1+\ldots + k_n)a$, and so $a|(b_1+\ldots+b_n)$ as claimed. 
+\end{proof}
+
+We might wonder if the converse to lemma \ref{L:plus} is true. In other words, if $a|(b_1+\ldots +b_n)$ is it always true that $a|b_i$ for all $i\in\{1,\ldots n\}$? Before we get excited and try to prove this, we should test it out in simple cases. Doing this potentially saves us some time and wasted effort, because we notice that, for example $2|(1+3)$, but $2$ doesn't divide either 1 or 3, and so the converse is not true in general.
+
+This is a good principle to bear in mind when you're not sure if something is true or not. Before trying to prove it, first try to find a simple counterexample. If you can't find one then try to understand why your attempts so far don't work. Often by doing this you see a general principle that you can turn into a proof of the original conjecture. If that doesn't work then you should at least get a better understanding of what a counterexample would have to look like, which can often help you find one. Real mathematics research usually works something like this. You go back and forth between trying to find proofs and counterexamples until, hopefully, you settle the question one way or the other.
+
+Anyway, returning to basic number theory, we're going to need some fairly boring technical lemmas. These are minor results that seem unimportant, but will be necessary to prove the big theorems we are interested in. Some of these seem obviously true, but in mathematics, something isn't obvious unless you know how to prove it. This isn't just pedantry. Sometimes things that are `obviously true' but difficult to prove turn out to be false.   
+
+\begin{lemma}\label{\prefix L:div1}
+Let $a,b,c\in \bZ$. Then if $a|b$ and $a|(b+c)$ then $a|c$.
+\end{lemma}
+\begin{proof}
+By definition there are $x,y\in \bZ$ with $xa=b$ and $ya= b+c$. So combining these we get $ya=xa +c$, and so $(y-x)a=c$, and so $a|c$ by definition.
+\end{proof}
+
+\begin{lemma}\label{\prefix L:euclid}
+Given $a,b\in\bN$ with $a<b$, if $c$ is the highest common factor of $a$ and $b$, then $c$ is also the highest common factor of $b-a$ and $a$.
+\end{lemma}
+\begin{proof}
+By definition there are $x,y\in\bN$ with $xc = a$ and $yc= b$. So $(y-x)c = b - a$, and so $c|(b-a)$. In other words, $c$ is a common factor of $b-a$ and $a$, and we must show it is the largest such factor. If $d|(b-a)$ and $d|a$, then by lemma \ref{L:plus} we must have $d|b$, and so $d\leq c$ as $c$ is the highest common factor of $a$ and $b$. So $c$ is the highest common factor of $b-a$ and $a$ as required.
+\end{proof}
+
+\begin{proposition}[Euclid's algorithm]
+Given $a,b\in\bN$ with $a< b$ we can find $\HCF(a,b)$ by computing:
+\begin{align*}
+b &= x_0 a + r_0 \text{ where $r_0< a$} \\
+a &= x_1 r_0 + r_1 \text{ where $r_1< r_0$} \\
+r_0&=x_2 r_1 + r_2 \text{ where $r_2< r_1$}\\
+&.\\
+&.\\
+&.\\
+r_{n-3} &= x_{n-1}r_{n-2} + r_{n-1}\text{ where $r_{n-1}< r_{n-2}$}\\
+r_{n-2}&= x_{n} r_{n-1} + r_n \text{ where $r_n< r_{n-1}$} \\
+r_{n-1}&= x_{n+1} r_n
+\end{align*}
+In which case the HCF is $r_n$.
+\end{proposition}
+\begin{proof}
+First note that this algorithm is well defined, as, for example, since $r_0< a$ there are unique $x_0$ and $r_0$ such that $b = x_0 a + r_0$. Moreover, the algorithm must terminate, because $r_i < r_{i-1}$, so at some point must reach zero. 
+
+The result now follows from lemma \ref{L:euclid}, as the remainder $r_0$, for example, is found by subtracting $a$ from $b$ multiple times. So, if $c$ is the HCF of $a$ and $b$, then it is also the HCF of $a$ and $b-a$, and of $a$ and $b-2a$ etc., and so also of $a$ and $r_0$, as $r_0 = b- x_0a$. By the same logic, the HCF of $a$ and $r_0$ must also be the HCF of $r_0$ and $r_1$. Continuing this thought process we see that the HCF of $a$ and $b$ must also be the HCF of $r_{n-1}$ and $r_n$, which can only be $r_n$, as $r_n<r_{n-1}$. 
+
+We can also prove this result by studying the algorithm and applying lemma \ref{L:plus} to prove that $r_n$ divides $a$ and $b$, and applying lemma \ref{L:div1} to show that it is the largest such common factor. 
+\end{proof}
+
+\begin{corollary}[B\'ezout's identity]\label{\prefix C:bez}
+If $a,b\in\bN$ and $\HCF(a,b)=d$, then there are $x,y\in \bZ$ such that $d= xa + yb$. 
+\end{corollary}
+\begin{proof}
+Euclid's algorithm gives us a method to compute $x$ and $y$ (just start with $d = r_n = r_{n-2} - x_n r_{n-1}$ in the last step and work backwards). For example, the first two steps of this calculation give us:
+\begin{align*}
+r_n&= r_{n-2}-x_nr_{n-1}\\
+&= r_{n-2} - x_n(r_{n-3}-x_{n-1}r_{n-2}).
+\end{align*}
+For the sake of convenient notation lets define $b = r_{-2}$, and $a = r_{-1}$. Then, for all $i\in\{0,\ldots n\}$, the process we described above replaces occurrences of $r_i$ with a term containing $r_{i-1}$ and $r_{i-2}$. Thus, ultimately this process produces a complicated expression involving only $a$ and $b$, and no other $r_i$ values.  
+\end{proof}
+
+The use of the Euclidean algorithm in the proof above is sometimes called the \emph{extended Euclidean algorithm}. B\'ezout's identity is not obvious, at least, it's not obvious to me. However, it is an easy consequence of some simple, maybe even obvious, lemmas. This is the power of mathematics. By systematically collecting facts, we can combine them into proofs of surprising new facts. 
+
+As I have described it above, to find $x$ and $y$ we first work forward through the algorithm to find the HCF $d$, then work backwards to find expressions for $x$ and $y$ involving only $a$ and $b$. This works, but it is not efficient. There is a computation trick we can use the find the values of $x$ and $y$ simultaneously with $d$. I will describe this now. Again, use the convention that $b = r_{-2}$ and $a = r_{-1}$. Define also $s_{-2}=1$, $s_{-1}=0$, $t_{-2}=0$ and $t_{-1}=1$. Notice that $b = r_{-2}= s_{-2}b + t_{-2}a$, and $a = r_{-1}=s_{-1}b+t_{-1}a$. Can we find formulas for general $s_n$ and $t_n$ such that $r_n = s_nb + t_n a$? It turns out that, yes, we can, and by using these formulas in the case where $r_k = d$ we can calculate $x$ and $y$ on the \emph{forward} pass through the algorithm, alongside the calculation of $d$. 
+
+To see this, suppose we have formulas for $s_k$ and $t_k$ so that $r_k = s_kb+t_ka$ for all $k\leq n$ (we know we have these for $n=1$, as we defined them a moment ago). From Euclid's algorithm we know that $r_{n+1} = r_{n-1} - r_nq_n$, so, using our formulas for $s_{n-1}$, $s_{n}$, $t_{n-1}$ and $t_{n}$, we have 
+\begin{align*}
+r_{n+1} &= r_{n-1} - r_nq_n \\
+&= s_{n-1}b + t_{n-1}a - (s_n b + t_n a)q_n\\
+&= (s_{n-1} - s_nq_n)b +(t_{n-1}-t_nq_n)a.
+\end{align*} 
+In other words, $s_{n+1} =(s_{n-1} - s_nq_n)$, and $t_{n+1} = (t_{n-1}-t_nq_n)$, and we can compute these recursively on the forward pass through the algorithm as claimed.
+
+Returning to prime numbers, the following lemma gives us an important property. In fact, in some abstract number systems it's used to \emph{define} prime numbers, but we don't need to worry about that now.
+\begin{lemma}\label{\prefix L:div2}
+Let $p\in \bP$ and let $a,b\in\bN\setminus\{0\}$. Then, if $p|ab$, either $p|a$ or $p|b$.
+\end{lemma}
+\begin{proof}
+ Suppose $p|ab$ and $p\nmid a$. Then $\HCF(p,a)=1$, so by corollary \ref{C:bez} there are $x,y\in\bZ$ with $xp+ya = 1$. But since $xp+ya = 1$ it follows that $xpb+yab = b$, and since $p|xpb$ and $p|yab$, by lemma \ref{L:plus} we must have $p|b$. A similar argument proves that if $p\nmid b$ then we must have $p|a$. 
+\end{proof}
+
+Note that lemma \ref{L:div2} generalizes to $p|a_1\ldots a_n\implies p|a_i$ for some $i\in \{1,\ldots,n\}$. You can prove this using induction and lemma \ref{L:div2}.  
+
+\paragraph{Proof of theorem \ref{T:fund}.} There are two parts to this (existence and uniqueness). First we show existence of a prime factorization. We will use something called the well-ordering principle.
+
+\begin{lemma}[Well-ordering principle]\label{\prefix L:well}
+If $X\subseteq \bN$ and $X\neq \emptyset$, then $X$ has a smallest element. In other words, every non-empty subset of natural numbers has a smallest member.
+\end{lemma}
+\begin{proof}
+Since $X$ has at least one element we can pick $x\in X$. Then $X$ has a finite number of elements less than or equal to $x$. One of these must be smaller than all the others.
+\end{proof}
+
+The well-ordering principle is really another way of looking at the principle of induction for natural numbers. This says that if you can prove something is true for 0, and if you can also prove that whenever that thing is true for a number $n$ it must also be true for $n+1$, then it must be true for every natural number. The relationship is that the well-ordering principle says that if a statement is \emph{not} true for some natural number, then there must be a smallest natural number $k$ where it is not true. The way people generally use well-ordering principle arguments is to prove that it's impossible for this smallest $k$ to exist for the some statement. Then they can conclude that the set of natural numbers for which the statement they are interested in is true is empty (i.e. the negation of the statement is true for all natural numbers).
+
+Returning to the proof of existence of a prime factorization, suppose for a contradiction that $n\in \bN$ and has no prime factorization. Then by the well-ordering principle (lemma \ref{L:well}) we can assume without loss of generality that $n$ is the smallest such number. If $n$ is prime then $n$ is its own prime factorization, which would be a contradiction. So $n$ is composite. But then $n=ab$ for some non-trivial factors $a$ and $b$ (non-trivial here means not equal to either 1 or $n$). But then, by minimality of $n$, both $a$ and $b$ have prime factorizations, and these combine to give a prime factorization of $n$. I.e. if $a=p_1\ldots p_k$ and $b= q_1\ldots q_m$ then $n=p_1\ldots p_kq_1\ldots q_m$. This contradicts the assumption that $n$ has no prime factorization.
+
+Now we show uniqueness. Suppose there is $n\in\bN$ that has two non-trivially distinct prime factorizations. Appealing to the well-ordering principle we assume that $n$ is minimal with this property. 
+
+Suppose $n$ can be factored as $p_1\ldots p_k$, and as $q_1\ldots q_m$. Here $p_i$ and $q_j$ are primes (which may be repeated) for all $1\leq i\leq k$ and $1\leq j\leq m$. Then these two factorizations cannot have a prime factor in common, as if they did we could divide both factorizations by this common prime to obtain a number smaller than $n$. But unique factorization would fail for this new number, and this would contradict minimality of $n$. So we know that $p_1$ is not equal to $q_i$ for any $i\in\{1,\ldots,m\}$. But $p_1|n$, and so $p_1|q_1\ldots q_m$, and so by lemma \ref{L:div2} we must have $p_1|q_j$ for some $j$. But as $q_j$ is prime this is a contradiction, as the only way $p_1| q_j$ is if $p_1= q_j$, which we know cannot happen. 
+
+\paragraph{Proof of theorem \ref{T:inf}.} Suppose there are only a finite number of primes, and that the set of primes is $\{p_1,\ldots,p_n\}$. Then consider the number $k=(\prod_{1=1}^n p_i) +1$. By the existence part of theorem \ref{T:fund} we know there must be a prime number $p$ dividing $k$. Since $\{p_1,\ldots,p_n\}$ contains all the primes we must have $p=p_j$ for some $j\in\{1,\ldots,n\}$. But $p_j|k$ and $p_j|\prod_{i=1}^n p_i$, and so by lemma \ref{L:div1} we must have $p_j|1$, which is a contradiction. So the set of primes must be infinite.
+
+
+
+\end{document}

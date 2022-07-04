@@ -1,0 +1,101 @@
+\documentclass{article}
+
+\usepackage{amsmath, mathrsfs, amssymb, stmaryrd, cancel, hyperref, relsize,tikz,amsthm,comment}
+\usepackage{graphicx}
+\usepackage{xfrac}
+\hypersetup{pdfstartview={XYZ null null 1.25}}
+\usepackage[all]{xy}
+\usepackage[normalem]{ulem}
+\usepackage{tikz-cd}
+
+
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}{\bfseries}{\itshape}
+\newtheorem{proposition}{Proposition}{\bfseries}{\itshape}
+\newtheorem{definition}{Definition}{\bfseries}{\upshape}
+\newtheorem{lemma}{Lemma}{\bfseries}{\upshape}
+\newtheorem{example}{Example}{\bfseries}{\upshape}
+\newtheorem{corollary}{Corollary}{\bfseries}{\upshape}
+\newtheorem{remark}{Remark}{\bfseries}{\upshape}
+\newtheorem{fact}{Fact}{\bfseries}{\upshape}
+\newtheorem{Q}{Exercise}{\bfseries}{\upshape}
+
+\newtheorem*{theorem*}{Theorem}
+
+% Uncomment below to create stand-alone file
+% \newcommand*{\prefix}{}
+
+\newcommand{\bN}{\mathbb{N}}
+\newcommand{\bZ}{\mathbb{Z}}
+\newcommand{\bQ}{\mathbb{Q}}
+\newcommand{\bR}{\mathbb{R}}
+\newcommand{\bP}{\mathbb{P}}
+\newcommand{\HCF}{\mathbf{HCF}}
+
+
+
+\title{ITCS 531 \\Number Theory 1: Prime numbers exercises}
+\author{Rob Egrot}
+\date{}
+
+\begin{document}
+\maketitle
+%\includecomment{comment}
+
+\begin{Q}
+Consider the following (false) theorem: 
+\begin{theorem*}If $a,b\in \bN$ and $a=b$ then $a=0$.
+\end{theorem*}
+\begin{proof}
+\begin{align*}
+a&=b\\
+a^2&= ab\\
+a^2-b^2&=ab-b^2\\
+(a-b)(a+b)&=(a-b)b\\
+a+b&= b\\
+a&=0
+\end{align*}
+\end{proof}
+What is wrong with this proof?
+\end{Q}
+\begin{comment}
+\textbf{Solution:} Since $a = b$ we know that $a - b = 0$. We are not allowed to divide by zero, as the result of this is not usually defined. In general, we cannot divide by zero, or even by something that could be zero, and expect the argument to be valid. This means that when we divide by $(a-b)$ in this argument, we are doing something wrong, and we can't trust the proof after that point.
+\end{comment}
+
+\begin{Q}
+Use the well-ordering principle to show that \[2+4+6+\ldots + 2n = n(n+1).\] HINT: If there is a value of $n$ there must be a smallest such value. Show that the existence of this smallest value leads to a contradiction.
+\end{Q}
+\begin{comment}
+\textbf{Solution:} Suppose there is some positive integer such that the identity given in the question is not valid. Then, by the well-ordering principle, there must be a smallest such number. Call this number $k$. Now, $k$ cannot be $1$, as we can easily check the identity is true for $n=1$. Since $k$ is the smallest number for which the identity above does not hold, it must be true for $k-1$. So we have 
+\[2+\ldots + 2(k-1) = (k-1)(k),\] 
+and so, adding $2k$ to both sides we have
+\[2+\ldots + 2(k-1) +2k = (k-1)(k)+2k.\]
+But 
+\[(k-1)(k)+2k = (k)(k+1),\]
+and so
+\[2+\ldots +2k = (k)(k+1).\]
+This is a contradiction because $k$ is supposed to invalidate the identity. We conclude that there can be no positive integer for which the identity is false.
+\end{comment}
+
+\begin{Q}
+Let $n\in\bN$. If $n^2$ is even must $n$ also be even? Give a proof or a counterexample. HINT: think about the fundamental theorem of arithmetic, specifically the existence of a prime factorization, and also lemma \ref{L:div2}.
+\end{Q}
+\begin{comment}
+\textbf{Solution:} By the fundamental theorem of arithmetic, $n^2$ can be written in exactly one way as a product of primes (if we don't care about the order they're written down in), and the same is true for $n$. Suppose $n$ can be written as the product of primes $p_1\ldots p_k$. Then obviously $n^2$ can be written as  the product $p_1\ldots p_kp_1\ldots p_k$. If $n^2$ is even then $2| n^2$. Now, by lemma \ref{L:div2}, and the fact that $n^2 = p_1\ldots p_kp_1\ldots p_k$, we must have $2| p_i$ for some $i\in \{1,\ldots,k\}$, but this means $2|n$, and so $n$ is even too.
+\end{comment}
+
+\begin{Q}\label{\prefix Q:log}
+Let $n\in\bN\setminus\{0\}$. Then using theorem 1.2 prove that $\log_5(n)$ is either a natural number or irrational. HINT: Suppose $5^{\frac{a}{b}}=n$. What does this tell us about the ratio $\frac{a}{b}$? The fact that $5$ is prime is important. HINT: Suppose $5^{\frac{a}{b}}=n$. What does this tell us about the ratio $\frac{a}{b}$? The fact that $5$ is prime is important.
+\end{Q}
+\begin{comment}
+\textbf{Solution:} If $5^{\frac{a}{b}} = n$ then $5^a = n^b$. Using the fundamental theorem of arithmetic, $n^b$ can be uniquely factorized into primes. Since $n^b = 5^a$ we know this factorization must just be $55\ldots 5$ (a list of $a$ fives). Again by the fundamental theorem of arithmetic, $n$ must also have a unique factorization into primes, and, as $n^b = 55\ldots 5$, this factorization of $n$ must just be a list of fives (i.e. $n = 5^k$ for some $k$). But if we take a product of $b$ copies of this list of fives we get $n^b$, which is $5^a$ (i.e. $5^a = (5^k)^b$, so $a = kb$). This means that $b$ must divide $a$. In other words, $\frac{a}{b}$ must be a natural number.  
+\end{comment}
+
+\begin{Q}\label{\prefix Q:log2}
+Is the result from exercise \ref{Q:log} still true if we replace $5$ with $4$? Provide a proof or a counterexample.
+\end{Q}
+\begin{comment}
+\textbf{Solution:} It's not true. For example, $\log_4{2} = \frac{1}{2}$.
+\end{comment}
+
+\end{document}

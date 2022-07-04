@@ -1,0 +1,98 @@
+\documentclass{article}
+
+\usepackage{amsmath, mathrsfs, amssymb, stmaryrd, cancel, hyperref, relsize,tikz,amsthm,comment,enumerate}
+\usepackage{graphicx}
+\usepackage{xfrac}
+\hypersetup{pdfstartview={XYZ null null 1.25}}
+\usepackage[all]{xy}
+\usepackage[normalem]{ulem}
+\usepackage{tikz-cd}
+
+
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}{\bfseries}{\itshape}
+\newtheorem{proposition}{Proposition}{\bfseries}{\itshape}
+\newtheorem{definition}{Definition}{\bfseries}{\upshape}
+\newtheorem{lemma}{Lemma}{\bfseries}{\upshape}
+\newtheorem{example}{Example}{\bfseries}{\upshape}
+\newtheorem{corollary}{Corollary}{\bfseries}{\upshape}
+\newtheorem{remark}{Remark}{\bfseries}{\upshape}
+\newtheorem{fact}{Fact}{\bfseries}{\upshape}
+\newtheorem{Q}{Exercise}{\bfseries}{\upshape}
+
+\newtheorem*{theorem*}{Theorem}
+
+% Uncomment below to create stand-alone file
+% \newcommand*{\prefix}{}
+
+\newcommand{\bN}{\mathbb{N}}
+\newcommand{\bZ}{\mathbb{Z}}
+\newcommand{\bQ}{\mathbb{Q}}
+\newcommand{\bR}{\mathbb{R}}
+\newcommand{\bP}{\mathbb{P}}
+\newcommand{\HCF}{\mathbf{HCF}}
+
+\title{ITCS 531 \\Number Theory 4: RSA encryption exercises}
+\author{Rob Egrot}
+\date{}
+
+\begin{document}
+\maketitle
+%\includecomment{comment}
+
+\begin{Q}
+Let $p =11$ and $q=13$. Choose suitable $e$ and $d$ for use in RSA encryption.
+\end{Q}
+\begin{comment}
+\textbf{Solution:}
+We have $(p-1)(q-1) = 10\times 12 = 120$. The smallest prime that doesn't divide 120 is $7$, so set $e=7$. We need to find the inverse of $7$ mod 120. Now, $120 = 17(7) +1$, so $-17(7)-1 = -120$. This means the inverse of 7 is $-17$ mod 120, and $-17\equiv 103_{120}$. So take $d = 103$.
+\end{comment}
+
+\begin{Q}\label{\prefix Q:powers}
+Prove that if $a\equiv_n b$ then $a^k\equiv_n b^k$ for all $k\in\bN$.
+\end{Q}
+\begin{comment}
+\textbf{Solution:}
+Induct on $k$. If $k=0$ then its obviously true as $1=1$. Suppose it's true for $k-1$. Then $a^k = a.a^{k-1}$ and $b^k = b.b^{k-1}$, and by assumption we have $a \equiv_n b$, and by the inductive hypothesis we have $a^{k-1}\equiv_n b^{k-1}$. Proposition \ref{P:subs}(2) applies and tells us that $a^k\equiv_n b^k$ too.
+\end{comment}
+
+\begin{Q}\label{\prefix Q:coprimeForCRT}
+Let $a$ and $b$ be coprime. Prove that if $a| c$ and $b|c$ then $ab|c$.
+\end{Q}
+\begin{comment}
+\textbf{Solution:}
+By B\'ezout's identity there are $x$ and $y$ with $xa + yb = 1$. So $cxa + cyb = c$. Also, as $a| c$ there is $k$ with $ak = c$, and as $b|c$ there is $l$ with $bl = c$. So, we have
+\[(bl)xa + (ak)yb = c,\]
+and rearranging this gives
+\[(ab)(xl + yb) = c.\]
+This means $ab|c$ as claimed.
+
+For an alternative proof, use prime factorizations $a = p_1\ldots p_m$, and $b = q_1\ldots q_n$. Since $a$ and $b$ are coprime we mist have $p_i\neq q_j$ for all $i$ and $j$. Since $a|c$ and $b|c$, this means $c = p_1\ldots p_mq_1\ldots q_nk$ for some $k$. But this means $ab|c$.
+\end{comment}
+
+\begin{Q}[Chinese remainder theorem]\label{\prefix Q:crt}
+Let $n_1,\ldots,n_k\in\bN$ all be greater than 1 and such that $n_i$ and $n_j$ are coprime for all $i\neq j$. Define $N=\prod_{i=1}^k n_i$. For each $i\in\{1,\ldots,k\}$ let $a_i\in\{0,1,2,\ldots, n_i-1\}$. 
+
+\begin{enumerate}
+\item[a)] Let $x$ and $y$ be integers with $x \equiv_{n_i} a_i$ and $y \equiv_{n_i} a_i$ for all $i$. Prove that $x\equiv_N y$.
+\item[b)] Find $z\in\bZ$ with $z\equiv_{n_1} a_1$ and $z\equiv_{n_2} a_2$. HINT: B\'ezout.
+\item[c)] Extend part b) to prove that there is $z$ with $z \equiv_{n_i} a_i$ for all $i\in\{1,\ldots ,k\}$. HINT: Induction.
+\end{enumerate}
+Combining parts $a)$ and $c)$ we get that there is a number $z$ such that $z_i\equiv_{n_i} a_i$ for all $i\in\{1,\ldots ,k\}$, and that this $z$ is unique mod $N$. This result is known as the Chinese remainder theorem. It is attributed to the 3rd century Chinese mathematician Sunzi, though his version was presented very differently. 
+\end{Q}
+\begin{comment}
+\textbf{Solution:}
+\begin{enumerate}[a)]
+\item we have $x \equiv_{n_i} = y$ for all $i$, so $n_i|(x-y)$ for all $i$. Since $n_i$ and $n_j$ are coprime for all $i\neq j$, it follows from exercise \ref{Q:coprimeForCRT} that $N = \prod_{i=1}^k n_i | (x-y)$, and so $x \equiv_N y$.
+\item B\'ezout's identity produces $x$ and $y$ with $xn_1 + yn_2 = 1$ (as $n_1$ and $n_2$ are coprime). Set $z = xn_1a_2 + yn_2a_1$. Then 
+\begin{align*}
+z&\equiv_{n_1} yn_2a_1\\
+& \equiv_{n_1} a_1(1-xn_1)\\
+&\equiv_{n_1} a_1.
+\end{align*}
+Similarly, we have $z\equiv_{n_2} a_2$.
+\item Induct on $k$. It's obviously true for $k= 1$ (we can just use $z = a_1$). Suppose now that it's true for $k-1$. Then we can find $z'$ such that $z' \equiv_{n_i} a_i$ for all $i\in\{1,\ldots,k-1\}$. Define $N' = \prod_{i=1}^{k-1} n_i$.  We can assume that $0\leq z' < N'$, as any number equal to $z'$ mod $N'$ will also be equal to $z'$ mod $n_i$ for all $i\in\{1,\ldots,k-1\}$. Now, $N'$ and $n_k$ must be coprime, because by lemma 1.11 if $p| N'$ then $p|n_i$ for some $i\in\{1,\ldots,k-1\}$, and therefore $p\nmid n_k$ as $n_i$ and $n_k$ are coprime. So, part b) tells us there is $z$ with $z\equiv _{N'} z'$ and $z\equiv_{n_k} a_k$. This is what we want, because we must have $z \equiv_{n_i} z' \equiv_{n_i} a_i$ for all $i\in\{1,\ldots,k-1\}$ too. We can assume that $0\leq z < N$, as we can just take the value of $z$ mod $N$.
+\end{enumerate} 
+\end{comment}
+
+\end{document}

@@ -1,0 +1,148 @@
+\documentclass{article}
+
+\usepackage{amsmath, mathrsfs, amssymb, stmaryrd, cancel, hyperref, relsize,tikz,amsthm,comment,enumerate}
+\usepackage{graphicx}
+\usepackage{xfrac}
+\hypersetup{pdfstartview={XYZ null null 1.25}}
+\usepackage[all]{xy}
+\usepackage[normalem]{ulem}
+\usepackage{tikz-cd}
+
+
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}{\bfseries}{\itshape}
+\newtheorem{proposition}{Proposition}{\bfseries}{\itshape}
+\newtheorem{definition}{Definition}{\bfseries}{\upshape}
+\newtheorem{lemma}{Lemma}{\bfseries}{\upshape}
+\newtheorem{example}{Example}{\bfseries}{\upshape}
+\newtheorem{corollary}{Corollary}{\bfseries}{\upshape}
+\newtheorem{remark}{Remark}{\bfseries}{\upshape}
+\newtheorem{fact}{Fact}{\bfseries}{\upshape}
+\newtheorem{Q}{Exercise}{\bfseries}{\upshape}
+
+\newtheorem*{theorem*}{Theorem}
+
+% Uncomment below to create stand-alone file
+% \newcommand*{\prefix}{}
+
+\newcommand{\bN}{\mathbb{N}}
+\newcommand{\bZ}{\mathbb{Z}}
+\newcommand{\bQ}{\mathbb{Q}}
+\newcommand{\bR}{\mathbb{R}}
+\newcommand{\bP}{\mathbb{P}}
+\newcommand{\HCF}{\mathbf{HCF}}
+
+\title{ITCS 531 \\Number Theory 2: Modular arithmetic exercises}
+\author{Rob Egrot}
+\date{}
+
+\begin{document}
+\maketitle
+%\includecomment{comment}
+
+\begin{Q}
+Suppose $x\equiv_n y$, and suppose $m|n$. Show that $x\equiv_m y$.
+\end{Q}
+\begin{comment}
+\textbf{Solution:} Suppose $x-y= kn$, and $n = am$. Then $x-y = (ka)m$.
+\end{comment}
+
+\begin{Q}\label{\prefix Q:subs}
+Complete the proof of proposition \ref{P:subs}. HINT: Use the fact that $xy - x'y' = xy - xy' +xy' - x'y'$.
+\end{Q}
+\begin{comment}
+\textbf{Solution:} Suppose $(x-x') = kn$, and $(y-y') = ln$. Note that 
+\begin{align*}xy - x'y' &= xy - xy' + xy' - x'y'\\
+&= x(y-y') - y'(x-x') \\
+&= xln - y'kn \\
+&= (xl-y'k)n. 
+\end{align*}
+\end{comment}
+
+
+\begin{Q}
+Calculate $2^{2^{13543}}\mod 3$.
+\end{Q}
+\begin{comment}
+\textbf{Solution:}
+$2 \equiv_3 -1$, and $2^{13543}$ is an even number. Since $-1$ to the power of any even number is 1, we must have $2^{2^{13543}}\equiv_3 1$. We're using proposition 2.8 in the background here. This is what tells us that $2^{2^{13543}} \equiv_3 (-1)^{2^{13543}}$. More generally, if $x \equiv_n y$ then $x^k \equiv_n y^k$ for all $n$ and $k$.
+\end{comment}
+
+\begin{Q}\label{\prefix Q:pdiv}
+Let $p$ and $q$ be distinct primes, and let $x\in\bZ$. Prove that if $p|x$ and $q|x$, then $pq|x$.
+\end{Q}
+\begin{comment}
+\textbf{Solution:}
+We know that $x = (\pm 1)p_1\ldots p_n$ for some sequence of primes $p_1,\ldots, p_n$. This is the easy half of the Fundamental Theorem of Arithmetic. Also, by lemma 1.9, since $p|p_1\ldots p_n$ we must have $p = p_i$ for some $i\in \{1,\ldots,n\}$. We also have $q|x$, and so $q = p_j$ for some $j\in\{1,\ldots,n\}$, by the same argument. Since $p$ and $q$ are distinct, we can't have $i = j$. Assume without loss of generality that $i=1$ and $j=2$. Then $x = (\pm 1)(pq)p_3\ldots p_n$, and so $pq|x$.   
+\end{comment}
+
+\begin{Q}\mbox{}
+\begin{enumerate}
+\item[a)] Prove that $4 = 9 = -1 \mod 5$. 
+\item[b)] Prove that $4^{1536}\equiv_7 9^{4824}$ (HINT: $9\equiv_7 2$ and $8\equiv_7 1$).
+\item[c)] Using exercise \ref{Q:pdiv}, and your answers to $a)$ and $b)$, prove that $4^{1536}\equiv_{35} 9^{4824}$.
+\end{enumerate}
+\end{Q}
+\begin{comment}
+\textbf{Solution:}\mbox{}
+\begin{enumerate}[a)]
+\item $4 - (-1) = 5$, and $9 - (-1) = 2(5)$.
+\item First, we have 
+\begin{align*}
+4^{1536} &= 2^{2(1536)} \\
+&= 2^{3072} \\
+&= 2^{3(1024)} \\
+&= 8^{1024}\\
+&\equiv_7 1^{1024}\\
+&\equiv_7 1. 
+\end{align*}
+Second, we have 
+\begin{align*}
+9^{4824} & \equiv_7 2^{4824} \\
+&= 2^{3(1608)} \\
+&=8^{1608} \\
+&\equiv_7 1^{1608} \\
+& \equiv_7 1.
+\end{align*}
+This proves the claim.
+\item It follows from part a) that 
+\[4^{1536}\equiv_5 (-1)^{1536} \equiv_5 1,\] and also 
+\[9^{4824} \equiv_5 (-1)^{4824} \equiv_5 1.\] This means \[4^{1536}\equiv_5 9^{4824},\] and so \[5|(4^{1536}- 9^{4824}).\] In part b) we proved that 
+\[4^{1536}\equiv_7 9^{4824},\] and so \[7|(4^{1536}- 9^{4824}).\] By exercise \ref{Q:pdiv} this means \[35|(4^{1536}- 9^{4824}),\] which is another way of saying that \[4^{1536}\equiv_{35} 9^{4824}.\]
+\end{enumerate}
+\end{comment}
+
+\begin{Q}\label{\prefix Q:equiv}
+Let $X$ be a set and let $\{Y_i: i\in I\}$ be a partition of $X$ (here $I$ is an \emph{indexing set}, i.e. a non-empty set we use to label something, in this case elements of the partition). Prove that the binary relation $R$, defined by $R(x,y)\iff x$ and $y$ are in $Y_i$ for some $i\in I$, is an equivalence relation.
+\end{Q}
+\begin{comment}
+\textbf{Solution:}
+We must show that this relation $R$ satisfies the three conditions of equivalence relations. 
+\begin{enumerate}[1.]
+\item First we need to show that $R$ is reflexive. So, given $x\in X$, is it true that $R(x,x)$? Yes, because obviously $x$ is in the same part of the partition as itself.
+\item Now we need to show that $R$ is symmetric. So, suppose $R(x,y)$. Then $x$ and $y$ are in the same part of the partition. But then $R(y,x)$ by definition.
+\item Finally, we show $R$ is transitive. Suppose $R(x,y)$ and $R(y,z)$. Then $x$ is in the same part of the partition as $y$, and $y$ is in the same part of the partition as $z$. But this means $x$ is in the same part of the partition as $z$, and so $R(x,z)$, which is what we want.
+\end{enumerate}
+\end{comment}
+
+\begin{Q}(Optional)
+\begin{enumerate}
+\item[a)] Given an equivalence relation $R$ on a set $X$, define $P_R$ to be the partition obtained from $R$ in proposition 2.5. Let $R_{P_R}$ be the equivalence relation obtained from $P_R$ as in exercise \ref{Q:equiv}. Prove that $R(x,y)\iff R_{P_R}(x,y)$ for all $x,y\in X$. 
+\item[b)] State and prove a similar conjecture on converting from partitions to equivalence relations and back to partitions.
+\end{enumerate}
+\end{Q}
+\begin{comment}
+\textbf{Solution:}
+\begin{enumerate}[a)]
+\item Suppose first that $R(x,y)$. Then $y\in[x]$, which is a way of saying that $y$ and $x$ are in the same part of the partition $P_R$. But this means $R_{P_R}(x,y)$. Conversely, if $R_{P_R}(x,y)$, then $y\in [x]$, which means $R(x,y)$. This shows $R = R_{P_R}$.
+\item The sensible conjecture is that $P_{R_P} = P$. To prove this, let $P = \{X_i:i\in I\}$. We want to show that $\{X_i:i\in I\} = \{[x]_{R_P}: x\in X\}$. First, given any $x\in X$ we must have $x\in X_i$ for some $i$, as $P$ is a partition. We must prove that $[x]_{R_P} = X_i$. Now, 
+\begin{align*}y\in [x]_{R_P} &\iff R_P(x,y) \\
+&\iff y\in X_i. 
+\end{align*}
+This proves the claim because, because every $[x]_{R_P}$ is equal to $X_i$ where $x\in X_i$, and every $X_i$ is equal to $[x]_{R_P}$ for $x\in X_i$.  
+\end{enumerate}
+\end{comment}
+
+
+
+\end{document}

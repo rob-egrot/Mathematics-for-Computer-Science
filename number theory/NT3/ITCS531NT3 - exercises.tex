@@ -1,0 +1,112 @@
+\documentclass{article}
+
+\usepackage{amsmath, mathrsfs, amssymb, stmaryrd, cancel, hyperref, relsize,tikz,amsthm,comment,enumerate}
+\usepackage{graphicx}
+\usepackage{xfrac}
+\hypersetup{pdfstartview={XYZ null null 1.25}}
+\usepackage[all]{xy}
+\usepackage[normalem]{ulem}
+\usepackage{tikz-cd}
+
+
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}{\bfseries}{\itshape}
+\newtheorem{proposition}{Proposition}{\bfseries}{\itshape}
+\newtheorem{definition}{Definition}{\bfseries}{\upshape}
+\newtheorem{lemma}{Lemma}{\bfseries}{\upshape}
+\newtheorem{example}{Example}{\bfseries}{\upshape}
+\newtheorem{corollary}{Corollary}{\bfseries}{\upshape}
+\newtheorem{remark}{Remark}{\bfseries}{\upshape}
+\newtheorem{fact}{Fact}{\bfseries}{\upshape}
+\newtheorem{Q}{Exercise}{\bfseries}{\upshape}
+
+\newtheorem*{theorem*}{Theorem}
+
+% Uncomment below to create stand-alone file
+% \newcommand*{\prefix}{}
+
+\newcommand{\bN}{\mathbb{N}}
+\newcommand{\bZ}{\mathbb{Z}}
+\newcommand{\bQ}{\mathbb{Q}}
+\newcommand{\bR}{\mathbb{R}}
+\newcommand{\bP}{\mathbb{P}}
+\newcommand{\HCF}{\mathbf{HCF}}
+
+
+
+\title{ITCS 531 \\Number Theory 3: Primality testing exercises}
+\author{Rob Egrot}
+\date{}
+
+\begin{document}
+\maketitle
+%\includecomment{comment}
+
+\begin{Q}\label{\prefix Q:div}
+Prove lemma \ref{L:div3}.
+\end{Q}
+\begin{comment}
+\textbf{Solution:}
+Suppose $a|bc$ and $a$ and $b$ are coprime. Since $a|bc$ we know there is $k$ with $ak = bc$. Also, as $a$ and $b$ are coprime, $\HCF(a,b) = 1$, so by corollary 1.10 (B\'ezout's identity) there are $x$ and $y$ with $xa + by = 1$. This means $xac + byc = c$, which means $xac +yak = c$. Rearranging gives $a(xc +yk) = c$, and so $a|c$.
+
+Another way to prove this is to notice that no prime factor of $a$ can divide $b$ (as $a$ and $b$ are coprime). Also, by lemma 1.11 every prime factor of $a$ must divide either $b$ or $c$. Putting this together means every prime factor of $a$ divides $c$, and so $a|c$. 
+\end{comment}
+
+\begin{Q}
+Find all solutions to $x^2- 1 \equiv_{8} 0$. What does this tell us about Lagrange's theorem in the case where $p$ is not prime?
+\end{Q}
+\begin{comment}
+\textbf{Solution:}
+The solutions are $1,3,5,7$. This tells us that Lagrange's theorem is false when $p$ is not prime.
+\end{comment}
+
+\begin{Q}
+Calculate $5^{30,000} - 6^{123,456}\mod 31$. HINT: Fermat's little theorem is useful here. 
+\end{Q}
+\begin{comment}
+\textbf{Solution:}
+We have $5^{30000} = 5^{30(1000)}$, and $5^{30} \equiv_{31} 1$ by Fermat's little theorem. So $5^{30000}\equiv_{31} 1^{1000} \equiv_{31} 1$. Also, $123456= 30(4115)+6$, so 
+\begin{align*}
+6^{123456} &= 6^{30(4115)+6}\\
+&= 6^{30(4115)}.6^6 \\
+&\equiv_{31} 1^{4115}.6^6 \text{ using Fermat's little theorem}\\
+&\equiv_{31} 6^2.6^2.6^2\\
+&\equiv_{31} 5.5.5\\
+&\equiv_{31} 125 \\
+&\equiv_{31} 1.
+\end{align*} 
+So $5^{30,000} - 6^{123,456} = 0\mod 31$.
+\end{comment}
+
+\begin{Q}[Wilson's theorem]\mbox{}
+\begin{enumerate}
+\item[a)] Prove that when $n=2$ we have $(n-1)! \equiv_n -1$. 
+\item[b)] Let $p$ be an odd prime. Define $g(x)= (x-1)(x-2)\ldots(x-(p-1))$. 
+\begin{enumerate}
+\item[i)] What are the roots of $g$ modulo $p$? 
+\item[ii)] What is the degree of $g$?
+\item[iii)] What is the leading term of $g$? (The leading term is the one with the highest power of $x$).
+\end{enumerate} 
+\item[c)] Define $h(x)= x^{p-1} -1$. What are the roots of $h$ modulo $p$? HINT: Fermat's little theorem.
+\item[d)] Define $f(x) = g(x)- h(x)$. Prove that $f_p$ must be the constant function $f(x)\equiv_ p 0$ for all $x$. HINT: Lagrange's theorem. 
+\item[e)] Using the conclusion to part $d)$, prove that $n$ is prime if and only if \[(n-1)! \equiv_n -1\] (this is known as Wilson's theorem).    
+\end{enumerate} 
+\end{Q}
+\begin{comment}
+\textbf{Solution:}
+\begin{enumerate}[a)]
+\item $(2-1)! = 1 \equiv_2 -1$.
+\item \begin{enumerate}[i)]
+\item The roots are $1,2,3,\ldots, p-1$.
+\item The degree of $g$ is $p-1$.
+\item The leading term is $x^{p-1}$.
+\end{enumerate}
+\item The roots of $h$ are $1,2,3\ldots,p-1$ (all numbers between 1 and $p-1$ are coprime with $p$ so we apply Fermat's little theorem).
+\item $g$ and $h$ both have degree $p-1$. Also, the leading term of both is $x^{p-1}$. This means that the degree of $f_p$ is at most $p-2$. However, $f_p$ has at least $p-1$ roots, as $g$ and $h$ have $p-1$ roots in common. So Lagrange's theorem tells us that $f_p$ must be the constant zero function modulo $p$, as it has more roots than its degree.
+\item Suppose $n=p$ for a prime number $p$. If $p=2$ we already proved the claim in part a), so suppose $p>2$. Then we have proved that $g(x) - h(x) \equiv_p 0$. So in particular we have $g(p) - h(p) \equiv_p 0$. So $(p-1)! +1 \equiv_p 0$. I.e. $(p-1)! \equiv_p -1$. 
+
+Conversely, if $(p-1)! \equiv_p -1$ then $p|((p-1)! +1) $. So, if $q$ is a prime factor of $p$ with $q<p$ then $q|((p-1)! +1)$, and obviously $q|(p-1)!$. So from lemma 1.7 we get $q|1$, but this is impossible. We conclude that $p$ has no prime factors other than itself. I.e. that $p$ is prime.
+\end{enumerate}
+\end{comment}
+
+\end{document}

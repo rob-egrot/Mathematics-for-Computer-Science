@@ -1,0 +1,162 @@
+\documentclass{article}
+
+\usepackage{amsmath, mathrsfs, amssymb, stmaryrd, cancel, hyperref, relsize,tikz,amsthm}
+\usepackage{graphicx}
+\usepackage{xfrac}
+\hypersetup{pdfstartview={XYZ null null 1.25}}
+\usepackage[all]{xy}
+\usepackage[normalem]{ulem}
+\usepackage{tikz-cd}
+
+
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}[section]{\bfseries}{\itshape}
+\newtheorem{proposition}[theorem]{Proposition}{\bfseries}{\itshape}
+\newtheorem{definition}[theorem]{Definition}{\bfseries}{\upshape}
+\newtheorem{lemma}[theorem]{Lemma}{\bfseries}{\upshape}
+\newtheorem{example}[theorem]{Example}{\bfseries}{\upshape}
+\newtheorem{corollary}[theorem]{Corollary}{\bfseries}{\upshape}
+\newtheorem{remark}[theorem]{Remark}{\bfseries}{\upshape}
+\newtheorem{fact}[theorem]{Fact}{\bfseries}{\upshape}
+\newtheorem{Q}[theorem]{Exercise}{\bfseries}{\upshape}
+
+\newtheorem*{theorem*}{Theorem}
+
+\newcommand{\bN}{\mathbb{N}}
+\newcommand{\bZ}{\mathbb{Z}}
+\newcommand{\bQ}{\mathbb{Q}}
+\newcommand{\bR}{\mathbb{R}}
+\newcommand{\bP}{\mathbb{P}}
+\newcommand{\HCF}{\mathbf{HCF}}
+
+\title{ITCS 531 \\Number Theory 3: Primality testing}
+\author{Rob Egrot}
+\date{}
+
+\begin{document}
+\maketitle
+
+\section{Primality testing}
+In the previous section, we showed that arithmetic modulo $n$ `makes sense'. In other words, we can define operations of addition, subtraction and multiplication on equivalence classes modulo $n$ for all $n\in\bN \setminus\{0\}$. The definition below is used to pick out the number system defined by looking at integers mod $n$ for some $n$. 
+
+\begin{definition}[$\bZ_n$]
+If $n\in \bN\setminus\{0\}$ then $\bZ_n$ is the set of integers mod $n$.
+\end{definition}
+
+\paragraph{Modular inverses.} In standard arithmetic over $\bR$, every number except $0$ has an inverse under multiplication. That is, for all $x\in \bR\setminus\{0\}$ there is $y\in \bR\setminus\{0\}$ with $xy =1$. We write $x^{-1}$ or $\frac{1}{x}$ for the multiplicative inverse of $x$. In the integers $\bZ$, only the numbers $1$ and $-1$ have an inverse, but in $\bZ_n$ this is not usually true.
+
+\begin{definition}[Modular multiplicative inverse] 
+For $a\in \bZ$ we define $b\in\bZ$ to be the multiplicative inverse, or just the \emph{inverse}, of $a \mod n$ if  $ab \equiv_n 1$. We write $a^{-1}$ for the multiplicative inverse (when it exists - see proposition \ref{P:inv}).
+\end{definition}
+
+Soon we will prove a result that tells us exactly when integers have an inverse mod $n$, but first we will need a quick definition and a technical lemma.
+
+\begin{definition}[Coprime]
+Integers $a$ and $b$ are \emph{coprime} if their highest common factor ($\HCF$)  is $1$
+\end{definition}
+
+\begin{lemma}\label{L:div3}
+Let $a,b,c\in\bZ$, let $a|bc$, and let $a$ and $b$ be coprime. Then $a|c$.
+\end{lemma}
+\begin{proof}
+This is exercise \ref{Q:div}.
+\end{proof}
+
+Now we have all we need to prove the first important result in this section.
+
+\begin{proposition}\label{P:inv}
+Let $a\in \bZ$ and let $n\in\bN\setminus\{0\}$. Then $a$ has multiplicative inverse $\mod n$ if and only if $a$ and $n$ are coprime. Moreover, the multiplicative inverse of $a\mod n$ is unique in $\bZ_n$, whenever it exists. 
+\end{proposition}
+\begin{proof}
+This proof has three parts. We must show that \emph{if} $a$ and $n$ are coprime, \emph{then} $a$ has an inverse in $\bZ_n$, and also \emph{if} $a$ has an inverse in $\bZ_n$, \emph{then} $a$ and $n$ are coprime, and finally that if $b$ and $c$ are both inverses to $a$ mod $n$, then $b\equiv_n c$.
+
+First we show that, if $a$ and $n$ are coprime, the multiplicative inverse of $a \mod n$ exists. Since $a$ and $n$ are coprime it follows from corollary \ref{C:bez} (B\'ezout's identity) that there are $x,y\in\bZ$ with $xa + yn = 1$. So $xa-1 = -yn$, but this means that $xa \equiv_n 1$ by definition. So $a$ has an inverse in $\bZ_n$ as required.
+
+Now suppose that $a$ has an inverse, and call it $x$. Then we have $xa \equiv_n 1$, or, in other words, there is $y$ with $xa - 1 = yn$. We can rewrite this as $xa - yn = 1$. Suppose $d|a$ and $d|n$. Then $d|(ax-yn)$, and so $d|1$, by lemma \ref{L:plus}. The only way this can be true is if $d=\pm 1$, and this means $HCF(a,n)=1$, and so $a$ and $n$ are coprime.
+
+Finally we show that if the inverse exists it is unique mod $n$. If an inverse to $a$ exists then we have just shown that $(a,n)$ must be coprime. Let $ab\equiv_n 1$ and $ac\equiv_n 1$. Then there are $k,l\in\bZ$ with $ab - 1 = k n$ and $ac - 1 = ln$. So $a(b-c) = (k-l)n$. Now, we obviously have $a|a(b-c)$, so by lemma \ref{L:div3} we must have $a|(k-l)$, and so $b-c = \frac{k-l}{a}n$, and $\frac{k-l}{a}\in\bZ$, and thus $b\equiv_n c$. 
+\end{proof}
+
+\paragraph{Primality testing with Fermat's little theorem}
+Now we know the basics of modular arithmetic, we can start to seriously study prime numbers and prime factorizations. The computational difficulty of finding the prime factors of large numbers is the basis for much of modern cryptography, particularly the RSA encryption system we study in the next section. 
+
+An old result about prime numbers known as \emph{Fermat's little theorem} will be important. This neat theorem gives us a kind of detector for numbers which are not prime (i.e. composite numbers), and so with some ingenuity can be turned into a powerful probabilistic method for testing whether a number is prime. First we will need another small technical lemma. 
+\begin{lemma}\label{L:distinct}
+Let $a\in\bZ\setminus\{0\}$ and $n\in\bN\setminus\{0\}$ be coprime. Then, for all $b,c\in \bZ$, if $ab \equiv_n ac$, we have $b\equiv_n c$.
+\end{lemma}
+\begin{proof}
+Since $a$ and $n$ are coprime, by proposition \ref{P:inv} we know $a$ has a multiplicative inverse $a^{-1}$ (mod $n$). So $a^{-1}ab \equiv_n a^{-1}ac$, and so $b\equiv_n c$ by definition of the inverse. 
+\end{proof}
+
+\begin{theorem}[Fermat's little theorem]\label{T:fermat}
+If $p$ is prime then $a^{p-1}\equiv_p 1$ whenever $a$ and $p$ are coprime.
+\end{theorem}
+\begin{proof}
+By lemma \ref{L:distinct} we have 
+\[\{1,2,3,\ldots,p-1\}=\{a \mod p,2a \mod p,3a \mod p,\ldots, (p-1)a \mod p\}.\] 
+This is because the set on the right is obtained by multiplying every element of the set on the left by $a$, then taking the result mod $n$. The lemma says that no two distinct elements in the right hand set will produce the same result (mod $n$) when multiplied by $a$, so multiplying everything by $a$ and taking the result mod $n$ doesn't change the set. 
+So 
+\[\tag{$\dagger$}(p-1)! \equiv_p a^{p-1}(p-1)!,\] as the left hand side is obtained by multiplying all elements of $\{1,2,3,\ldots,p-1\}$, and the right hand side is obtained by multiplying all elements of $\{a \mod p,2a \mod p,3a \mod p,\ldots, (p-1)a \mod p\}$. Now, since $p$ is prime, it follows from lemma \ref{L:div2} that $p$ cannot divide $(p-1)!$, and so $p$ and $(p-1)!$ are coprime. Thus, by proposition \ref{P:inv}  it follows that $(p-1)!$ has an inverse modulo $p$. Multiplying $(\dagger)$ by this inverse gives $a^{p-1}\equiv_p 1$ as required. 
+\end{proof}
+
+Fermat's \emph{little} theorem should not be confused with Fermat's \emph{last} theorem.
+
+\begin{theorem}[Fermat's last theorem]
+Let $a,b,c\in\bN\setminus\{0\}$, and let $n\in\bN$ with $n> 2$. Then $a^n+ b^n\neq c^n$.
+\end{theorem}
+\begin{proof}
+Exercise. HINT: See Wiles, A. \emph{Modular elliptic curves and Fermat's last theorem} (1995).  
+\end{proof}
+
+Fermat's little theorem gives us a computationally efficient way we can test whether a number is prime. Given $n\in \bN$ we pick $a$ with $1<a<n$, then calculate $a^{n-1} \mod n$. If this is not 1 then $n$ is not prime, by Fermat's little theorem (as if $n$ is prime then $a$ would automatically be coprime with $n$). However, if $a^{n-1} \equiv_n 1$ then we cannot conclude that $n$ is prime. This is because Fermat's little theorem only tells us that \emph{if} $p$ is prime \emph{then} $a^{p-1}\equiv_p 1$. It doesn't say that if $p$ is \emph{not} prime then $a^{p-1}\not\equiv_p 1$. For example, $341 = 11\times31$, but $2^{340} \equiv_{341} 1$. Passing Fermat's test does give us evidence that a number is prime though, because of the following result.
+
+\begin{lemma}\label{L:half}
+Let $n\in \bN$ and suppose there is $1\leq a<n$ such that $a$ is coprime with $n$ and $a^{n-1}\not\equiv_n 1$. Then the modular inequality $b^{n-1}\not\equiv_n 1$ must hold for at least half the natural numbers $b$ less than $n$. 
+\end{lemma} 
+\begin{proof}
+Suppose $b<n$ and $b$ passes Fermat's test (i.e. $b^{n-1}\equiv_n 1$). Then $ab$ fails Fermat's test, because $(ab)^{n-1} = a^{n-1}b^{n-1}\equiv_n a^{n-1}\not\equiv 1$. Moreover, if $ab\equiv_n ac$ for $1<b,c< n$ then $b=c$ (by lemma \ref{L:distinct}). What this means is that every element that passes Fermat's test has a partner that doesn't, and these partners are all distinct, so there are at least as many elements that fail as that pass. 
+\end{proof}
+
+It follows from lemma \ref{L:half} that, if $n$ is not prime, then so long as there is at least one coprime $a< n$ that fails Fermat's test, the test will fail at least 50\% of the time. This gives us a reliable, but not infallible, test for determining whether a number $n$ is prime: We repeat Fermat's test $k$ times with different numbers $a$ with $1<a<n$ (we can choose $a$ randomly each time). If the test fails for any $a$ we conclude with certainty that $n$ is not prime (by the little theorem), and if every test is passed we conclude that the probability that $n$ is not prime must be at most $\frac{1}{2^k}$ (because, if $n$ is not prime, assuming there is at least one value $a$ that is coprime with $n$ with $a^{n-1}\not\equiv_n 1$, every randomly picked $a$ provides at least a 50\% chance of making $n$ fail the test). So, if we choose a value of $k$ such that $\frac{1}{2^k}$ is `small enough', if $n$ passes every round of this testing procedure we can conclude with high probability that $n$ is prime. This test is always correct when it says a number is composite, but it occasionally says a number is prime when actually it is not. In other words, if $n$ is prime, then the test will give the correct answer, but if $n$ is composite, then there is a small chance it will get the answer wrong. 
+
+\paragraph{Carmichael numbers.}
+There is a small problem with Fermat's test as we have described it. Lemma \ref{L:half} relies on the existence of at least one $a$ that is coprime with $n$ and fails Fermat's test (i.e. $a^{n-1}\not\equiv_n 1$). Unfortunately, there are composite numbers where every coprime $a$ passes Fermat's test. These numbers are called \emph{Carmichael numbers}. The smallest Carmichael number is 561. This is not prime as $561 = 3\times 11 \times 17$, but for every $1<a<561$ that is coprime to $561$ we have $a^{560}\equiv_{561} 1$. 
+
+So, lemma \ref{L:half} does not apply to 561, and the probability calculation we used for Fermat's test is not correct. There are an infinite number of Carmichael numbers, but fortunately they are quite rare, so we can use Fermat's test naively and most of the time we will not have a problem. Alternatively, we can use more advanced methods, like the Rabin-Miller test (which is based on Fermat's test), that give correct probability bounds, taking Carmichael numbers into account.          
+
+\paragraph{Lagrange's theorem.}
+Lagrange's theorem, at least, the one we're going to talk about here (there are several important results named after Lagrange), concerns the number of roots of polynomial equations with integer coefficients. Remember that a polynomial with variable $x$ and degree $n$ is a function 
+\[a_0 +a_1x +a_2x^2+\ldots +a_nx^n,\] 
+where $a_0,\ldots,a_n$ are fixed parameters, usually taken from $\bR$ or some subset like $\bQ$ or $\bZ$ (here we are interested in $\bZ$). It is well known that a polynomial can have, at most, the same number of real roots as its degree (remember a \emph{root} of a single variable function $f$ is a value $x$ such that $f(x)=0$). What is known as the Fundamental Theorem of Algebra tells us that we can always factorize a polynomial over the complex numbers using its roots, but this is not in the scope of this course. We will show soon that the limit on the number of roots of a polynomial we have just described also applies to polynomials over $\bZ_p$, when $p$ is prime. First note the following observation, expressed as a lemma.
+  
+\begin{lemma}\label{L:Lagdiv}
+If $x,y\in\bR$ then 
+\[\frac{x^n-y^n}{x-y} = x^{n-1} + x^{n-2}y + x^{n-3}y^2 + \ldots + x y^{n-2} + y^{n-1}.\]
+\end{lemma}
+\begin{proof}
+Direct calculation of $(x-y)(x^{n-1} + x^{n-2}y + x^{n-3}y^2 + \ldots + x y^{n-2} + y^{n-1})$ shows it is equal to $x^n-y^n$.
+\end{proof}
+
+The point of this lemma is that if $x$ and $y$ are variables, or if one is a variable and the other is a constant, the polynomial $x-y$ divides the polynomial $x^n-y^n$. Now, you might be thinking, if $x$ and/or $y$ are variables, isn't it possible that $x=y$, and then we end up dividing by zero? This is a good question, but it's not actually a problem here, because we're dealing with polynomials. Writing $\frac{x^n-y^n}{x-y} = x^{n-1} + x^{n-2}y + x^{n-3}y^2 + \ldots + x y^{n-2} + y^{n-1}$ is just another way to say $(x-y)(x^{n-1} + x^{n-2}y + x^{n-3}y^2 + \ldots + x y^{n-2} + y^{n-1})=x^n-y^n$, for all values of $x$ and $y$. Note that $x^{n-1} + x^{n-2}y + x^{n-3}y^2 + \ldots + x y^{n-2} + y^{n-1}$ is the unique polynomial that makes this true. In the case where $x = y$ both sides are just zero. Contrast this to the case of numbers. We can't write e.g. $\frac{5}{0} = x$ because there's no value of $x$ that makes $5 = 0\times x$ true. 
+Now some notation. Let $f$ be a polynomial over $\bZ$ of degree $n$. I.e. 
+\[f(x)= a_0 + a_1 x + a_2 x^2 +\ldots + a_n x^n,\]
+where $a_i\in\bZ$ for all $i$ and $a_n\neq 0$. Let $p$ be a prime number. We define $f_p(x) = a'_0 + a'_1 x + a'_2 x^2 +\ldots + a'_n x^n$ where each $a'_i = a_i\mod p$ for all $i$. So $f_p$ is $f$ converted to being a polynomial over $\bZ_p$. For example, if $f(x) = 8 + 14x +3x^2$, then $f_5(x) = 3 + 4x + 3x^2$.
+
+\begin{theorem}[Lagrange]
+Let $p$ be prime, let $f(x) = a_0 + a_1x +\ldots + a_m x^m$ be a polynomial over $\bZ$, and let $f_p$ be as above. Suppose the degree of $f_p$ is $n$. Then, unless every coefficient of $f_p$ is zero, $f_p$ has at most $n$ distinct roots modulo $p$. 
+\end{theorem}
+\begin{proof}
+The proof of this theorem is a little difficult, but we include it for completeness. You don't need to learn it, but you should remember the statement of the theorem. First note that the degree of $f_p$ must be less than or equal to the degree of $f$, i.e. we must have $n\leq m$. We induct on $n$, the degree of $f_p$. The result is clearly true when $n=1$, because here we have $f_p = a'_0 + a'_1x$, and the root occurs when $x \equiv_p -a'_0a'^{-1}_1$. 
+
+Suppose now that the result is true for all $n\leq k$. Let the degree of $f_p$ be $k+1$. Suppose that $f_p$ has a root $b$ modulo $p$. In other words $f_n(b)\equiv_p 0$. If such a root does not exist then we are already finished, as if $f_p$ has no roots modulo $p$ it certainly has at most $n$ roots. 
+
+Consider the polynomial 
+\[f_p(x)- f_p(b) = a'_1(x-b) + a'_2(x^2-b^2) +\ldots + a'_{k+1}(x^{k+1}-b^{k+1}).\]
+ By lemma \ref{L:Lagdiv}, $(x-b)$ divides $(x^l-b^l)$ for all $1\leq l\leq k+1$, so we can define a polynomial $g(x)=\frac{f_p(x) - f_p(b)}{x-b}$ over $\bZ_p$. Moreover, $g$ has degree at most $k$. 
+
+By definition of $g$ we have $f_p(x)-f_p(b) = (x-b)g(x)$. Let $c$ be a root of $f_p(x)$ modulo $p$. Then, setting $x=c$ and remembering that $b$ is also a root of $f_p$ modulo $p$, we get $0 \equiv_p (c-b)g(c)$. I.e. $p|(c-b)g(c)$. Since $p$ is prime this means either $p|(b-c)$, which happens if and only $c\equiv_p b$, or $p|g(c)$, in which case $c$ is a root of $g(x)$ modulo $p$. But, by the inductive hypothesis, there are at most $k$ roots of $g$ modulo $p$. So there at most $k+1$ roots of $f_p$ modulo $p$, which is what we're trying to prove.   
+\end{proof}
+
+
+
+\end{document}

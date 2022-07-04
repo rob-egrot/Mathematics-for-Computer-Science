@@ -1,0 +1,189 @@
+\documentclass{article}
+
+\usepackage{amsmath, mathrsfs, amssymb, stmaryrd, cancel, hyperref, relsize,tikz,amsthm,enumerate}
+\usepackage{graphicx}
+\usepackage{xfrac}
+\hypersetup{pdfstartview={XYZ null null 1.25}}
+\usepackage[all]{xy}
+\usepackage[normalem]{ulem}
+\usepackage{tikz-cd}
+
+
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}[section]{\bfseries}{\itshape}
+\newtheorem{proposition}[theorem]{Proposition}{\bfseries}{\itshape}
+\newtheorem{definition}[theorem]{Definition}{\bfseries}{\upshape}
+\newtheorem{lemma}[theorem]{Lemma}{\bfseries}{\upshape}
+\newtheorem{example}[theorem]{Example}{\bfseries}{\upshape}
+\newtheorem{corollary}[theorem]{Corollary}{\bfseries}{\upshape}
+\newtheorem{remark}[theorem]{Remark}{\bfseries}{\upshape}
+\newtheorem{fact}[theorem]{Fact}{\bfseries}{\upshape}
+\newtheorem{Q}[theorem]{Exercise}{\bfseries}{\upshape}
+
+\newtheorem*{theorem*}{Theorem}
+
+\newcommand{\bN}{\mathbb{N}}
+\newcommand{\bZ}{\mathbb{Z}}
+\newcommand{\bQ}{\mathbb{Q}}
+\newcommand{\bR}{\mathbb{R}}
+\newcommand{\bP}{\mathbb{P}}
+\newcommand{\HCF}{\mathbf{HCF}}
+
+\title{ITCS 531 \\Number Theory 2: Modular arithmetic}
+\author{Rob Egrot}
+\date{}
+
+\begin{document}
+\maketitle
+
+
+\section{Modular arithmetic}
+If it's 14:00 now, what time will it be in 24 hours? Most of us will be able to answer without much thought that the time will still be 14:00. We are so used to clocks and the way we use them to divide up time that there's nothing mysterious about this calculation at all, but there is some interesting and important mathematics behind it. This is a simple example of what we call \emph{modular arithmetic}. While we don't need to understand the theory of modular arithmetic to tell the time, combining this theory, which we will introduce in this section, with what we learned about prime numbers in the previous section will be the key to unlocking one of the most important developments of the last century, the theory of RSA encryption. We will get to this in the final section of this course, but first we need introduce a mathematical notion of `equivalence'.   
+
+\paragraph{Equivalence relations and modular arithmetic.}
+\begin{definition}[Equivalence relation]\label{D:equiv}
+A binary relation $R$ on a set $X$ is an \emph{equivalence relation} if it has the following three properties.
+\begin{enumerate}
+\item $R(x,x)$ for all $x\in X$ (reflexive).  
+\item $R(x,y)\iff R(y,x)$ for all $x,y\in X$ (symmetric).
+\item $R(x,y)$ and $R(y,z)\implies R(x,z)$ for all $x,y,z\in X$ (transitive).
+\end{enumerate}
+\end{definition}
+
+If $R$ is an equivalence relation on $X$, and $x\in X$, then $\{y\in X: R(x,y)\}$ is the \emph{equivalence class} of $x$. We often write $[x]$ for the equivalence class of $x$ when it's clear what equivalence relation we're talking about. Sometimes we write e.g. $[x]_R$ when we want to make it explicit. Equivalence relations give us a way of grouping objects that are `essentially the same' together. What `essentially the same' means depends on the context. For example, it is a principle of monetary systems that, e.g. one \$10 bill is, for the purpose of normal use, essentially the same as any other \$10 bill. So all \$10 bills are equivalent to each other in normal use. On the other hand, photographs are not usually equivalent to each other. For example, a photograph of my family will not usually have the same value to me as a photograph of someone else's family, or even necessarily a different photograph of my own family. However, identical copies of the same photograph will normally be equivalent in everyday use, even though they are physically different objects (or e.g. stored on different computers). We don't need a formal concept of equivalence to handle examples like this, but it will be very useful when things get more abstract.      
+
+\begin{example}
+Let $X$ be a set of balls. Then `being the same colour' is an equivalence relation on $X$. Every ball is the same colour as itself (reflexive), and if $x$ is the same colour as $y$ then $y$ is obviously the same colour as $x$ (symmetric). Similarly, if $x$ and $y$ are the same colour, and also $y$ and $z$ are the same colour, then clearly $x$ and $z$ are the same colour (transitive).
+\end{example}
+
+\begin{example}
+`Being friends' is not an equivalence relation on a group of people. We can assume, for the sake of argument, that it's reflexive, though `being friends with yourself' may sound a bit strange, and it's symmetric by definition. However, it's not usually transitive. 
+\end{example}
+
+The equivalence classes of an equivalence relation on a set divide the set into pieces. We can formalize this concept with another definition.
+
+\begin{definition}[Partition]
+If $X$ is a set then a \emph{partition} of $X$ is a set of pairwise disjoint subsets of $X$ whose union is equal to $X$. In other words, a partition of a set divides it into pieces that don't overlap at all. 
+\end{definition}
+
+Partitions and equivalence relations are different ways of talking about the same thing.
+
+\begin{proposition}\label{P:part}
+If $R$ is an equivalence relation on $X$ then $\{[x]:x\in X\}$ is a partition of $X$.
+\end{proposition}
+\begin{proof}
+We must show that $\{[x]:x\in X\}$ satisfies the two conditions required to be a partition of $X$. We will use the properties of equivalence relations to make the argument work. 
+\begin{enumerate}
+\item We need to show that the union of all the equivalence classes is equal to $X$. We have $\bigcup_{x\in X} [x] \subseteq X$ because $[x]\subseteq X$ for all $x$ (by definition of $[x]$). Conversely, if $y\in X$ then $y\in [y]$ by reflexivity of $R$, so $X\subseteq \bigcup_{x\in X} [x]$ and so $\bigcup_{x\in X} [x]= X$ as required. 
+\item Now we need to show that the equivalence classes a pairwise disjoint, i.e. they don't have any common elements. Suppose $[x]\cap [y] \neq\emptyset$. Then there is $z\in X$ with $R(x,z)$ and $R(y,z)$. But then $R(z,y)$, by symmetry, and so $R(x,y)$ by transitivity.  By symmetry again we also have $R(y,x)$. Now, using transitivity and the fact that $R(x,y)$ and $R(y,x)$ we have 
+\begin{align*}
+z\in [x] &\iff R(x,z) \phantom{xx}\text{ (by definition)}\\
+&\iff R(y,z) \phantom{xx}\text{ (by transitivity with $R(x,z)$ and $R(y,x)$)}\\
+&\iff z\in [y] \phantom{xxi}\text{ (by definition)}
+\end{align*} 
+ So $[x]=[y]$. I.e. $x$ and $y$ define the same equivalence class. In other words, the only way $[x]$ and $[y]$ can fail to be disjoint is if they are actually the same set. This proves that $\{[x]:x\in X\}$ satisfies the 2nd partition condition.
+\end{enumerate}
+\end{proof}
+The above proposition also has a converse, which you can find in the exercises.
+
+
+Now we've taken a detour through the concept of equivalence, which we will return to in the exercises, we can start taking modular arithmetic seriously.
+
+\begin{definition}[Modular equality]
+Given $x,y\in \bZ$, we say $x \equiv y\mod n$ if there is $k\in\bZ$ with $x-y = kn$. I.e. if the difference between $x$ and $y$ is a multiple of $n$. We also write $x \equiv_n y$. 
+\end{definition}
+
+So, for example, a 24 hour clock uses numbers modulo 24, and if we add 24 to a number on the clock then we get back the same number. In other words, 14:00 is, according to the clock, `essentially the same' as 38:00, which is `essentially the same' as 52:00 etc. Since equivalence relations are supposed to be a way of handling things that are `essentially the same, we might expect to be able to view modular equality as a kind of equivalence relation, and indeed we can.  
+
+\begin{proposition}\label{P:cong}
+Let $n\in \bN$. Then $\equiv_n$ is an equivalence relation on $\bZ$.
+\end{proposition}
+\begin{proof}
+We must check each condition from definition \ref{D:equiv}. Let $x,y\in\bZ$.
+\begin{enumerate}
+\item $x-x = 0 = 0n$, so $x\equiv_n x$.
+\item If $x - y = kn$ then $y - x = -kn$, and vice versa, so $x\equiv_n y\iff y\equiv_n x$.
+\item If $x-y = kn$ and $y-z = ln$, then $x - z= kn + ln = (k+l)n$, so $x\equiv_n y$ and $y\equiv_n z\implies x\equiv_n z$.
+\end{enumerate}
+\end{proof}
+
+\paragraph{Properties of modular arithmetic.} If the number $x$ is `essentially the same' as $x'$, and the number $y$ is `essentially the same as $y'$, then we should expect e.g. $x+y$ to be `essentially the same' as $x'+y'$, because numbers which are `essentially the same' should arguably behave in the same way with respect to the ordinary operations of arithmetic. Fortunately, modular equality does satisfy this intuitive condition, which we formalize in the proposition below. 
+
+\begin{proposition}\label{P:subs}
+Suppose $x\equiv_n x'$, and $y\equiv_n y'$. Then:
+\begin{enumerate}
+\item $x + y \equiv_n x' + y'$, and
+\item $xy \equiv_n x'y'$.
+\item For all $k\in \bN$, \/ $x^k\equiv_n x'^k$.
+\end{enumerate}
+\end{proposition}
+\begin{proof}
+For the first part suppose $x-x' = kn$ and suppose $y-y' =ln$. Then $(x+y)-(x'+y')=(k+l)n$. I.e. $(x+y)\equiv_n x'+y'$. The second part will be an exercise, and the 3rd part follows from the 2nd part.
+\end{proof}
+
+Note that it's not true that $x^y \equiv_n x^{y'}$ when $y\equiv_n y'$. E.g. $5\equiv_4 1$, but $2^5 = 32 \equiv_4 0$, and $2^1 = 2 \equiv_4 2$.
+
+Despite the obvious differences, modular arithmetic behaves in many ways like ordinary arithmetic. The next proposition summarizes this good behaviour. 
+\begin{proposition}\label{P:arith}
+Let $n\in \bN$. Then the following familiar properties of arithmetic carry over to arithmetic $\mod n$.
+\begin{enumerate}[(1)]
+\item $(x + y) + z \equiv_n x + (y + z)$ for all $x,y,z\in\bZ$ (Associativity of addition).
+\item $(xy)z \equiv_n x(yz)$ for all $x,y,z\in\bZ$ (Associativity of multiplication).
+\item $x + y \equiv_n y + x$ for all $x,y\in\bZ$ (Commutativity of addition).
+\item $xy \equiv_n yx$ for all $x,y\in\bZ$ (Commutativity of multiplication).
+\item $x(y + z) \equiv_n (xy) + (xz)$ for all $x,y,z\in\bZ$ (Distributivity).
+\end{enumerate}
+\end{proposition}
+\begin{proof}\mbox{}
+Because $(x+y)+z = x+(y+z)$, we have 
+\[((x+y)+z) - (x+(y+z))=0=0\times n.\]
+This proves (1), and similar simple arguments prove all the other claims too. 
+\end{proof}
+
+Combining propositions \ref{P:subs} and \ref{P:arith} we can also say e.g. that $(x + y \mod n) + z \equiv_n x + (y + z \mod n)$ for all $x,y,z\in\bZ$. In other words, it doesn't matter at what point we calculate remainders modulo $n$. We can wait till the end or do it as we go along, and we will still get the same answer.
+
+\paragraph{Calculations in modular arithmetic.} Using the properties of modular arithmetic we can simplify complex seeming expressions, and perform calculations with large numbers without using a computer (or perform calculations with very large numbers on a computer without running out of memory).
+
+\begin{example}\label{E:simp}
+\[2^{345} \equiv_{31} (2^5)^{69} \equiv_{31} 32^{69} \equiv_{31} 1^{69} \equiv_{31} 1 \]
+\end{example} 
+We often want to evaluate exponentials in modular arithmetic. We won't always be able to makes things as easy as they are in example \ref{E:simp}, but we definitely want to do better than the naive approach (i.e. calculating $x^y$ then finding the answer mod $n$). We need to do better than this because, in practical applications, $x^y$ could be too big for our computer to handle. Fortunately, the properties of modular arithmetic we have discovered allow us to break exponentials down into small parts, so the numbers never get too large.
+
+\[\text{ If $x\equiv_n x'$ and $(x')^{y-1} \equiv_n z$, then $x^{y} \equiv_n zx'.$}\]
+
+I.e. to work out $x^y \mod n$, first find $x \mod n$, then find $x(x\mod n) \mod n$ etc. Using this method the numbers never get too big, but we need to perform $y-1$ multiplications, which can take a lot of time. We can speed up the algorithm with a trick. Every number can be written in binary, which represents a sum of powers of 2. So, in particular, we can rewrite $x^y$ so that it is a product of $x$ to the power of various powers of $2$. E.g.
+
+\[x^{25}=xx^8x^{16},\]  
+which corresponds to the fact that $25$ is $11001$ in binary. 
+
+So, to evaluate $x^{25}\mod n$ we can calculate $x\mod n$, then calculate $x^2\mod n$, then calculate $x^4 \equiv_n (x^2)^2$, then $x^8\equiv_n (x^4)^2$, then $x^{16}\equiv_n (x^8)^2$. Finally we can multiply them together (mod $n$) step by step to get the answer. So we only need to perform $6$ multiplications ($x^2$, $(x^2)^2$, $((x^2)^2)^2$, $(((x^2)^2)^2)^2$, $x.x^8$, and $(x.x^8).x^{16}$). 
+
+Using this method, in the worst case (i.e. when the binary representation is a string of ones), if $l$ is the length of $y$ when written in binary, we have to perform $(l-1) + (l-1) = 2l-2$ multiplications. This is linear in the length of the binary form of $y$. With a little thought, we can turn this idea into a neat recursive function. Moreover, evaluating this function does not take a large amount of time or space, so it is practical from a computational perspective.
+
+\[\exp(x,y,n) = \begin{cases}1 \text{ if } y=0 \\ (\exp(x,\lfloor \frac{y}{2} \rfloor), n))^2\mod n \text{ if $y$ is even} \\ x(\exp(x,\lfloor \frac{y}{2} \rfloor), n))^2\mod n \text{ if $y$ is odd} \end{cases}\]
+
+
+This algorithm is not mysterious. The key observation is that, for $y>0$, we have 
+\[x^y = \begin{cases}(x^{\frac{y}{2}})^2 \text{ when $y$ is even} \\ x.(x^{\frac{y-1}{2}})^2 \text{ when $y$ is odd}.  \end{cases}\]
+
+So, for example, 
+\[x^{25} = x(x^{12})^2 = x((x^6)^2)^2 = x(((x^3)^2)^2)^2 = x(((x(x)^2)^2)^2)^2 = xx^8x^{16}.\]
+
+To illustrate how the algorithm works in practice we will go through it step by step in the case where $x=3$ and $n = 4$.
+
+\begin{align*}
+3^{25}\mod 4 &= 3(3^{12} \mod 4)^2 \mod 4 \\
+&= 3((3^6 \mod 4)^2 \mod 4)^2 \mod 4 \\
+&= 3(((3^3 \mod 4)^2 \mod 4)^2 \mod 4)^2 \mod 4 \\
+&= 3(((3(3 \mod 4)^2\mod 4)^2 \mod 4)^2 \mod 4)^2 \mod 4\\
+&=3(((3\cdot3^2\mod 4)^2\mod 4)^2\mod 4)^2 \mod 4 \\
+&=3(((27\mod 4)^2\mod 4)^2\mod 4)^2 \mod 4 \\
+&=3((3^2\mod 4)^2\mod 4)^2 \mod 4 \\
+&=3(1^2\mod 4)^2 \mod 4 \\
+&=3(1^2\mod 4)^2 \mod 4 \\
+&= 3(1^2) \mod 4\\
+&= 3
+\end{align*}
+
+
+\end{document}

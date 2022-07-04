@@ -1,0 +1,128 @@
+\documentclass{article}
+
+\usepackage{amsmath, mathrsfs, amssymb, stmaryrd, cancel, hyperref, relsize,tikz,amsthm}
+\usepackage{graphicx}
+\usepackage{xfrac}
+\hypersetup{pdfstartview={XYZ null null 1.25}}
+\usepackage[all]{xy}
+\usepackage[normalem]{ulem}
+\usepackage{tikz-cd}
+
+
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}[section]{\bfseries}{\itshape}
+\newtheorem{proposition}[theorem]{Proposition}{\bfseries}{\itshape}
+\newtheorem{definition}[theorem]{Definition}{\bfseries}{\upshape}
+\newtheorem{lemma}[theorem]{Lemma}{\bfseries}{\upshape}
+\newtheorem{example}[theorem]{Example}{\bfseries}{\upshape}
+\newtheorem{corollary}[theorem]{Corollary}{\bfseries}{\upshape}
+\newtheorem{remark}[theorem]{Remark}{\bfseries}{\upshape}
+\newtheorem{fact}[theorem]{Fact}{\bfseries}{\upshape}
+\newtheorem{Q}[theorem]{Exercise}{\bfseries}{\upshape}
+
+\newtheorem*{theorem*}{Theorem}
+
+\newcommand{\bN}{\mathbb{N}}
+\newcommand{\bZ}{\mathbb{Z}}
+\newcommand{\bQ}{\mathbb{Q}}
+\newcommand{\bR}{\mathbb{R}}
+\newcommand{\bP}{\mathbb{P}}
+\newcommand{\HCF}{\mathbf{HCF}}
+
+\title{ITCS 531 \\Number Theory 4: RSA encryption}
+\author{Rob Egrot}
+\date{}
+
+\begin{document}
+\maketitle
+
+\section{RSA encryption}
+
+\paragraph{Private key encryption.}
+If you want to send someone a message, and you don't want other people to be able to read it, a simple thing you can do is to write the message in code. You agree a code system with the other person, then they can translate your coded messages back into something that makes sense, and you can do the same for theirs. People who don't know the system will have to spend a lot of time and effort cracking your code if they want to read your messages. For convenience we assume that our messages are just numbers. This is reasonable because there are lots of ways we can use numbers to represent strings of, say, English words. We avoid worrying about the details of this translation between words and numbers by just working directly with the numbers. This way we can focus on the mathematics, which is the important part. Formally we can proceed by making the following definition. 
+
+\begin{definition}[Encryption function]
+An \emph{encryption function} is a bijection between two subsets of $\bN$.
+\end{definition}
+The idea is that there's a set of natural numbers that represent `meaningful' messages, and the encryption function maps these bijectively with another set of natural numbers representing the encrypted forms of these messages. Since the encryption function is a bijection, going from messages to their encrypted forms and back is well defined. For a simple coded conversation with a predefined set of meaningful message numbers, two people $A$ and $B$ can agree an encryption function $f$. Both $A$ and $B$ know $f$ and $f^{-1}$. If $A$ wants to send a message $x$ to $B$, she calculates $f(x)$ and sends it to $B$. To read this message, $B$ calculates $f^{-1}(f(x))$, recovering $x$. Since $f$ is a bijection it must be invertible, so this is possible. Similarly, $B$ can use $f$ to send coded messages to $A$, who can read them using $f^{-1}$. A third person $C$ can intercept the message, but they will only have $f(x)$, from which, if $f$ is a well chosen encryption function, it should be extremely difficult to recover $x$. 
+
+\[\xymatrix{A,x\ar[rr]^{f(x)\hspace{.9cm}} &\ar@{..>}[d] & B,f^{-1}(f(x))=x\\
+& C, f(x)?}\]
+
+The problem with this system is that $A$ and $B$, and anyone else who should be able to legitimately read the coded messages, must all know the function $f$ (and its inverse $f^{-1}$). If $C$ knows $f^{-1}$ then they can read any $f$-encrypted message easily. So $A$ and $B$ have to keep $f^{-1}$ a secret, but they must also reveal $f$ and $f^{-1}$ to anyone they want to communicate with using this encryption system. The more often they reveal $f^{-1}$, the more likely that information will leak out to people they don't want to have it. This is not practical for situations where large numbers of coded messages must be sent to a large number of different people. 
+
+\paragraph{Public key encryption.}
+Private key cryptography is \emph{symmetrical}, i.e. every person in the conversation has all the information used for encryption. Public key encryption is \emph{asymmetrical}, that is, the sender has less information about the encryption system than the receiver. The typical situation is this. $A$ wants to send $B$ a message $x$ in encrypted form. She calculates $f(x)$ and sends it to $B$. $B$ then uses a function $g=f^{-1}$ to calculate $g(f(x))=x$. The idea is that $B$ can broadcast the function $f$, but keep $g$ a secret, so $f$ must be chosen so that its inverse cannot be easily found. Then anyone can send $B$ a message encrypted with $f$, but only $B$ will be able to read it, as $g$ is kept secret. This seems almost like magic, but it is possible through the number theory we have studied. More specifically, Fermat's little theorem will play a crucial role. 
+
+\[\xymatrix{A\ar[r]^{f(x)} & B & C\ar[l]_{f(y)}}\]
+
+\paragraph{RSA encryption.}
+The RSA encryption system, invented in the 1970s and the basis for e-commerce, operates as follows. In this situation $A$ wants to send a message $x$ to $B$ in encrypted form.
+\begin{enumerate}
+\item $B$ chooses two (large) primes $p$ and $q$. He defines $N = pq$, and he chooses some number $e<(p-1)(q-1)$ that is coprime to $(p-1)(q-1)$. The easiest way to do this is to make $e$ prime, for example, $B$ can set $e=3$ so long as $3\nmid (p-1)(q-1)$. The pair $(N,e)$ is $B$'s \emph{public key}. He makes this information freely available to anyone who wants to send him an encrypted message. We assume that $p$ and $q$ are large, so that $x< N$. If $x\geq N$ there is a problem as we will be working modulo $N$, so $x$ will be confused with another message.
+\item $A$ calculates $x^e\mod N$. This is what she sends to $B$. There is a number, $d$, such that $(x^e)^d = x\mod N$ (see lemma \ref{L:prop} below). This number $d$ is $B$'s \emph{private key}. $B$ keeps $d$ secret. The idea is that it is extremely difficult to calculate $d$ from knowledge of $(N,e)$, but easy to calculate it from $p$ and $q$. So $B$ can recover $x$ from $x^e$ in a reasonable amount of time, but nobody else can. 
+\end{enumerate}
+
+\[\xymatrix{A\ar[rrr]^{x^e\mod N} & & & B}\]
+
+We now know the idea behind RSA, but we still have some details to go through. In particular, what is $d$ and how does $B$ calculate it? To answer this we need some technical lemmas, which is where Fermat's little theorem comes in.
+\begin{lemma}\label{L:ma}
+Let $p$ be prime, and let $a,m\in\bN$. Then $a\equiv_{p-1} 1\implies m^a\equiv_p m$.
+\end{lemma}
+\begin{proof}
+$a\equiv_{p-1} 1\iff a-1 = k(p-1)$ for some $k\in\bN$. Assuming this is true, we must prove that $m^a-m\equiv_p 0$. This is obviously true if $m$ and $p$ are not coprime (because then $p|m$), so suppose they are coprime (and thus that $m\neq 0 $). Now,
+\begin{align*}
+m^a-m &= m(m^{a-1}-1)\\
+&=m(m^{k(p-1)} -1).
+\end{align*}
+By assumption of coprimality, Fermat's little theorem says that $m^{p-1}\equiv_p 1$. So, by exercise 4.2 we have $m^{k(p-1)}\equiv_p 1$, and so
+\begin{align*}
+m^a-m &=m(m^{k(p-1)} -1)\\
+&\equiv_p m(1-1)\\
+&\equiv_p 0.
+\end{align*} 
+\end{proof}
+
+Using lemma \ref{L:ma}, we can show that $d$ is actually just the inverse of $e$ modulo $(p-1)(q-1)$, as we show in lemma \ref{L:prop} below. This is good, because we can calculate inverses in modular arithmetic quickly using the extended Euclidean algorithm (which is what we used to prove B\'ezout's identity in corollary \ref{C:bez}). I.e. since $e$ and $(p-1)(q-1)$ are coprime, we can find $y$ and $z$ so that $ye + z(p-1)(q-1) = 1$, and then $y$ is the inverse of $e$ modulo $(p-1)(q-1)$.
+
+\begin{lemma}\label{L:prop}
+If $d$ is the inverse of $e$ modulo $(p-1)(q-1)$ then $x^{ed} \equiv_N x$ for all $x\in\{0,1,\ldots,N-1\}$.
+\end{lemma}
+\begin{proof}
+If $d$ is the inverse of $e$ modulo $(p-1)(q-1)$, then, by definition, we have $ed-1 = k(p-1)(q-1)$
+for some $k$. Consequently we have $ed \equiv_{p-1} 1$ and $ed\equiv_{q-1} 1$. So, by lemma \ref{L:ma} we have $x^{ed} \equiv_p x$ and $x^{ed} \equiv_q x$. By exercise 2.4, this means $x^{ed} \equiv_N x$.
+
+\end{proof} 
+
+This system allows $A$ to send $B$ a message $x$ encrypted as $x^e$, which $B$ can decrypt by calculating $(x^e)^d$. If a third party $C$ wants to read this message they must do one of two things.
+
+\begin{enumerate}
+\item $C$ can calculate $y^e\mod N$ for all $y<N$. This is linear in the size of $N$, but computer scientists care about running times in terms of the lengths of inputs in binary. To represent the numbers up to $N$ in binary we need approximately $\log_2 N$ bits, so, as $N=2^{\log_2 N}$, checking $N$ numbers actually uses exponential operations as a function of the binary length of $N$.  
+\item $C$ can factor $N$ into $p$ and $q$ and calculate the inverse of $e$ mod $(p-1)(q-1)$. We don't know for sure, but we believe that there is no efficient algorithm for factoring numbers into their prime factors. At least on classical computers. Peter Shor found an efficient algorithm for integer factorization, but this requires large scale quantum computers, which do not currently exist. Certainly, if such an algorithm exists for `normal' computers then it is a closely guarded secret. 
+\end{enumerate}
+
+\paragraph{Cryptography in practice.} 
+
+RSA is not the only public key encryption method in use. There are others, but the common theme is that there must be a process that is easy to perform, but very hard to reverse. RSA, uses the fact that it's easy to multiply two primes, but (probably) very hard to factor a number into two prime factors. The security of the system is based on the idea that $B$ can broadcast the information needed to encrypt messages, but only $B$ can efficiently decrypt them. For real world applications, people usually use a combination of public and private key encryption. Public key encryption is used to transmit information about a private encryption function, which is freshly generated for each interaction, between parties, then further messages are exchanged using that.
+
+What we have described here is sometimes called \emph{textbook RSA}. This is a clean exposition of the mathematical ideas involved, but ignores some issues that are very important if you want to actually implement a secure RSA based system. For example, if you choose a small value of $e$, say $e=3$, and you encrypt a message $x$ such that $x < N^{\frac{1}{3}}$, then an attacker could decode the encrypted message (which is just $x^3$ in this case), simply by calculating the cube root of $x^3$. There's nothing magic about the number $3$ here. This is potentially a problem for all values of $e$, though larger values of $e$ make it rarer to have $x < N^{\frac{1}{e}}$.
+
+Another potential threat comes from the Chinese remainder theorem, which you can prove as exercise 4.4. Suppose that $A$ wants to send the same message $x$ to $B$, $C$ and $D$. Suppose also that $B$, $C$ and $D$ are all using $e = 3$, and $N$ values $N_B$, $N_C$ and $N_D$ respectively. Then, if we can intercept all three of the messages $A$ sends, we know the value of 
+\begin{align*}
+&y_B = x^3 \mod N_B,\\
+&y_C = x^3 \mod N_C,\text{ and} \\ 
+&y_D = x^3 \mod N_D. 
+\end{align*} 
+
+If $N_B$, $N_C$ and $N_D$ are not pairwise coprime, then we can use Euclid's algorithm to efficiently find a common factor for two of them, and then use this to find $p$ and $q$ for one of the $N$ values. Using these we can decode the message directly. 
+
+Alternatively, if they \emph{are} pairwise coprime, then the Chinese remainder theorem (exercise 4.4) provides a method for finding $y$ such that $y \equiv_{N_B} y_B$, $y \equiv_{N_C} y_C$ and $y \equiv_{N_D} y_D$. I.e. $N_B|(y - x^3)$, $N_C|(y - x^3)$ and $N_D|(y - x^3)$.  Since we are assuming $N_B$, $N_C$ and $N_D$ are pairwise coprime, it follows from exercise 4.3 that $N_BN_CN_D|(y-x^3)$. Since $x< N_B$, $x<N_C$ and $x< N_D$, we must have $x^3 < N_BN_CN_D$, and since $y$ is unique modulo $N_BN_CN_D$, we must have $y = x^3$. So we can efficiently find $x$ by calculating the cube root of $y$.
+
+Implementations of RSA usually mitigate these problems by \emph{padding} the encrypted message. That is, the message $x$ is padded with additional random elements to distort the exploitable rigid mathematical structure involved in textbook RSA. There are various ways to do this, and we will not discuss them here.   
+
+
+
+
+
+
+\end{document}
