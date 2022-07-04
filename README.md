@@ -6,4 +6,8 @@ Materials are written in LaTex.
 There are files for notes and homework (with option to make solutions visible). These should by default be compiled into a master document, 
 which will include homework solutions as an appendix. To compile a document without solutions just remove or comment out the appendix.
 
+To compile the homework sheets (with or without solutions) as stand-alone documents you need to uncomment the creation of a \prefix command.
+This command is used as a kind of hack in the main document to avoid duplicating labels when files are input twice.
+Some exercises reference results in the notes, so these will have to be changed manually to avoid unknown references in a stand-alone file.
+
 There are also files for slides and solutions for selected homework problems (created with Beamer).
