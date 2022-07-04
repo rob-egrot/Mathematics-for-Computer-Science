@@ -1,0 +1,59 @@
+\documentclass{article}
+\usepackage{amsmath, mathrsfs, amsthm, lmodern, amssymb,float,fancyhdr, color,enumerate} 
+\usepackage{graphicx}
+\usepackage{tabularx}
+\usepackage[margin=1.0in]{geometry}
+\definecolor{mygrey}{gray}{0.3}
+\usepackage[all]{xy}
+
+\begin{document}
+\title{ITCS 531 part A test 2021}
+\author{}
+\date{}
+\theoremstyle{plain}
+\newtheorem{Q}{Question}
+\maketitle
+Answer all questions. In all answers include your working.
+\begin{Q}
+\begin{enumerate}[a)]
+\item Find the highest common factor of 236 and 122 using the Euclidean algorithm.
+\item Calculate $(99^2 \mod 32)^3 \mod 15$.
+\item How many positive integers smaller than 2000 are there that are divisible by 13 and not divisible by 11?
+\item Goldbach's conjecture, which is currently unproven but generally believed to be true, states that:
+\begin{itemize}
+\item[$(\dagger)$] If $n$ is an even natural number greater than 2, then $n$ is a sum of two prime numbers (e.g. 4 = 2+2, 8 = 3+5 etc.).
+\end{itemize}
+Golbach's original formulation of the conjecture was:
+\begin{itemize}
+\item[$(\ddagger)$] If $n$ is any natural number greater than 5, then $n$ is a sum of three primes.
+\end{itemize}
+Prove that $(\dagger)$ and $(\ddagger)$ are equivalent.
+
+\end{enumerate}
+\end{Q}
+
+\begin{Q}
+\begin{enumerate}[a)]
+\item There is a city where there are only two kinds of people, monks and thieves. Monks \emph{always} tell the truth, and thieves \emph{always} lie. Traveling in this city you meet two people, $A$ and $B$. Person $A$ tells you that both $A$ and $B$ are monks, but person $B$ tells you that $A$ is a thief. Say with justification whether each of $A$ and $B$ is a monk or a thief.
+\item Let $\phi$ be the propositional formula $\neg((p\wedge q)\rightarrow (p\vee q))$. Is $\phi$ satisfiable? Justify your answer.
+\item Let $\mathscr L = \{0,1,+,\times, \leq\}$ be a signature in first-order logic, and suppose $0$ and $1$ are constants, that $+$ and $\times$ are binary functions, and that $\leq$ is a binary relation. Let $\mathbb Z$ be an $\mathscr L$-structure by interpreting the non-logical symbols of $\mathscr L$ with their usual meanings. For each of the following $\mathscr L$-sentences, say if it is true or false in $\mathbb Z$. Explain your reasoning.
+\begin{enumerate}[i)]
+\item $\forall x\forall y( (x \leq x\times y) \vee (y\leq x\times y))$.
+\item $\forall x\exists y(x + y \approx 0)$.
+\item $\exists y \forall x(x + y \approx 0)$.
+\end{enumerate}
+\item With $\mathscr L$ as in part c), write an $\mathscr L$-formula $\phi(x)$ with a single free variable $x$ such that $\mathbb Z,v\models \phi(x)$ if and only if $|v(x)|$ is prime.
+\end{enumerate}
+\end{Q}
+
+
+
+\begin{Q}
+\begin{enumerate}[a)]
+ \item Let $n$ be a natural number with $n >2$. Prove by induction that $2^n > 2n$.
+\item Arrange the following sets in order of size. 
+\[\mathbb N, \mathbb R, \mathbb Q, \mathbb Z, \mathbb C, \mathbb R^2, \{1,2,3,4\}\]
+If two or more sets are the same size then say so. You don't have to provide proofs in this question.
+\end{enumerate}
+\end{Q}
+\end{document}
