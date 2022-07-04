@@ -1,0 +1,109 @@
+\documentclass[handout]{beamer} 
+\title{ITCS 531: C1 homework solutions}
+\date{}
+\author{Rob Egrot}
+
+\usepackage{amsmath, bbold, bussproofs,graphicx}
+\usepackage{mathrsfs}
+\usepackage{amsthm}
+\usepackage{amssymb}
+\usepackage[all]{xy}
+\usepackage{multirow}
+\usepackage{tikz-cd}
+
+
+\newtheorem{proposition}[theorem]{Proposition}
+\newcommand{\bN}{\mathbb{N}}
+\newcommand{\bZ}{\mathbb{Z}}
+\newcommand{\bQ}{\mathbb{Q}}
+\newcommand{\bR}{\mathbb{R}}
+\newcommand{\bP}{\mathbb{P}}
+\newcommand{\bC}{\mathbb{C}}
+\newcommand{\bF}{\mathbb{F}}
+\newcommand{\spa}{\mathrm{span}}
+
+\addtobeamertemplate{navigation symbols}{}{%
+    \usebeamerfont{footline}%
+    \usebeamercolor[fg]{footline}%
+    \hspace{1em}%
+    \insertframenumber/\inserttotalframenumber
+}
+\setbeamertemplate{theorems}[numbered]
+\begin{document}
+
+\begin{frame}
+\titlepage
+\end{frame}
+
+\begin{frame}
+\frametitle{C1 Q1}
+Prove that if $X$ and $Y$ are disjoint finite sets, then the cardinal arithmetic operations agree with the usual arithmetic operations on $|X|$ and $|Y|$. In other words, prove that $|X\cup Y|$ is equal to the result of adding $|X|$ and $|Y|$ as normal, and do similar for the other two arithmetic operations we have defined.
+\vspace{0.5cm}
+\begin{itemize}
+\item I'll just do $X^Y$.
+\item $X^Y$ is the set of all functions from $Y$ to $X$. 
+\item How many functions are there? 
+\item Such a function must map each element of $Y$ to exactly one element of $X$. 
+\item So, for each $y\in Y$ there are exactly $|X|$ choices. 
+\item So, if $|X| = m$ and $|Y|=n$, we get $m^n$ different functions. 
+\item So $|X^Y|=m^n$ as required.
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{C1 Q2}
+Let $X_i$ be countable for all $i\in \bN$, and suppose $X_i\cap X_j=\emptyset$ for all $i\neq j\in \bN$. Prove that $\bigcup_{i\in\bN} X_i$ is countable.
+\begin{itemize}
+\item We will find an injective function from $\bigcup_{i\in\bN} X_i$ to $\bN$. 
+\item Since $\bN\times\bN$ is countable, there is an injective $f:\bN\times\bN\to \bN$. 
+\item Since each $X_i$ is countable, there are injective functions $g_i:X_i\to \bN$ for all $i\in\bN$. 
+\item Define $g:\bigcup_{i\in\bN} X_i\to \bN\times\bN$ by $g(x) = (i,g_i(x))$, where $x\in X_i$. 
+\item This is well defined because $X_i\cap X_j = \emptyset$ for all $i\neq j$. 
+\item Given $x_1\in X_i$ and $x_2\in X_j$, if $i\neq j$ then $(i,g_i(x_1))\neq (j,g_j(x_2))$, as $i\neq j$, 
+\item If $i=j$ but $x_1\neq x_2$ then $g_i(x_1)\neq g_i(x_2)$, as $g_i$ is injective. 
+\item So $g$ is injective.
+\item So $f\circ g:\bigcup_{i\in\bN} X_i\to \bN$ is the composition of two injective functions, and so is injective. 
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{C1 Q3}
+Let $X$ be a countable set. Prove that the set of all finite subsets of $X$ is countable. 
+\begin{itemize}
+\item Let $f:X\to \bN$ be injective. 
+\item Arrange the prime numbers in a list as $p_0,p_1,\ldots$. 
+\item The set of primes is infinite, so this is a countably infinite list. 
+\item Given $S=\{x_1,\ldots,x_n\}\subseteq X$, define $g(S)= p_{f(x_0)}\times p_{f(x_1)}\times\ldots\times p_{f(x_n)}$. 
+\item Then $g$ is a function from the set of all finite subsets of $X$ to $\bN$. 
+\item If $S_1\neq S_2$ then $g(S_1)$ and $g(S_2)$ will have different prime factorizations, and so by FTA are different numbers.
+\item So $g$ is 1-1.
+\item So the set of finite subsets of $X$ is countable.
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}
+\frametitle{C1 Q4}
+Let $X$ be a set, let $\wp(X)$ be the powerset of $X$.
+\begin{enumerate}
+\item[a)] Define a simple injective function from $X$ to $\wp(X)$.
+\item[b)] Prove that there is no surjective function from $X$ to $\wp(X)$. 
+\item[c)] What does this tell us about the relationship between $|X|$ and $|\wp(X)|$?
+\end{enumerate} 
+\begin{enumerate}[a)]
+\item $f(x) = \{x\}$.
+\item \begin{itemize}
+\item Let $f:X\to \wp(X)$ be onto.
+\item Let $S=\{x\in X: x\notin f(x)\}$. 
+\item As $f$ is onto there is $z\in X$ with $f(z) = S$.
+\item $z\in S \iff z\notin f(z)\iff z\notin S$.
+\end{itemize}
+\item $|X|<|\wp(X)|$.
+\end{enumerate}
+\end{frame}
+
+
+
+
+
+\end{document}

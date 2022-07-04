@@ -1,0 +1,248 @@
+\documentclass[handout]{beamer} 
+\title{ITCS 531: Number Theory 4 - RSA encryption}
+\date{}
+\author{Rob Egrot}
+
+\usepackage{amsmath, bbold, bussproofs,graphicx}
+\usepackage{mathrsfs}
+\usepackage{amsthm}
+\usepackage{amssymb}
+\usepackage[all]{xy}
+\usepackage{multirow}
+\usepackage{tikz-cd}
+
+
+\newtheorem{Def}{Definition}
+\newtheorem{Lem}{Lemma}
+\newtheorem{Thm}{Theorem}
+\newtheorem{Cor}{Corollary}
+\newtheorem{Ex}{Example}
+\newtheorem{Prop}{Proposition}
+\newtheorem{Fact}{Fact}
+\newtheorem{Que}{Question}
+
+\newcommand{\bN}{\mathbb{N}}
+\newcommand{\bZ}{\mathbb{Z}}
+\newcommand{\bQ}{\mathbb{Q}}
+\newcommand{\bR}{\mathbb{R}}
+\newcommand{\bP}{\mathbb{P}}
+
+\addtobeamertemplate{navigation symbols}{}{%
+    \usebeamerfont{footline}%
+    \usebeamercolor[fg]{footline}%
+    \hspace{1em}%
+    \insertframenumber/\inserttotalframenumber
+}
+\setbeamertemplate{theorems}[numbered]
+\begin{document}
+
+\begin{frame}
+\titlepage
+\end{frame}
+
+\begin{frame}
+\frametitle{Why encryption?}
+\begin{itemize}
+\item Sometimes you want to send a message that you only want the intended receiver to be able to read.
+\vspace{1cm}
+\item Since we cannot usually make sure that nobody intercepts the message, we must use a \textbf{code}.
+\vspace{1cm}
+\item The goal is that the coded message will be easy to understand for the intended recipient (and us), and very hard to understand for everyone else.
+
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Encryption functions}
+\begin{itemize}
+\item We assume our `messages' are numbers - it's easy to code English sentences as big numbers.
+\vspace{1cm}
+\item An \textbf{encryption function} is a bijection between two subsets of $\bN$.
+\vspace{1cm}
+\item We use the encryption function to change the numbers that code our messages.
+\vspace{1cm}
+\item Only people who know the encryption function should easily be able to work out the original message.
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Sending messages}
+$A$ sends $B$ a message $x$ encrypted using function $f$. $B$ can use $f^{-1}$ to recover $x$ from $f(x)$. $C$ intercepts $f(x)$ but cannot recover $x$.
+\[\xymatrix{A,x\ar[rr]^{f(x)\hspace{.9cm}} &\ar@{..>}[d] & B,f^{-1}(f(x))=x\\
+& C, f(x)?}\]
+\end{frame}
+
+
+
+\begin{frame}
+\frametitle{Problem}
+\begin{itemize}
+\item This system (\textbf{private key encryption}) can work well when there are only a small number of people.
+\vspace{1cm}
+\item But the encryption function must be agreed in advance and kept secret.
+\vspace{1cm}
+\item Not dynamic - someone who knows function can decrypt all messages using it.
+\vspace{1cm}
+\item The more people who know the function the more likely that it will become known by others - harder to keep the secret.
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Asymmetrical information}
+\begin{itemize}
+\item Private key encryption is symmetrical - all parties must know encryption function and its inverse.
+\vspace{1cm}
+\item Is there a way to exchange messages where each party only knows how to decrypt the messages intended for them?
+\vspace{1cm}
+\item Yes - \textbf{Public key encryption} solves this problem.
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Public key encryption}
+\begin{itemize}
+\item $A$ wants to send $B$ a message $x$.
+\item $B$ tells $A$ to encrypt using $f$.
+\item $A$ sends $f(x)$, $B$ decrypts using $g$ to get $g(f(x)) = x$.
+\item $C$ also wants to send $B$ a message $y$.
+\item $B$ tells $C$ to encrypt using $f$.
+\item $C$ send $f(y)$ to $B$ - $B$ decrypts using $g$.
+\item But, $A$ and $C$ don't know $g$, so they can't read each other's messages if they intercept them.
+\end{itemize} 
+
+\[\xymatrix{A\ar[r]^{f(x)} & B & C\ar[l]_{f(y)}}\]
+\end{frame}
+
+\begin{frame}
+\frametitle{RSA encryption}
+\begin{itemize}
+\item $B$ can broadcast $f$ so anyone can know it - only $g$ is a secret, and only $B$ has to know it.
+\vspace{1cm}
+\item This is fine in theory, but do functions that are easy to calculate but hard to invert exist?
+\vspace{1cm}
+\item Yes - we can find example with basic number theory.
+\vspace{1cm}
+\item This gives us \textbf{RSA encryption}.
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Choosing the public key}
+\begin{itemize}
+\item $B$ needs to choose a \textbf{public key} that he can broadcast to anyone who wants to send him a message - this public key defines $B$'s encryption function.
+\vspace{1cm}
+\item $B$ chooses two large primes $p$ and $q$, and defines $N= pq$.
+\vspace{1cm}
+\item $B$ chooses a number $e<(p-1)(q-1)$ that is coprime with $(p-1)(q-1)$ - an easy way to do this is to make $e$ prime.
+\vspace{1cm}
+\item $(N,e)$ is $B$'s public key.
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}
+\frametitle{Encrypting with the public key}
+\begin{itemize}
+\item $A$ wants to send $B$ the message $x$ - assume $x<N$ ($B$ chose large primes $p,q$).
+\vspace{1cm}
+\item $A$ calculates $x^e \mod N$. 
+\vspace{1cm}
+\item She sends $x^e\mod N$ to $B$.
+\end{itemize}
+\[\xymatrix{A\ar[rrr]^{x^e\mod N} & & & B}\]
+\end{frame}
+
+\begin{frame}
+\frametitle{Decrypting}
+\begin{itemize}
+\item $B$ receives $x^e \mod N$ - how can he recover $x$?
+\vspace{.5cm}
+\item There is a number $d$ such that $(x^e)^d \equiv_N x$.
+\vspace{.5cm}
+\item $d$ is $B$'s \textbf{private key}. He must keep this secret from everyone.
+\vspace{.1cm}
+\item What is $d$?
+\vspace{.5cm}
+\item $d$ is the inverse of $e$ mod $(p-1)(q-1)$. 
+\begin{itemize}
+\item This exists because $e$ and $(p-1)(q-1)$ are coprime, and $B$ can easily calculate it using the extended Euclidean algorithm (as in the proof of B\'ezout's identity).
+\end{itemize}
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Why does $d$ work?}
+\begin{itemize}
+\item Why is it true that $(x^e)^d \equiv_N x$?
+\vspace{1cm}
+\item We will need to use some number theory to prove this.
+\vspace{1cm}
+\item To prove this we will need a lemma.
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{A lemma}
+\begin{lemma}
+Let $p$ be prime, and let $a,m\in\bN$. Then $a\equiv_{p-1} 1\implies m^a\equiv_p m$.
+\end{lemma}
+\begin{proof}
+\begin{itemize}
+\item Obviously true if $p,m$ are not coprime as then $m \equiv_p 0$.
+\item If $m,p$ are coprime then $m^{p-1}\equiv_p 1$ by Fermat's little theorem.
+\item If $a\equiv_{p-1} 1$ then $a -1 = (p-1)k$ for some $k$.
+\item $m^a - m = m(m^{a-1} - 1) = m(m^{(p-1)k}-1) \equiv_p m(1^k - 1) = 0$.
+\item I.e. $m^a\equiv_p m$.
+\end{itemize}
+\end{proof}
+\end{frame}
+
+\begin{frame}
+\frametitle{The main result}
+\begin{lemma}
+If $d$ is the inverse of $e$ modulo $(p-1)(q-1)$ then $x^{ed} \equiv_N x$ for all $x\in\{0,1,\ldots,N-1\}$.
+\end{lemma}
+\begin{proof}
+\begin{itemize}
+\item As $ed\equiv_{(p-1)(q-1)} 1$ we have $ed - 1 = k(p-1)(q-1)$.
+\item So $ed \equiv_{p-1} 1$ and  $ed \equiv_{q-1} 1$.
+\item By lemma 1 we get $x^{ed}\equiv_p x$ and $x^{ed}\equiv_q x$.
+\item I.e. $p\mid(x^{ed} - x)$ and $q\mid (x^{ed} - x)$. 
+\item So $N\mid(x^{ed} - x)$.
+\item I.e. $x^{ed}\equiv_N x$. 
+\end{itemize}
+\end{proof}
+\end{frame}
+
+\begin{frame}
+\frametitle{Cracking the code?}
+\begin{itemize}
+\item Suppose $C$ intercepts $x^e \mod N$. How can $C$ recover $x$?
+\vspace{.5cm}
+\item $C$ can calculate $y^e$ for all $y<N$ to find $y$ such that $y^e \equiv_N x^e$.
+\begin{itemize}
+\item In the worst case this involves checking $2^{L(N)}$ values, where $L(N)$ the length of $N$ when written in binary. 
+\item In computing terms this is a very slow process.
+\end{itemize}
+\vspace{.5cm}
+\item $C$ can factor $N$ into $p$ and $q$, then work out $d$ just like $B$ did.
+\begin{itemize}
+\item No efficient algorithm for finding prime factorizations exists. Or if it does it's a secret!
+\item If you could find such an algorithm you would become famous - or possibly the CIA would assassinate you first.
+\end{itemize}
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{In practice}
+\begin{itemize}
+\item Usually RSA is used to transmit private keys.
+\item What I have described here is \emph{textbook RSA}.
+\item It has some vulnerabilities.
+\item E.g. if $x<N^{\frac{1}{e}}$ then $x$ can be recovered from $x^e$ just by finding $(x^e)^{\frac{1}{e}}$ in ordinary arithmetic.
+\item If the same message $x$ is sent to several people using the same value $e$ then the Chinese Remainder Theorem can be used to recover $x$.
+\item To avoid these and other attacks, messages are usually \emph{padded} with additional random elements to distort the exploitable rigid structure of textbook RSA. 
+\end{itemize}
+\end{frame}
+\end{document}

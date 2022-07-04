@@ -1,0 +1,574 @@
+\documentclass[handout]{beamer} 
+\title{ITCS 531: Logic 1 - Semantics for propositional formulas}
+\date{}
+\author{Rob Egrot}
+
+\usepackage{amsmath, bbold, bussproofs,graphicx}
+\usepackage{mathrsfs}
+\usepackage{amsthm}
+\usepackage{amssymb}
+\usepackage[all]{xy}
+\usepackage{multirow}
+\usepackage{tikz-cd}
+
+
+
+\addtobeamertemplate{navigation symbols}{}{%
+    \usebeamerfont{footline}%
+    \usebeamercolor[fg]{footline}%
+    \hspace{1em}%
+    \insertframenumber/\inserttotalframenumber
+}
+
+\setbeamertemplate{theorems}[numbered]
+
+\newcommand{\bN}{\mathbb{N}}
+\newcommand{\bZ}{\mathbb{Z}}
+\newcommand{\bQ}{\mathbb{Q}}
+\newcommand{\bR}{\mathbb{R}}
+\newcommand{\bP}{\mathbb{P}}
+\newcommand{\HCF}{\mathbf{HCF}}
+\newcommand{\lequiv}{\models\text{\reflectbox{$\models$}}}
+\newcommand{\ra}{\rightarrow}
+
+
+
+\newtheorem{proposition}[theorem]{Proposition}{\bfseries}{\itshape}
+
+
+\begin{document}
+
+\begin{frame}
+\titlepage
+\end{frame}
+
+\begin{frame}
+\frametitle{The logic of mathematical proofs}
+\begin{itemize}
+\item Formal mathematical arguments: 
+\begin{itemize}
+\item Start with assumptions (axioms). 
+\item Sequence of logical deductions.
+\item Desired conclusion. 
+\end{itemize}
+\vspace{0.2cm}
+\item This axiom-theorem-proof style dates back to the Ancient Greeks, e.g. Euclid (around 300 BCE). 
+\vspace{0.2cm}
+\item This neat picture of mathematics does not really correspond to how mathematicians actually work as.
+\vspace{0.2cm}
+\item Mathematicians use a lot of informal intuition. 
+\vspace{0.2cm}
+\item The modern style of being very explicit about assumptions and definitions started in the late 19th century.
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{The evolution of rigour}
+\begin{itemize}
+\item As mathematics became more advanced, mathematicians started proving contradictory things (e.g. in calculus). 
+\vspace{0.2cm}
+\item To resolve this, mathematicians became very precise. 
+\vspace{0.2cm}
+\item By doing this they were able to see that the contradictions often came from people starting from different assumptions.
+\vspace{0.2cm}
+\item Imre Lakatos' book \emph{proofs and refutations} explores this.
+\vspace{0.2cm}
+\item The formal style is not how mathematicians \emph{think}, but it is important to communication. 
+\vspace{0.2cm}
+\item It also helps prevent logic errors in mathematical reasoning. 
+\vspace{0.2cm}
+\item In practice: Think informally, write formally.
+\begin{itemize}
+\item Often this is taken too far!
+\end{itemize}
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{The role of formal logic}
+\begin{itemize}
+\item It is debatable whether the formal style captures the true essence of mathematics.
+\vspace{0.2cm}
+\item But, mathematics should be, in principle, capable of being expressed as a formal procession of axioms and deductions. 
+\vspace{0.2cm}
+\item I.e., mathematics can be treated as a formal system.
+\vspace{0.2cm}
+\item So we can use mathematical reasoning on mathematics! 
+\vspace{0.2cm}
+\item Mathematics about mathematics (metamathematics). 
+\begin{itemize}
+\item Spoiler: This leads to the development of computers, which we will study next semester. 
+\end{itemize}
+\vspace{0.2cm}
+\item Computers also behave very much like formal systems...
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Applying logic}
+\begin{itemize}
+\item But, before we can understand the role of formal logic in:
+\vspace{0.2cm}
+\begin{itemize}
+\item The theory of computation.
+\vspace{0.2cm}
+\item Analysis of the difficulty of computation problems.
+\vspace{0.2cm}
+\item Understanding the behaviour of software.
+\vspace{0.2cm}
+\item Etc.  
+\end{itemize}
+\vspace{0.2cm}
+\item We need to understand the basics. 
+\vspace{0.2cm}
+\item That is what this course is about. 
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{What is logic anyway?}
+\begin{itemize}
+\item To properly describe mathematical and computational ideas symbolically we will need a complex language.
+\vspace{0.2cm}
+\item We will get to this later in the course. 
+\vspace{0.2cm}
+\item First, we can think about the abstract structure of logical arguments with a relatively simple formal system.
+\vspace{0.2cm}
+\item The Ancient Greeks thought a lot about this. 
+\vspace{0.2cm}
+\item For example, Aristotle gave the following example of a logical deduction: 
+\begin{enumerate}
+\item \emph{All humans are mortal.} 
+\item\emph{All Greeks are human.}
+\item\emph{Therefore, all Greeks are mortal.}
+\end{enumerate}
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{The syllogism}
+\begin{itemize}
+\item Aristotle's argument again:
+\begin{enumerate}
+\item \emph{All humans are mortal.} 
+\item\emph{All Greeks are human.}
+\item\emph{Therefore, all Greeks are mortal.}
+\end{enumerate}
+\vspace{0.2cm}
+\item This is an example of something call a \emph{syllogism}. 
+\vspace{0.2cm}
+\item The conclusion here is true in reality, but also, it \emph{has} to be true if the assumptions are true:
+\begin{enumerate}
+\item \emph{All $X$ have property $Y$.} 
+\item\emph{$Z$ is $X$.}
+\item\emph{Therefore, $Z$ has property $Y$.}
+\end{enumerate}
+\vspace{0.2cm}
+\item Medieval Christian scholars studied syllogisms in great detail.
+\vspace{0.2cm}
+\item But for us syllogisms are not enough.
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Propositional logic}
+\begin{itemize}
+\item For our formal system of propositional logic we need three things:
+\vspace{0.2cm}
+\begin{itemize}
+\item Basic propositions (AKA \emph{propositional variables}),  $\{p_0,p_1,p_2,\ldots\}$. Abstract true/false statements.
+\vspace{0.2cm}
+\item Logical connectives $\{\wedge,\vee,\neg,\rightarrow,\leftrightarrow\}$.
+\vspace{0.2cm}
+\begin{itemize}
+\item[$\wedge$:] $p\wedge q$ is supposed to mean ``$p$ and $q$". 
+\vspace{0.2cm}
+\item[$\vee$:] $p\vee q$ is supposed to mean ``$p$ or $q$".
+\vspace{0.2cm}
+\item[$\neg$:] $\neg p$ is supposed to mean ``not $p$".
+\vspace{0.2cm}
+\item[$\rightarrow$:] $p\rightarrow q$ is supposed to mean ``$p$ implies $q$" specifically, \emph{material implication}.
+\vspace{0.2cm}
+\item[$\leftrightarrow$:] $p\leftrightarrow q$ for mutual implication.
+\end{itemize}
+\vspace{0.2cm}
+\item Brackets $($ and $)$. We use these to delimit formulas.
+\end{itemize}
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Giving meaning to propositional statements}
+\begin{itemize}
+\item If we assign meaning to some of the basic propositions we can combine them into new statements using the logical connectives and brackets.
+\vspace{0.2cm}
+\begin{example}
+\begin{itemize}
+\item Let $a,b,c\in \bN$, and suppose  $p$ means ``$a|b$", $q$ means ``$a|(b+c)$", and $r$ means ``$a|c$". 
+\vspace{0.2cm}
+\item Then $(p\wedge q)\rightarrow r$ means ``If $a$ divides $b$, and $a$ divides $(b+c)$, then $a$ divides $c$". 
+\vspace{0.2cm}
+\item This statement is true, which we proved in the number theory class.
+\end{itemize}
+\end{example}
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Another example}
+\begin{example}
+\begin{itemize}
+\item Again let $a,b,c\in \bN$.
+\vspace{0.2cm} 
+\item Suppose $p$ means ``$a|b$", $q$ means ``$a|c$", and $r$ means ``$a|bc$". 
+\vspace{0.2cm}
+\item Then $(p\wedge q)\leftrightarrow r$ means ``$a$ divides $b$, and $a$ divides $b$, if and only if $a$ divides $bc$". 
+\vspace{0.2cm}
+\item This is not true (why?). 
+\vspace{0.2cm}
+\item The `only if' part is true, but the `if' part is not (though it looks similar to a true statement).
+\end{itemize} 
+\end{example}
+\end{frame}
+
+\begin{frame}
+\frametitle{What is a `formula'?}
+\begin{itemize}
+\item Not every string we can make using basic propositions and logical connectives makes sense.
+\begin{example}
+$(p\rightarrow \wedge q)\vee \neg r$ doesn't make sense, whatever meaning we give to $p$, $q$ and $r$. It's not true or false, it just doesn't mean anything.
+\end{example}
+\vspace{0.2cm}
+\item A \textbf{well-formed formula} (WFF)  is a string in propositional logic that is capable of making sense.
+\vspace{0.2cm}
+\item A recursive definition:
+\begin{itemize}
+\item Individual basic proposition symbols are well-formed formulas.
+\item If $\phi$ is well-formed then $\neg \phi$ is well-formed.
+\item If $\phi$ and $\psi$ are well-formed then $(\phi * \psi)$ is well-formed for all $*\in\{\wedge, \vee, \rightarrow,\leftrightarrow\}$.
+\item Everything else is not well-formed.
+\item (We sometimes cheat with the brackets).
+\end{itemize}
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Subformulas}
+\begin{itemize}
+\item In propositional logic we often refer to well-formed formulas as just \emph{formulas}, and sometimes as \emph{sentences}.
+\vspace{0.3cm}
+\item If $\phi$ is a formula, then a \textbf{subformula} of $\phi$ is a substring of $\phi$ that is also a sentence (i.e. can be obtained by our recursive construction).
+\vspace{0.3cm}
+\item E.g.  $(p\wedge q)$ is a subformula of $(p\wedge q)\rightarrow r$, and so is e.g. $r$. 
+\vspace{0.3cm}
+\item We consider $\phi$ to be a subformula of itself. 
+\vspace{0.3cm}
+\item We define the \textbf{length} of a sentence $\phi$ to be the number of logical connectives that occur in $\phi$. 
+\vspace{0.3cm}
+\item E.g. if $\phi = \neg((p\vee q)\wedge q)$ then the length of $\phi$ is 3.
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{When is a sentence true?}
+\begin{itemize}
+\item Every basic proposition must be either true or false, and cannot be both.
+\vspace{0.3cm}
+\item The same applies to sentences.
+\vspace{0.3cm}
+\item Whether a sentence is true or false is depends only on the true/false values of the basic propositions it is built from.
+\vspace{0.3cm}
+\item This truth value can be calculated recursively from the truth values of the basic propositions. 
+\vspace{0.3cm}
+\item We use \textbf{truth tables} to represent the recursion rules.
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Truth tables}
+\begin{itemize}
+\item[$\neg$:]
+\begin{tabular}{ c c  }
+ $\phi$ & $\neg \phi$  \\ \hline 
+ T & F  \\  
+ F & T     
+\end{tabular}
+      $\phantom{\iff}\wedge$:
+\begin{tabular}{ c c c  }
+ $\phi$ & $\psi$ & $\phi\wedge \psi$ \\ \hline 
+ T & T & T \\  
+ T & F & F \\
+ F & T & F \\
+ F & F & F    
+\end{tabular} 
+      $\phantom{iff}\vee$: 
+\begin{tabular}{ c c c  }
+ $\phi$ & $\psi$ & $\phi\vee \psi$ \\ \hline 
+ T & T & T \\  
+ T & F & T \\
+ F & T & T \\
+ F & F & F    
+\end{tabular} 
+\vspace{0.5cm}
+\item[$\rightarrow$:] 
+\begin{tabular}{ c c c  }
+ $\phi$ & $\psi$ & $\phi\rightarrow \psi$ \\ \hline 
+ T & T & T \\  
+ T & F & F \\
+ F & T & T \\
+ F & F & T    
+\end{tabular} 
+$\phantom{iff}\leftrightarrow$:
+\begin{tabular}{ c c c  }
+ $\phi$ & $\psi$ & $\phi\leftrightarrow \psi$ \\ \hline 
+ T & T & T \\  
+ T & F & F \\
+ F & T & F \\
+ F & F & T    
+\end{tabular} 
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Using truth tables}
+\begin{example}    
+\[\begin{tabular}{ c c c c c }
+ $p$ & $q$ & $r$ & $p\wedge q$ & $(p\wedge q)\rightarrow r$ \\ \hline 
+ T & T & T & T & T \\  
+ T & T & F & T & F \\
+ T & F & T & F & T \\
+ T & F & F & F & T \\
+ F & T & T & F & T \\
+ F & T & F & F & T \\
+ F & F & T & F & T \\
+ F & F & F & F & T 
+\end{tabular} \]
+\end{example}
+\end{frame}
+
+\begin{frame}
+\frametitle{Implication}
+\begin{itemize}
+\item Truth table for $\ra$ gives the \emph{material conditional}.
+\begin{itemize}
+\item $\phi\ra\psi$ is true whenever $\phi$ is false or $\psi$ is true. 
+\end{itemize}
+\item  Contrast with \emph{subjunctive implication}: 
+\begin{itemize}
+\item E.g: "if I dropped it, then it would break". 
+\item Should be true for a chicken egg, false for a tennis ball.
+\item According to material implication, this is true for tennis balls and eggs if I don't drop them! 
+\end{itemize}
+\item Consider also \emph{indicative implication}: 
+\begin{itemize}
+\item E.g. suppose a student likes yoghurt, studies hard and does well in her exams. 
+\item ``studied hard so did well in her exams" is probably true.
+\item  ``likes yoghurt so did well in her exams" is probably false. 
+\item I.e. the first part should be relevant to the second part.
+\item Material conditional says both are true.
+\end{itemize}
+\item So, material implication is not appropriate for everything. 
+\item But it is good for formal systems. 
+\begin{itemize}
+\item I.e. if $\phi$ is false then $\phi\ra \psi$ makes no claim, so is true.
+\end{itemize}
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Satisfaction}
+\begin{itemize}
+\item Setting every propositional variable to be either true or false is making a \textbf{truth assignment} (or just \textbf{assignment}). 
+\vspace{0.3cm}
+\item If a sentence is true under some assignment we say it is \textbf{satisfied} by that assignment. 
+\vspace{0.3cm}
+\item A sentence is \textbf{satisfiable} if there is some assignment that satisfies it. 
+\begin{itemize}
+\item I.e. if there is a way we can interpret each basic proposition as true or false so that the whole thing becomes true. 
+\end{itemize}
+\vspace{0.3cm}
+\item If $\Gamma$ is a set of sentences, then we say $\Gamma$ is satisfiable if there is an assignment that satisfies every sentence in $\Gamma$. 
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Tautologies and contradictions}
+\begin{itemize}
+\item A sentence that is satisfied by every assignment is called a \textbf{tautology}. 
+\begin{itemize}
+\item I.e. a tautology is something that is always true.
+\item E.g. $p\vee \neg p$ (a proposition must be either true or false). 
+\item Warning: in some logic systems this is not something we can assume! (see the next class).  
+\item We sometimes use the symbol $\top$ to denote a tautology. 
+\end{itemize}
+\vspace{0.3cm}
+\item A sentence that is not satisfiable is called a \textbf{contradiction}. 
+\begin{itemize}
+\item I.e. a contradiction can never be true.
+\item E.g. $p\wedge \neg p$ (a proposition cannot be both true and false at the same time). 
+\item We sometimes use the symbol $\bot$ to denote a contradiction.
+\end{itemize}
+\vspace{0.3cm}
+\item  If $\phi$ is a tautology then $\neg \phi$ is a contradiction, and vice versa.
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Logical implication}
+\begin{itemize}
+\item Given $\phi$ and $\psi$, we say that $\phi$ \textbf{logically implies} $\psi$ if whenever an assignment satisfies $\phi$, it also satisfies $\psi$. 
+\vspace{0.3cm}
+\item We also say $\psi$ is a \textbf{logical consequence} of $\phi$.
+\vspace{0.3cm}
+\item We write $\phi\models \psi$.
+\vspace{0.3cm}
+\item This is another way of saying that $\phi\ra\psi$ is true. 
+\vspace{0.3cm}
+\item We say that $\phi$ and $\psi$ are \textbf{logically equivalent} if each is a logical consequence of the other. 
+\vspace{0.3cm}
+\item In this case we write $\phi \lequiv \psi$. 
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Theories}
+\begin{itemize}
+\item We can also do this with sets of sentences. 
+\vspace{0.3cm}
+\item If $\Gamma$ is a set of sentences and $\psi$ is a sentence, then $\psi$ is a logical consequence of $\Gamma$ if, whenever an assignment satisfies $\phi$ for all $\phi\in\Gamma$, it also satisfies $\psi$. 
+\vspace{0.3cm}
+\item We write $\Gamma\models \psi$. 
+\vspace{0.3cm}
+\item We sometimes call a set of sentences a \textbf{theory}, and then we might say that $\psi$ is a consequence of the theory $\Gamma$. 
+\vspace{0.3cm}
+\item We want to be able to say things like ``the fact that the set of primes is infinite is a consequence of the theory of numbers". 
+\vspace{0.3cm}
+\item A theory can be empty (i.e. have no members). 
+\vspace{0.3cm}
+\item We write $\models \phi$ if $\phi$ follows from the empty theory, i.e. if $\phi$ is a tautology. 
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{A simple theory example}
+\begin{itemize}
+\item Let $\Gamma$ be the theory $\{p\wedge \neg q, q\vee r\}$. 
+\item Then $r\wedge p$ is a logical consequence of $\Gamma$ (i.e. $\Gamma\models p\wedge r$).
+\[\begin{tabular}{ c c c c c c c}
+ $p$ & $q$ & $r$ & $p\wedge \neg q$ & $q\vee r$ & $r\wedge p$ \\ \hline 
+ T & T & T & F & T & T \\  
+ T & T & F & F & T & F \\
+ T & F & T & T & T & T \\
+ T & F & F & T & F & F \\
+ F & T & T & F & T & F \\
+ F & T & F & F & T & F \\
+ F & F & T & F & T & F \\
+ F & F & F & F & F & F
+\end{tabular}\]
+\item There is only one assignment that makes both $p\wedge \neg q$ and $q\vee r$ true, and that is $p=r=T$, $q=F$. 
+\item $r\wedge p$ is also true with this assignment. 
+\item So, every assignment that makes everything in $\Gamma$ true must also make $r\wedge p$ true, which means $\Gamma\models r\wedge p$.
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Avoiding truth tables}
+\begin{itemize}
+\item We could also work this out without writing out the whole truth table. 
+\begin{itemize}
+\item E.g. we might notice just by looking at the formulas that $p\wedge \neg q$ being true means $p$ is true and $q$ is false.
+\item Then $q\vee r$ can only be true if $r$ is true. 
+\item Which means $r\wedge p$ must be true too.
+\end{itemize}
+\vspace{0.2cm}
+\item For complicated formulas, writing out a truth table is quite a lot of effort.
+\vspace{0.2cm}
+\item So it's usually a good idea to look at the formulas first and see if you can find a quick argument for why one thing logically implies another. 
+\vspace{0.2cm}
+\item But, if you get stuck, the option of working out the truth table is always there.
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Eliminating $\ra$}
+\begin{itemize}
+\item The set $\{\wedge,\vee,\neg,\rightarrow,\leftrightarrow\}$ is bigger than we need. 
+\item We can use truth tables to check that some of the connectives can be reproduced using combinations of different ones.
+\end{itemize}
+\begin{lemma}\label{L:imp}
+If $\phi$ and $\psi$ are sentences, then $\neg\phi \vee \psi \lequiv \phi\rightarrow \psi$.
+\end{lemma}
+\begin{proof}\mbox{}
+\[\begin{tabular}{ c c c c }
+ $\phi$ & $\psi$ & $\phi\rightarrow \psi$ & $\neg\phi\vee\psi$ \\ \hline 
+ T & T & T & T \\  
+ T & F & F & F \\
+ F & T & T & T \\
+ F & F & T & T   
+\end{tabular}\]
+\newline
+We can see that the last two columns are the same. 
+\end{proof}
+\end{frame}
+
+\begin{frame}
+\frametitle{Why is this important?}
+\begin{itemize}
+\item What this means is that whenever $\phi\ra \psi$ appears in a formula, we could replace it with $\neg\phi\vee\psi$ without changing the truth value of the formula. 
+\vspace{0.5cm}
+\item In other words, we don't really need the connective $\ra$, because for every formula involving $\ra$ there's an equivalent one where it does not appear. 
+\vspace{0.5cm}
+\item This might be intuitively obvious, but we will provide proof now, as the proof method will be very important.
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{The formal version}
+\begin{corollary}\label{C:imp}
+If $\phi$ is a sentence, then there is a sentence $\phi'$ where the symbol $\rightarrow$ does not occur, and with $\phi\lequiv \phi'$.
+\end{corollary}
+\begin{proof}
+\begin{itemize}
+\item We induct on the length of $\phi$. 
+\item Base case: $n=0$, so $\phi$ is a basic proposition. Define $\phi = \phi'$.
+\item Inductive step: suppose true for length $n$, and let $\phi$ have length $n+1$. There are three cases:
+\begin{enumerate}
+\item $\phi = \neg \psi$ for some $\psi$.
+\begin{itemize}
+\item  $\psi$ has length $n$, so there is $\psi'$ that does not contain `$\rightarrow$' and with $\psi\lequiv \psi'$. 
+\item Define $\phi'=\neg\psi'$ to complete the proof, as, since $\psi\lequiv \psi'$ we must have $\neg\psi\lequiv \neg\psi'$, and $\phi=\neg\psi$.
+\end{itemize}
+\item $\phi = \psi_1*\psi_2$ for some $*\in\{\wedge,\vee,\leftrightarrow\}$. 
+\begin{itemize}
+\item Define $\phi'=\psi_1'*\psi_2'$.
+\end{itemize}
+\item $\phi = \psi_1\rightarrow \psi_2$. 
+\begin{itemize}
+\item By Lemma \ref{L:imp} we can define $\phi'=\neg\psi_1'\vee \psi_2'$.
+\end{itemize}
+\end{enumerate} 
+\end{itemize}
+\end{proof}
+\end{frame}
+
+\begin{frame}
+\frametitle{Functional completeness}
+\begin{itemize}
+\item A set of connectives defined by truth tables, $S$, is \textbf{functionally complete} if every formula that can be constructed from $\{\wedge,\vee,\neg,\rightarrow,\leftrightarrow\}$ is logically equivalent to one constructed from $S$. 
+\end{itemize}
+
+\begin{proposition}
+$\{\wedge,\vee,\neg,\leftrightarrow\}$ is functionally complete.
+\end{proposition}
+\begin{proof}
+This is what we showed in corollary \ref{C:imp}.
+\end{proof}
+\begin{itemize}
+\item The proof of corollary \ref{C:imp} generalizes to other connectives. 
+\item If any sentence containing a particular connective is equivalent to another not containing it, then we still have a functionally complete set of connectives if we eliminate it. 
+\item We will see in the exercises that $\{\wedge, \neg\}$ is functionally complete, and the same is true for $\{\vee,\neg\}$. 
+\end{itemize}
+\end{frame}
+
+
+\end{document}

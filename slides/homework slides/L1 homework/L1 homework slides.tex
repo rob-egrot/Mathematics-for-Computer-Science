@@ -1,0 +1,169 @@
+\documentclass[handout]{beamer} 
+\title{ITCS 531: L1 homework solutions}
+\date{}
+\author{Rob Egrot}
+
+\usepackage{amsmath, bbold, bussproofs,graphicx}
+\usepackage{mathrsfs}
+\usepackage{amsthm}
+\usepackage{amssymb}
+\usepackage[all]{xy}
+\usepackage{multirow}
+\usepackage{tikz-cd}
+
+
+\newtheorem{proposition}[theorem]{Proposition}
+\newcommand{\bN}{\mathbb{N}}
+\newcommand{\bZ}{\mathbb{Z}}
+\newcommand{\bQ}{\mathbb{Q}}
+\newcommand{\bR}{\mathbb{R}}
+\newcommand{\bP}{\mathbb{P}}
+\newcommand{\bC}{\mathbb{C}}
+
+\newcommand{\lequiv}{\models\text{\reflectbox{$\models$}}}
+\newcommand{\lra}{\leftrightarrow}
+\newcommand{\ra}{\rightarrow}
+\newcommand{\la}{\leftarrow}
+
+\addtobeamertemplate{navigation symbols}{}{%
+    \usebeamerfont{footline}%
+    \usebeamercolor[fg]{footline}%
+    \hspace{1em}%
+    \insertframenumber/\inserttotalframenumber
+}
+\setbeamertemplate{theorems}[numbered]
+\begin{document}
+
+\begin{frame}
+\titlepage
+\end{frame}
+
+\begin{frame}
+\frametitle{Q1}
+Let $\phi$ and $\psi$ be sentences. Show that 
+\[\phi\leftrightarrow \psi \lequiv (\phi \wedge \psi)\vee (\neg \phi \wedge \neg \psi)\]
+\begin{itemize}
+\item The truth tables are the same: 
+\newline\newline
+\begin{tabular*}{0.75\textwidth}{@{\extracolsep{\fill} }  c  c  c  c }
+  $\phi$ & $\psi$ & $\phi\leftrightarrow \psi$ & $(\phi \wedge \psi)\vee (\neg \phi \wedge \neg \psi)$ \\
+  \hline 
+   T & T & T & T  \\
+	 T & F & F & F  \\
+	 F & T & F & F  \\
+	 F & F & T & T  
+\end{tabular*}
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Q2}
+Prove that the set $\{\wedge,\neg\}$ is functionally complete.
+
+\begin{itemize}
+\item Must show that for every sentence $\phi$ there is a sentence $\phi'$ using only $\wedge$ and $\neg$ such that $\phi \lequiv\phi'$. 
+\item Know that $\{\wedge,\vee,\neg,\lra\}$ is functionally complete.
+\item Assume without loss of generality that $\phi$ only contains connectives from $\{\wedge,\vee,\neg,\lra\}$. 
+\item Induction on formula construction. 
+\begin{itemize}
+\item Base case $\phi = p$. Just set $\phi' = p$.
+\item Inductive step: if $\phi = \psi_1\vee \psi_2$ then define $\phi' = \neg(\neg \psi_1'\wedge \neg\psi_2')$. 
+\item Use truth tables to show $\phi\lequiv \phi'$.
+\item If $\phi = \psi_1\lra \psi_2$, notice that $(\psi'_1 \wedge \psi'_2)\vee (\neg \psi'_1 \wedge \neg \psi'_2)\lequiv \psi_1\lra\psi_2$. 
+\item So, using the first case we can define $\phi' = \neg\big( \neg(\psi'_1 \wedge \psi'_2)\wedge \neg(\neg \psi'_1 \wedge \neg \psi'_2)\big)$.
+\item Finally, if $\phi = \neg \psi$ or $\phi = \psi_1\wedge \psi_2$ just set $\phi' = \neg \psi'$ or $\phi' =  \psi_1'\wedge \psi_2'$.
+\end{itemize}
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Q3}
+\scalebox{0.8}{\begin{minipage}{1.20\textwidth}
+Define a binary connective $|$ using the following truth table.
+
+{\centering
+\begin{tabular}{ c c c  }
+ $\phi$ & $\psi$ & $\phi| \psi$ \\ \hline 
+ T & T & F \\  
+ T & F & T \\
+ F & T & T \\
+ F & F & T    
+\end{tabular}\par}
+
+Prove that $\{|\}$ is functionally complete.
+\begin{itemize}
+\item Show that if $\phi$ is a sentence involving only symbols from $\{\wedge,\neg\}$, there is a sentence $\phi'$ using only $|$ such that $\phi\lequiv \phi'$.
+\item Suppose $\phi = \neg\psi$.  Observe that
+
+{\centering
+\begin{tabular}{ c c c c }
+ $\psi$ & $\neg\psi$ & $\psi| \psi$ \\ \hline 
+ T & F & F \\  
+ F & T & T   
+\end{tabular}\par} 
+\item So we can define $\phi' = \psi'|\psi'$.
+
+\item Suppose $\phi = \psi_1\wedge \psi_2$. Observe that
+
+{\centering
+\begin{tabular}{ c c c c c }
+ $\psi_1$ & $\psi_2$ & $\psi_1\wedge \psi_2$ & $\psi_1|\psi_2$ & $(\psi_1|\psi_2)|(\psi_1|\psi_2)$ \\ \hline 
+ T & T & T & F & T \\  
+ T & F & F & T & F \\
+ F & T & F & T & F \\
+ F & F & F & T & F 
+\end{tabular}\par}
+\item So we can define $\phi' = (\psi'_1|\psi'_2)|(\psi'_1|\psi'_2)$.
+\end{itemize}
+\end{minipage}}
+\end{frame}
+
+\begin{frame}
+\frametitle{Q4}
+Let $p$ and $q$ be basic propositions. How many possible distinct truth tables are there for formulas involving only the propositions $p$ and $q$?
+\vspace{0.5cm}
+\begin{itemize}
+\item There are 4 rows in each truth table for $p$ and $q$.
+
+{\centering
+\begin{tabular}{ c c c }
+ $p$ & $q$ & $\phi$ \\ \hline 
+ T & T & ?  \\  
+ T & F & ?  \\
+ F & T & ?  \\
+ F & F & ?  
+\end{tabular}\par}
+
+\item Here each ? can be true or false. 
+\item This gives $2^4 = 16$ distinct possibilities.
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Q5}
+Show that every sentence is equivalent to a sentence in DNF.
+\begin{itemize}
+\item Consider this example. 
+\item Suppose $\phi$ contains only the proposition symbols $p,q,r$, and that its truth table is as follows:
+
+{\centering
+\begin{tabular}{ c c c c }
+ $p$ & $q$ & $r$ & $\phi$ \\ \hline 
+ T & T & T & T  \\  
+ T & T & F & F  \\
+ T & F & T & F  \\
+ T & F & F & F  \\
+ F & T & T & T  \\  
+ F & T & F & T  \\
+ F & F & T & F  \\
+ F & F & F & F  \\
+\end{tabular}\par}
+\item Then $\phi$ is obviously logically equivalent to $(p\wedge q \wedge r) \vee (\neg p\wedge q \wedge r) \vee (\neg p \wedge q \wedge \neg r)$. 
+\item This is a DNF sentence. 
+\item This method obviously generalizes. 
+\item If $\phi$ is a contradiction then $\phi$ is equivalent to e.g. $p\wedge \neg p$.
+\end{itemize}
+\end{frame}
+
+
+\end{document}

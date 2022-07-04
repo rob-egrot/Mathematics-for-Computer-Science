@@ -1,0 +1,120 @@
+\documentclass[handout]{beamer} 
+\title{ITCS 531: L5 homework solutions}
+\date{}
+\author{Rob Egrot}
+
+\usepackage{amsmath, bbold, bussproofs,graphicx}
+\usepackage{mathrsfs}
+\usepackage{amsthm}
+\usepackage{amssymb}
+\usepackage[all]{xy}
+\usepackage{multirow}
+\usepackage{tikz-cd}
+
+
+\newtheorem{proposition}[theorem]{Proposition}
+\newcommand{\bN}{\mathbb{N}}
+\newcommand{\bZ}{\mathbb{Z}}
+\newcommand{\bQ}{\mathbb{Q}}
+\newcommand{\bR}{\mathbb{R}}
+\newcommand{\bP}{\mathbb{P}}
+\newcommand{\bC}{\mathbb{C}}
+\newcommand{\bF}{\mathbb{F}}
+\newcommand{\spa}{\mathrm{span}}
+\newcommand{\sL}{\mathscr{L}}
+\newcommand{\lequiv}{\models\text{\reflectbox{$\models$}}}
+\newcommand{\cL}{\mathcal{L}}
+\DeclareMathOperator{\ran}{\mathrm{ran}}
+
+\addtobeamertemplate{navigation symbols}{}{%
+    \usebeamerfont{footline}%
+    \usebeamercolor[fg]{footline}%
+    \hspace{1em}%
+    \insertframenumber/\inserttotalframenumber
+}
+\setbeamertemplate{theorems}[numbered]
+\begin{document}
+
+\begin{frame}
+\titlepage
+\end{frame}
+
+
+\begin{frame}
+\frametitle{L1 Q1(a)}
+Let $\phi$ be a formula where $x$ occurs free.
+Write down a proof tree that shows $\forall x \phi \vdash \neg\exists x \neg\phi$. \vspace{0.5cm}
+\begin{prooftree}
+\AxiomC{$[\exists x\neg\phi]_1$}
+\AxiomC{$[\neg\phi[x'/x]]_2$}
+\AxiomC{$\forall x\phi$}
+\RightLabel{ $\color{red}(\forall_E)$}
+\UnaryInfC{$\phi[x'/x]$}
+\RightLabel{ $\color{red}(\neg_E)$}
+\BinaryInfC{$\bot$}
+\RightLabel{ $\color{red}(\exists_E)$}
+\BinaryInfC{$\bot$}
+\RightLabel{ $\color{red}(\neg_I)$}
+\UnaryInfC{$\neg\exists x \neg\phi$}
+\end{prooftree}
+
+\end{frame}
+
+\begin{frame}
+\frametitle{L1 Q1(b)}
+Let $\phi$ be a formula where $x$ occurs free.
+Write down a proof tree that shows $\exists x \phi \vdash \neg\forall x \neg \phi$.\vspace{0.5cm}
+\begin{prooftree}
+\AxiomC{$\exists x \phi$}
+\AxiomC{$[\forall x\neg\phi]_1$}
+\LeftLabel{ $\color{red}(\forall_E)$}
+\UnaryInfC{$\neg\phi[x'/x]$}
+\AxiomC{$[\phi[x'/x]]_2$}
+\RightLabel{ $\color{red}(\neg_E)$}
+\BinaryInfC{$\bot$}
+\RightLabel{ $\color{red}(\exists_E)$}
+\BinaryInfC{$\bot$}
+\RightLabel{ $\color{red}(\neg_I)$}
+\UnaryInfC{$\neg\forall x \neg\phi$}
+\end{prooftree}
+\end{frame}
+
+\begin{frame}
+\frametitle{L1 Q3}
+Prove that if $\Gamma$ is an $\sL$-theory then there is an $\sL$-theory $\Gamma'$ with $\Gamma\subseteq \Gamma'$ such that $\Gamma'$ is \emph{complete} (i.e. if $\phi$ is an $\sL$-sentence, then either $\phi\in\Gamma'$ or $\neg\phi\in\Gamma'$).\vspace{0.5cm}
+\begin{itemize}
+\item An $\sL$-theory is a satisfiable set of $\sL$-sentences. \vspace{0.1cm}
+\item Since $\Gamma$ is satisfiable, it must have a model. \vspace{0.1cm}
+\item Let $A$ be a model for $\Gamma$, and let 
+\[\Gamma'=\{\phi:\phi\text{ is an }\sL\text{-sentence and }A\models \phi\}.\] 
+\item Then $\Gamma\subseteq \Gamma'$, because $A\models \Gamma$. 
+\item $\Gamma'$ is complete because every $\sL$-sentence is either true or false in $A$.
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{L1 Q4}
+Let $\Gamma$ be an $\sL$-theory, and let $\phi$ be an $\sL$-sentence. Prove that if $\Gamma\models \phi$ then $\Delta\models \phi$ for some finite $\Delta\subseteq \Gamma$.\vspace{0.5cm}
+\begin{itemize}
+\item Suppose $\Gamma\models \phi$. \vspace{0.1cm}
+\item By completeness we have $\Gamma\vdash \phi$. \vspace{0.1cm}
+\item So there is a deduction tree using $\Gamma$ that proves $\phi$. \vspace{0.1cm}
+\item As deduction trees are finite, this tree involves only a finite number of sentences from $\Gamma$. \vspace{0.1cm}
+\item Define $\Delta$ to be the set of sentences from $\Gamma$ used in the proof of $\phi$. \vspace{0.1cm}
+\item Then $\Delta\vdash \phi$, and so $\Delta\models \phi$ by soundness. 
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{L1 Q5}
+Let $\Gamma$ be a set of $\sL$-sentences. Prove that $\Gamma$ has a model if and only if every finite subset of $\Gamma$ has a model. \vspace{0.5cm}
+\begin{itemize}
+\item If $\Gamma$ has a model then every subset of $\Gamma$ has a model. \vspace{0.2cm}
+\item Conversely, suppose $\Gamma$ does \emph{not} have a model. \vspace{0.2cm}
+\item Then $\Gamma\models \bot$. \vspace{0.2cm}
+\item So by exercise 4 there is finite $\Delta\subseteq \Gamma$ with $\Delta\models \bot$. \vspace{0.2cm}
+\item I.e. $\Delta$ does not have a model. 
+\end{itemize}
+\end{frame}
+
+\end{document}

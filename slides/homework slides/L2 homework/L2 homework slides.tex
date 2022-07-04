@@ -1,0 +1,299 @@
+\documentclass[handout]{beamer} 
+\title{ITCS 531: L2 homework solutions}
+\date{}
+\author{Rob Egrot}
+
+\usepackage{amsmath, bbold, bussproofs,graphicx}
+\usepackage{mathrsfs}
+\usepackage{amsthm}
+\usepackage{amssymb}
+\usepackage[all]{xy}
+\usepackage{multirow}
+\usepackage{tikz-cd}
+
+
+\newtheorem{proposition}[theorem]{Proposition}
+\newcommand{\bN}{\mathbb{N}}
+\newcommand{\bZ}{\mathbb{Z}}
+\newcommand{\bQ}{\mathbb{Q}}
+\newcommand{\bR}{\mathbb{R}}
+\newcommand{\bP}{\mathbb{P}}
+\newcommand{\bC}{\mathbb{C}}
+\newcommand{\bF}{\mathbb{F}}
+\newcommand{\spa}{\mathrm{span}}
+
+\addtobeamertemplate{navigation symbols}{}{%
+    \usebeamerfont{footline}%
+    \usebeamercolor[fg]{footline}%
+    \hspace{1em}%
+    \insertframenumber/\inserttotalframenumber
+}
+\setbeamertemplate{theorems}[numbered]
+\begin{document}
+
+\begin{frame}
+\titlepage
+\end{frame}
+
+\begin{frame}
+\frametitle{Deduction rules}
+\scalebox{0.8}{\begin{minipage}{1.20\textwidth}
+\begin{columns}
+\begin{column}{0.5\textwidth}
+\begin{prooftree}
+\AxiomC{}
+\LeftLabel{ $\top_I$:\quad}
+\UnaryInfC{$\top$}
+\end{prooftree}
+
+\begin{prooftree}
+\AxiomC{$\phi$}
+\AxiomC{$\psi$}
+\LeftLabel{$\wedge_I$:\quad}
+\BinaryInfC{$\phi\wedge \psi$}
+\end{prooftree} 
+
+\begin{prooftree}
+\AxiomC{$\phi$}
+\LeftLabel{ $\vee_{I_l}$:\quad}
+\UnaryInfC{$\phi\vee\psi$}
+\end{prooftree}
+
+\begin{prooftree}
+\AxiomC{$\psi$}
+\LeftLabel{ $\vee_{I_r}$:\quad}
+\UnaryInfC{$\phi\vee\psi$}
+\end{prooftree} 
+
+\begin{prooftree}
+\AxiomC{$[\phi]$}
+\doubleLine
+\UnaryInfC{$\bot$}
+\LeftLabel{ $\neg_{I}$:\quad}
+\UnaryInfC{$\neg\phi$}
+\end{prooftree}
+
+\begin{prooftree}
+\AxiomC{$[\phi]$}
+\doubleLine
+\UnaryInfC{$\psi$}
+\LeftLabel{ $\rightarrow_{I}$:\quad}
+\UnaryInfC{$\phi\rightarrow\psi$}
+\end{prooftree}
+\end{column}
+
+\begin{column}{0.5\textwidth}
+\begin{prooftree}
+\AxiomC{$\bot$}
+\LeftLabel{ $\bot_E$:\quad}
+\UnaryInfC{$\phi$}
+\end{prooftree} 
+
+\begin{prooftree}
+\AxiomC{$\phi\wedge\psi$}
+\LeftLabel{ $\wedge_{E_l}$:\quad}
+\UnaryInfC{$\phi$}
+\end{prooftree}
+
+\begin{prooftree}
+\AxiomC{$\phi\wedge\psi$}
+\LeftLabel{ $\wedge_{E_r}$:\quad}
+\UnaryInfC{$\psi$}
+\end{prooftree}
+
+\begin{prooftree}
+\AxiomC{$\phi \vee \psi$}
+\AxiomC{[$\phi$]}
+\doubleLine
+\UnaryInfC{$\theta$}
+\AxiomC{[$\psi$]}
+\doubleLine
+\UnaryInfC{$\theta$}
+\LeftLabel{$\vee_E$:\quad}
+\TrinaryInfC{$\theta$}
+\end{prooftree}
+
+\begin{prooftree}
+\AxiomC{$\phi$}
+\AxiomC{$\neg\phi$}
+\LeftLabel{$\neg_E$:\quad}
+\BinaryInfC{$\bot$}
+\end{prooftree} 
+
+
+\begin{prooftree}
+\AxiomC{$\phi\rightarrow\psi$}
+\AxiomC{$\phi$}
+\LeftLabel{$\rightarrow_E$:\quad}
+\BinaryInfC{$\psi$}
+\end{prooftree} 
+\end{column}
+\end{columns}
+\begin{prooftree}
+\AxiomC{$\neg\neg\phi$}
+\LeftLabel{ $\neg\neg_{E}$:\quad}
+\UnaryInfC{$\phi$}
+\end{prooftree}
+\end{minipage}}
+\end{frame}
+
+\begin{frame}
+\frametitle{Q1}
+The following deduction tree proves that $\phi\rightarrow\psi$ can be deduced from $\neg\phi\vee\psi$ in intuitionistic propositional logic. Add labels indicating the rules used at each stage.
+\begin{prooftree}
+
+\AxiomC{$\neg\phi\vee\psi$}
+
+\AxiomC{$[\neg\phi]_1$}
+\AxiomC{$[\phi]_2$}
+\LeftLabel{ $\color{red}(\neg_E)$}
+\BinaryInfC{$\bot$}
+\LeftLabel{ $\color{red}(\bot_E)$}
+\UnaryInfC{$\psi$}
+\LeftLabel{ $\color{red}(\rightarrow_I)$}
+\UnaryInfC{$\phi\rightarrow\psi$}
+
+\AxiomC{$[\psi]_1$}
+\UnaryInfC{$\psi$}
+\AxiomC{$[\phi]_3$}
+\RightLabel{ $\color{red}(\rightarrow_I)$}
+\BinaryInfC{$\phi\rightarrow\psi$}
+\LeftLabel{ $\color{red}(\vee_E)$}
+\TrinaryInfC{$\phi\rightarrow\psi$}
+
+\end{prooftree}
+\end{frame}
+
+\begin{frame}
+\frametitle{Q2}
+What is being proved in the following deduction tree? Add labels indicating the rules at each stage.
+
+\begin{prooftree}
+\AxiomC{$[\neg(\neg\phi\vee\psi)]_1$}
+\AxiomC{$\phi\rightarrow\psi$}
+\AxiomC{$[\phi]_2$}
+\RightLabel{ $\color{red}(\rightarrow_E)$}
+\BinaryInfC{$\psi$}
+\RightLabel{ $\color{red}(\vee_{I_r})$}
+\UnaryInfC{$\neg\phi\vee\psi$}
+\LeftLabel{ $\color{red}(\neg_E)$}
+\BinaryInfC{$\bot$}
+\LeftLabel{ $\color{red}(\neg_I)$}
+\UnaryInfC{$\neg\phi$}
+\LeftLabel{ $\color{red}(\vee_{I_l})$}
+\UnaryInfC{$\neg\phi\vee\psi$}
+\AxiomC{$[\neg(\neg\phi\vee\psi)]_1$}
+\UnaryInfC{$\neg(\neg\phi\vee\psi)$}
+\RightLabel{ $\color{red}(\neg_E)$}
+\BinaryInfC{$\bot$}
+\RightLabel{ $\color{red}(\neg_I)$}
+\UnaryInfC{$\neg\neg(\neg\phi\vee\psi)$}
+\RightLabel{ $\color{red}(\neg\neg_E)$}
+\UnaryInfC{$\neg\phi\vee\psi$}
+\end{prooftree}
+This tree proves that $\neg\phi\vee\psi$ can be deduced from $\phi\rightarrow\psi$ in \emph{classical} propositional logic. 
+\end{frame}
+
+\begin{frame}
+\frametitle{Q3}
+Show that $(\phi\wedge\psi)\rightarrow(\psi\wedge\phi)$ can be deduced from an empty set of axioms.
+\vspace{0.5cm}
+\begin{prooftree}
+\AxiomC{$[\phi \wedge \psi]_1$}
+\UnaryInfC{$\phi\wedge\psi$}
+\LeftLabel{ $\color{red}(\wedge_{E_r})$}
+\UnaryInfC{$\psi$}
+\AxiomC{$[\phi \wedge \psi]_1$}
+\UnaryInfC{$\phi\wedge\psi$}
+\RightLabel{ $\color{red}(\wedge_{E_l})$}
+\UnaryInfC{$\phi$}
+\LeftLabel{ $\color{red}(\wedge_{I})$}
+\BinaryInfC{$\psi\wedge\phi$}
+\LeftLabel{ $\color{red}(\rightarrow_{I})$}
+\UnaryInfC{$(\phi \wedge \psi)\rightarrow(\psi\wedge\phi)$}
+\end{prooftree}
+\end{frame}
+
+\begin{frame}
+\frametitle{Q4}
+Show that we can deduce $\phi\wedge(\psi\vee\chi)$ if we start with $(\phi\wedge \psi)\vee (\phi\wedge \chi)$.
+
+\vspace{1cm}
+To save space let $\theta =(\phi\wedge \psi)\vee (\phi\wedge \chi)$.
+\vspace{0.5cm}
+\scalebox{0.8}{\begin{minipage}{1.20\textwidth}
+\begin{prooftree}
+\AxiomC{$\theta$}
+\AxiomC{$[\phi\wedge\psi]$}
+\LeftLabel{ $\color{red}(\wedge_{E_l})$}
+\UnaryInfC{$\phi$}
+\AxiomC{$[\phi\wedge\chi]$}
+\RightLabel{ $\color{red}(\wedge_{E_l})$}
+\UnaryInfC{$\phi$}
+\LeftLabel{ $\color{red}(\vee_E)$}
+\TrinaryInfC{$\phi$}
+
+\AxiomC{$\theta$}
+\AxiomC{$[\phi\wedge\psi]$}
+\LeftLabel{ $\color{red}(\wedge_{E_r})$}
+\UnaryInfC{$\psi$}
+\LeftLabel{ $\color{red}(\vee_{I_l})$}
+\UnaryInfC{$\psi\vee\chi$}
+\AxiomC{$[\phi\wedge\chi]$}
+\RightLabel{ $\color{red}(\wedge_{E_r})$}
+\UnaryInfC{$\chi$}
+\RightLabel{ $\color{red}(\vee_{I_r})$}
+\UnaryInfC{$\psi\vee\chi$}
+\RightLabel{ $\color{red}(\vee_E)$}
+\TrinaryInfC{$\psi\vee\chi$}
+\LeftLabel{ $\color{red}(\wedge_I)$}
+\BinaryInfC{$\phi\wedge(\psi\vee\chi)$}
+\end{prooftree}
+\end{minipage}}
+\end{frame}
+
+\begin{frame}
+\frametitle{Q5}
+Show that we can deduce $(\phi\wedge \psi)\vee (\phi\wedge \chi)$ if we start with $\phi\wedge(\psi\vee\chi)$.\newline
+\vspace{1cm}
+
+\scalebox{0.8}{\begin{minipage}{1.20\textwidth}
+\begin{prooftree}
+
+\AxiomC{$\phi\wedge (\psi\vee \chi)$}
+\LeftLabel{ $\color{red}(\wedge_{E_r})$}
+\UnaryInfC{$\psi\vee \chi$}
+
+\AxiomC{$\phi\wedge (\psi\vee \chi)$}
+\LeftLabel{ $\color{red}(\wedge_{E_l})$}
+\UnaryInfC{$\phi$}
+
+\AxiomC{$[\psi]_1$}
+\UnaryInfC{$\psi$}
+\LeftLabel{ $\color{red}(\wedge_I)$}
+\BinaryInfC{$\phi\wedge\psi$}
+\LeftLabel{ $\color{red}(\vee_{I_l})$}
+\UnaryInfC{$(\phi\wedge\psi)\vee(\phi\wedge\chi)$}
+
+\AxiomC{$\phi\wedge (\psi\vee \chi)$}
+\RightLabel{ $\color{red}(\wedge_{E_l})$}
+\UnaryInfC{$\phi$}
+
+\AxiomC{$[\chi]_1$}
+\UnaryInfC{$\chi$}
+\RightLabel{ $\color{red}(\wedge_I)$}
+\BinaryInfC{$\phi\wedge\chi$}
+\RightLabel{ $\color{red}(\vee_{I_r})$}
+\UnaryInfC{$(\phi\wedge\psi)\vee(\phi\wedge\chi)$}
+
+
+\LeftLabel{ $\color{red}(\vee_E)$}
+\TrinaryInfC{$(\phi\wedge\psi)\vee(\phi\wedge\chi)$}
+
+\end{prooftree}
+\end{minipage}}
+\end{frame}
+
+
+
+\end{document}

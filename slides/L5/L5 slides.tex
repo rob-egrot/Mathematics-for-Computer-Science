@@ -1,0 +1,381 @@
+\documentclass[handout]{beamer} 
+\title{ITCS 531: Logic 5 - Basic model theory}
+\date{}
+\author{Rob Egrot}
+
+\usepackage{amsmath, bbold, bussproofs,graphicx}
+\usepackage{mathrsfs}
+\usepackage{amsthm}
+\usepackage{amssymb}
+\usepackage[all]{xy}
+\usepackage{multirow}
+\usepackage{tikz-cd}
+
+
+
+\addtobeamertemplate{navigation symbols}{}{%
+    \usebeamerfont{footline}%
+    \usebeamercolor[fg]{footline}%
+    \hspace{1em}%
+    \insertframenumber/\inserttotalframenumber
+}
+
+\setbeamertemplate{theorems}[numbered]
+
+\newcommand{\trm}{\mathbf{term}}
+\newcommand{\sL}{\mathscr{L}}
+\newcommand{\cR}{\mathcal{R}}
+\newcommand{\cF}{\mathcal{F}}
+\newcommand{\cC}{\mathcal{C}}
+\newcommand{\bN}{\mathbb{N}}
+\newcommand{\bZ}{\mathbb{Z}}
+\newcommand{\bQ}{\mathbb{Q}}
+\newcommand{\bR}{\mathbb{R}}
+\newcommand{\bP}{\mathbb{P}}
+\newcommand{\HCF}{\mathbf{HCF}}
+\newcommand{\lequiv}{\models\text{\reflectbox{$\models$}}}
+
+\begin{document}
+
+\begin{frame}
+\titlepage
+\end{frame}
+
+\begin{frame}
+\frametitle{Structures and languages}
+\begin{itemize}
+\item In the last class we introduced the idea of a first-order language $\sL$.
+\vspace{0.2cm}
+\item A mathematical structure is an $\sL$-structure if it has relations, functions and constants corresponding to the non-logical symbols of $\sL$.
+\vspace{0.2cm}
+\item If $\phi$ is an $\sL$-sentence and $A$ is an $\sL$-structure, if $\phi$ is true in $A$ we say $A$ is a \emph{model} for $\phi$ (we write $A\models \phi$).
+\vspace{0.2cm}
+\item Given a set of $\sL$-sentences, we can try to understand them by studying its models.
+\vspace{0.2cm}
+\item Conversely, given a structure $A$ we can try to think of it as an $\sL$-structure for some $\sL$. 
+\vspace{0.2cm}
+\item We can study $A$ by looking at the $\sL$-sentences that it models.
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Model theory}
+\begin{itemize}
+\item This two-way study of logic through structures, and structures through logic, is the starting point of \emph{model theory}.
+\vspace{0.4cm}
+\item In this class we will look more closely at the concept of models and semantic implication.
+\vspace{0.4cm}
+\item We will also define a concept of deduction based on that for propositional logic.
+\vspace{0.4cm}
+\item We will state soundness and completeness theorems for first-order logic.
+\vspace{0.4cm}
+\item We will see some limitations of first-order logic for studying infinite structures. 
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Logical implication}
+\begin{itemize}
+\item If $\Gamma$ is a set of $\sL$-formulas, and if $\phi$ is an $\sL$-formula, we write $\Gamma\models \phi$ if, whenever $v$ is an assignment of the variables of $\sL$ into an $\sL$-structure $A$, we have \[A, v \models \Gamma\implies A,v \models \phi.\]
+\item We say that $\phi$ is a \emph{logical consequence} of $\Gamma$.
+\vspace{0.2cm}
+\item Remember \emph{sentences} are formulas that have no free variables.
+\vspace{0.2cm}
+\item For sentences we can just write, e.g. $A\models \phi.$
+\vspace{0.2cm}
+\item When $A\models \phi$, we say $A$ is a \emph{model} for $\phi$. 
+\vspace{0.2cm}
+\item If $\Delta$ is a set of $\sL$-sentences we can write e.g. $A\models \Delta$ when $A\models \phi$ for all $\phi\in\Delta$, and say $A$ is a model for $\Delta$.
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Validity and satisfiability}
+\begin{definition}
+If $\phi$ is an $\sL$-formula then we say $\phi$ is:
+\begin{itemize}
+\item \emph{Valid} if $A,v\models \phi$ whenever $A$ is an $\sL$-structure and $v$ is an assignment.
+\item \emph{Satisfiable} if there is an $\sL$-structure $A$ and an assignment $v$ with $A,v\models \phi$.
+\item A \emph{contradiction} if it is not satisfiable, i.e. if there is no $A,v$ with $A,v\models\phi$.
+\end{itemize}
+
+Similarly, if $\Gamma$ is a set of $\sL$-formulas then $\Gamma$ is:
+\begin{itemize}
+\item \emph{Valid} if $A,v\models \Gamma$ whenever $A$ is an $\sL$-structure and $v$ is an assignment.
+\item \emph{Satisfiable} if there is an $\sL$-structure $A$ and an assignment $v$ with $A,v\models \Gamma$.
+\item \emph{Contradictory} if it is not satisfiable, i.e. if there is no $A,v$ with $A,v\models\Gamma$. If $\Gamma$ is not satisfiable we write $\Gamma\models \bot$.
+\end{itemize}
+\end{definition}
+\end{frame}
+
+\begin{frame}
+\frametitle{Example - arithmetic}
+\begin{example}
+Let $\sL=\{0,1,\times,+\}$ be the language of arithmetic.
+\begin{enumerate}
+\item Let $\phi = \forall x\big((x\approx 0)\vee \neg(x\approx 0)\big)$. Then $\phi$ is valid. More generally, if $\sL$ is a language, and if $\phi_1,\ldots,\phi_n$ are $\sL$-sentences, then any propositional tautology constructed by treating the $\phi_i$ as basic propositions will be valid.
+\vspace{0.2cm}
+\item Let $\psi= \forall x(\neg(x\approx 0)\rightarrow \exists y(x\times y\approx 1))$. This is true if we take $\bR$ as our structure, but not if we take $\bZ$. So $\psi$ is satisfiable but not valid.
+\vspace{0.2cm}
+\item If $\phi_1,\ldots,\phi_n$ are $\sL$-sentences, then any propositional contradiction using the $\phi_i$ as basic propositions will be a contradiction. 
+\end{enumerate}
+\end{example}
+\end{frame}
+
+\begin{frame}
+\frametitle{Checking satisfiability}
+\begin{definition}[Theory]\label{D:theory}
+If $\sL$ is a language, then an $\sL$-\emph{theory} is a satisfiable set of $\sL$-sentences. 
+\end{definition}
+\vspace{0.5cm}
+\begin{itemize}
+\item Checking logical consequence, validity etc. is much more complicated for first-order logic than for propositional logic.
+\vspace{0.2cm}
+\item In propositional logic, you just construct a truth table.
+\vspace{0.2cm}
+\item In first-order logic, you might have to check every possible $\sL$-structure.
+\vspace{0.2cm}
+\item Generally this is not feasible.
+\vspace{0.2cm}
+\item There is no algorithm for saying whether an arbitrary $\sL$-sentence has a model (proved next semester).
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Intended models}
+\begin{itemize}
+\item When we write down axioms in first-order logic, there is often some particular system whose behaviour we are trying to formalize.
+\vspace{0.3cm}
+\item E.g. we might write down axioms for defining real numbers.
+\vspace{0.3cm}
+\item The intended model here is $\bR$, and we can choose axioms so that $\bR$ is indeed a model.
+\vspace{0.3cm}
+\item But can we choose first-order axioms so that $\bR$ is the only model? 
+\vspace{0.3cm}
+\item No. In fact, it is impossible to use first-order logic to define a specific infinite structure.
+\vspace{0.3cm}
+\item This is due to the theorem on the next slide.
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{The L\"owenheim-Skolem theorem}
+\begin{theorem}\label{T:LS}
+Let $\Gamma$ be a countable $\sL$-theory. Then, if $\Gamma$ has an infinite model, it has models of every infinite cardinality.
+\end{theorem}
+\vspace{1cm}
+\begin{itemize}
+\item Theorem \ref{T:LS} gives us an infinite supply of extra models for any theory that has at least one infinite model. \vspace{0.5cm}
+\item It also tells us that first-order logic can't `tell the difference' between different infinite cardinalities. \vspace{0.5cm}
+\item Unintended models need not have different cardinalities though, as the example on the next slide illustrates.
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Unnatural natural numbers}
+\begin{example}\label{E:nums}
+Let $\sL=\{0,s\}$, where $s$ is a unary function. Let $\Gamma$ consist of the following sentences.
+\begin{itemize}
+\item[$\phi_1$:] $\forall x (\neg (x\approx 0)\rightarrow \exists y (x= s(y))$.
+\item[$\phi_2$:] $\forall x (\neg (x\approx s(x)))$. 
+\item[$\phi_3$:] $\forall x\forall y ((s(x)\approx s(y))\rightarrow (x\approx y))$. 
+\end{itemize}
+\vspace{0.3cm}
+\begin{itemize}
+\item One model of $\Gamma$ is $\bN$, where $s$ is interpreted as the `successor' function. 
+\item Is $\bN$ the only model? 
+\item No, for example, the disjoint union of $\bN$ and $\bZ$ is also a model if we interpret $0$ as the zero of $\bN$, and $s$ as the successor function in both $\bN$ and $\bZ$. 
+\end{itemize}
+\end{example}
+\end{frame}
+
+\begin{frame}
+\frametitle{Technical aside - substitution}
+\begin{itemize}
+\item Let $\phi$ be an $\sL$-formula with free variables $x_1,\ldots x_n$.
+\vspace{0.2cm}
+\item We can express this fact by writing $\phi[x_1,\ldots,x_n]$.
+\vspace{0.2cm}
+\item Let $t$ be an $\sL$-term, and let $i\in \{1,\ldots,n\}$.
+\vspace{0.2cm}
+\item We can create a new formula from $\phi$ by replacing every occurrence of the variable $x_i$ with the term $t$.
+\vspace{0.2cm}
+\item We use the notation $\phi[x_1,\ldots,x_{i-1},t/x_i,x_{i+1},\ldots,x_n]$ to denote this new formula.
+\vspace{0.2cm}
+\item E.g. let $\phi[x,y] = s(x)\approx y$, let $t = s(s(z))$.
+\vspace{0.2cm}
+\item Substituting $t$ for $x$ gives in $\phi$ gives $\phi[t/x,y]=s(s(s(z)))\approx y$.
+\vspace{0.2cm}
+\item Note that $\phi[x,y]$ and $\phi[t/x,y]$ have different free variables.
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Deduction in first-order logic}
+\begin{itemize}
+\item We can extend the natural deduction system for propositional logic to first-order logic. 
+\vspace{1cm}
+\item We have all the same deduction rules as before (but with first-order formulas in place of propositional sentences). 
+\vspace{1cm}
+\item We also have extra ones for $\approx$ and the quantifiers $\forall$ and $\exists$.
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Inroduction rules}
+
+
+\begin{prooftree}
+\AxiomC{}
+\LeftLabel{ $\approx_I$:\quad}
+\UnaryInfC{$t\approx t$}
+\end{prooftree}
+\vspace{1cm}
+\begin{prooftree}
+\AxiomC{$\phi[x'/x]$}
+\LeftLabel{ $\forall_I$:\quad}
+\UnaryInfC{$\forall x \phi$}
+\end{prooftree}
+\vspace{1cm}
+\begin{prooftree}
+\AxiomC{$\phi[t/x]$}
+\LeftLabel{ $\exists_I$:\quad}
+\UnaryInfC{$\exists x \phi$}
+\end{prooftree}
+\end{frame}
+
+\begin{frame}
+\frametitle{Elimination rules}
+\begin{prooftree}
+\AxiomC{$t_1\approx t_2$}
+\AxiomC{$\phi[t_1/z]$}
+\LeftLabel{ $\approx_E$:\quad}
+\BinaryInfC{$\phi[t_2/z]$}
+\end{prooftree}
+\vspace{1cm}
+\begin{prooftree}
+\AxiomC{$\forall x \phi$ }
+\LeftLabel{ $\forall_E$:\quad}
+\UnaryInfC{$\phi[t/x]$}
+\end{prooftree}
+\vspace{1cm}
+\begin{prooftree}
+\AxiomC{$\exists x \phi$}
+\AxiomC{$[\phi[x'/x]]$}
+\doubleLine
+\UnaryInfC{$\psi$}
+\LeftLabel{ $\exists_E$:\quad}
+\BinaryInfC{$\psi$}
+\end{prooftree}
+
+\end{frame}
+
+\begin{frame}
+\frametitle{First-order deduction example}
+\begin{example} Let $\phi$ and $\psi$ be formulas where $x$ occurs free. Then we can deduce $\forall x \psi$ from $\forall x \neg \phi$ and $\forall x (\phi \vee \psi)$.
+\end{example}
+\begin{prooftree}
+\AxiomC{$\forall x \neg\phi$}
+\LeftLabel{ $(\forall_E)$}
+\UnaryInfC{$\neg\phi[x'/x]$}
+\AxiomC{$\forall x (\phi\vee \psi)$}
+\LeftLabel{ $(\forall_E)$}
+\UnaryInfC{$\phi[x'/x]\vee \psi[x'/x]$}
+\doubleLine
+\LeftLabel{(p.d.)}
+\BinaryInfC{$\psi[x'/x]$}
+\LeftLabel{ $(\forall_I)$}
+\UnaryInfC{$\forall x\psi$}
+\end{prooftree}
+\vspace{1cm}
+p.d. stands for \emph{propositional deduction}.
+\end{frame}
+
+\begin{frame}
+\frametitle{Another first-order deduction example}
+\begin{example}
+Let $\phi$ and $\psi$ be formulas where $x$ occurs free. Then we can deduce $\exists x \psi$ from $\exists x \neg \phi$ and $\forall x (\phi \vee \psi)$.
+\end{example}
+\begin{prooftree}
+\AxiomC{$\exists x \neg\phi$}
+\AxiomC{$[\neg\phi[x'/x]]$}
+\UnaryInfC{$\neg\phi[x'/x]$}
+\LeftLabel{$(\exists_E)$}
+\BinaryInfC{$\neg\phi[x'/x]$}
+\AxiomC{$\forall x (\phi\vee \psi)$}
+\RightLabel{$(\forall_E)$}
+\UnaryInfC{$\phi[x'/x]\vee\psi[x'/x]$}
+\doubleLine
+\LeftLabel{(p.d.)}
+\BinaryInfC{$\psi[x'/x]$}
+\LeftLabel{$(\exists_I)$}
+\UnaryInfC{$\exists x\psi$}
+\end{prooftree}
+\end{frame}
+
+\begin{frame}
+\frametitle{Consistency}
+\begin{itemize}
+\item As with propositional logic we write $\Gamma\vdash \phi$ if $\phi$ can be deduced from a set of formulas $\Gamma$. \vspace{0.5cm}
+\item We say a set of $\sL$-sentences, $\Gamma$, is \textbf
+{consistent} if we do not have $\Gamma\vdash \bot$. \vspace{0.5cm}
+\item We sometimes describe a consistent set of $\sL$-sentences as an $\sL$-\emph{theory}. \vspace{0.5cm}
+\item This is consistent with definition \ref{D:theory} because, as in propositional logic, there is a strong link between $\vdash$ and $\models$ (see next slide).
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Soundness and completeness}
+\begin{theorem}[G\"odel]\label{T:G1}
+Let $\Gamma$ be a set of $\sL$-formulas. Then $\Gamma$ is consistent if and only if it is satisfiable.
+\end{theorem}\vspace{0.5cm}
+\begin{theorem}[Extended soundness and completeness]\label{T:G2}
+Let $\Gamma$ be a set of $\sL$-formulas and let $\phi$ be an $\sL$-formula. Then
+\[\Gamma\vdash \phi\iff \Gamma\models \phi.\]
+\end{theorem}\vspace{0.5cm}
+These two results are equivalent (this is proved in the exercises this week).
+\end{frame}
+
+\begin{frame}
+\frametitle{Proving theorem \ref{T:G2} - Soundness}
+\begin{itemize}
+\item Like the soundness theorem for propositional logic.
+\item Must show each deduction rule is sound.
+\item E.g. 
+\begin{itemize}
+\item[$\wedge_I$:] 
+\begin{itemize} 
+\item Have deduced $\phi$ and $\psi$ from $\Gamma$, and from these have deduced $\phi\wedge \psi$. 
+\item Assuming deductions of $\phi$ and $\psi$ are  sound, any pair $(A,v)$ satisfying $\Gamma$ must satisfy $\phi$ and $\psi$. 
+\item So also satisfies $\phi\wedge \psi$.
+\end{itemize}
+\end{itemize}
+\begin{itemize}
+\item The new rules are trickier, but as a sketch:
+\item[$\forall_I$:] 
+\begin{itemize}
+\item Have deduced $\phi[x'/x]$ for arbitrary choice of $x'$. 
+\item Assuming this deduction is sound, any pair $(A,v)$ satisfying $\Gamma$ will also satisfy $\phi[x'/x]$ 
+\item Must show that $A,v\models \forall x \phi[x]$ too.
+\item I.e. if $v'$ agrees with $v$ except possibly about $x$ then $A,v'\models \phi[x]$.
+\item With a little fiddling we can do this (see notes).
+\end{itemize}
+\end{itemize}
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Proving theorem \ref{T:G2} - Completeness}
+\begin{itemize}
+\item Completeness is harder, but conceptually similar to the propositional version.
+\vspace{0.5cm}
+\item Again, proving completeness is equivalent to proving that every consistent set of formulas is satisfiable.
+\vspace{0.5cm}
+\item Rather than just building a true/false assignment that satisfies a consistent set of propositional sentences, we must find a pair $(A,v)$ satisfying a set of first-order formulas.
+\vspace{0.5cm}
+\item It is possible to do this, using the formulas themselves as the base for a model. 
+\end{itemize}
+\end{frame}
+
+
+\end{document}

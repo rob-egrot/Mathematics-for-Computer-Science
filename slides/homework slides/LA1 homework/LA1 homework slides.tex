@@ -1,0 +1,119 @@
+\documentclass[handout]{beamer} 
+\title{ITCS 531: LA1 homework solutions}
+\date{}
+\author{Rob Egrot}
+
+\usepackage{amsmath, bbold, bussproofs,graphicx}
+\usepackage{mathrsfs}
+\usepackage{amsthm}
+\usepackage{amssymb}
+\usepackage[all]{xy}
+\usepackage{multirow}
+\usepackage{tikz-cd}
+
+
+\newtheorem{proposition}[theorem]{Proposition}
+\newcommand{\bN}{\mathbb{N}}
+\newcommand{\bZ}{\mathbb{Z}}
+\newcommand{\bQ}{\mathbb{Q}}
+\newcommand{\bR}{\mathbb{R}}
+\newcommand{\bP}{\mathbb{P}}
+\newcommand{\bC}{\mathbb{C}}
+\newcommand{\bF}{\mathbb{F}}
+\newcommand{\spa}{\mathrm{span}}
+
+\addtobeamertemplate{navigation symbols}{}{%
+    \usebeamerfont{footline}%
+    \usebeamercolor[fg]{footline}%
+    \hspace{1em}%
+    \insertframenumber/\inserttotalframenumber
+}
+\setbeamertemplate{theorems}[numbered]
+\begin{document}
+
+\begin{frame}
+\titlepage
+\end{frame}
+
+\begin{frame}
+\frametitle{LA1 Q3}
+Show $-1v = -v$. 
+\vspace{1cm}
+\begin{itemize}
+\item By proposition 1.7(3) we have $0v = 0$. 
+\vspace{1cm}
+\item So $(1-1)v = 0$, and so $v + (-1)v = 0$ by definition 1.5(8) and (6). 
+\vspace{1cm}
+\item So $(-1)v = - v$ by proposition 1.7(2).
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{LA1 Q4}
+Given $v\in V$, prove that $-(-v)= v$.
+\vspace{1cm}
+\begin{itemize}
+\item We know $v+ (-v) = 0$, so $-(-v) = v$, as additive inverses are unique, by proposition 1.7(2).
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{LA1 Q5}
+Given $a\in \bF$ and $v\in V$ prove that $av = 0$ if and only if either $a=0$ or $v=0$.
+\vspace{0.5cm}
+\begin{itemize}
+\item If $a=0$ then $av = 0$ by proposition 1.7(3). 
+\vspace{0.3cm}
+\item Now, let $v=0$, and suppose $a\neq 0$. Let $w$ be any vector. 
+\vspace{0.3cm}
+\item Then $a0 + w = a0 + aa^{-1}w = a(0+a^{-1}w) = a(a^{-1}w)= 1w = w$. 
+\vspace{0.3cm}
+\item So $a0 = 0$, as the zero of a vector space is unique (by proposition 1.7(1)). 
+\vspace{0.3cm}
+\item Conversely, suppose $av = 0 $ and that $a\neq 0$. 
+\vspace{0.3cm}
+\item Then $a^{-1}a v = a^{-1} 0 = 0$, and so $v = 0$, as $aa^{-1}=1$.
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{LA1 Q7}
+Let $U$ and $W$ be subspaces of $V$. Prove that if $U\cup W$ is a subspace of $V$, then either $U\subseteq W$ or $W\subseteq U$.
+\vspace{0.5cm}
+\begin{itemize}
+\item Suppose $U\cup W$ is a subspace of $V$, and suppose $U$ is not a subspace of $W$. 
+\item Choose $u\in U\setminus W$, and let $w\in W$. 
+\item Then $u + w \in U\cup W$, as $U\cup W$ is a subspace, and so is closed under $+$. 
+\item So either $u+w \in U$ or $u+w \in W$. 
+\item If $u+w\in W$, then $u+w-w = u$ is also in $W$, but this contradicts the choice of $u$. 
+\item So $u+w\in U$, and so $u+w-u = w\in U$. 
+\item This is true for all $w\in W$, so $W$ is a subspace of $U$.
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{LA1 Q8}
+Let $V$ be vector space over $\bF$, and let $v_1,\ldots v_n\in V$ such that $(v_1,\ldots,v_n)$ is linearly independent. Let $w\in V$. Prove that $(v_1,\ldots,v_n, w)$ is linearly independent if and only if $w\not\in \spa(v_1,\ldots,v_n)$.
+\begin{itemize}
+\item ``If $w\in \spa(v_1,\ldots,v_n)$ then $(v_1,\ldots,v_n,w)$ is not linearly independent".
+\begin{itemize}
+\item If $w\in \spa(v_1,\ldots,v_n)$, then $w = a_1v_1+\ldots +a_n v_n$ for some $a_1,\ldots,a_n$.
+\item So $0 = (-1)w + a_1v_1+\ldots +a_n v_n$.
+\item So $(v_1,\ldots,v_n, w)$ is not linearly independent. 
+\end{itemize}
+\item ``If $(v_1,\ldots,v_n,w)$ is not linearly independent then $w\in \spa(v_1,\ldots,v_n)$".
+\begin{itemize}
+\item If $(v_1,\ldots,v_n, w)$ is not linearly independent then we have $a_0w + a_1v_1+\ldots + a_n v_n = 0$ for some $a_0,\ldots, a_n$ not all zero. 
+\item $a_0$ cannot be zero, as $(v_1,\ldots,v_n)$ is linearly independent. 
+\item So $w = \frac{-a_1}{a_0}v_1 + \ldots + \frac{-a_n}{a_0}v_n$, and is therefore in $\spa(v_1,\ldots,v_n)$. 
+\end{itemize}
+\end{itemize}
+\end{frame}
+
+
+
+
+
+
+
+\end{document}

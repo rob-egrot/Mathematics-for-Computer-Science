@@ -1,0 +1,325 @@
+\documentclass[handout]{beamer} 
+\title{ITCS 531: Counting - Cardinal numbers}
+\date{}
+\author{Rob Egrot}
+
+\usepackage{amsmath, bbold, bussproofs,graphicx}
+\usepackage{mathrsfs}
+\usepackage{amsthm}
+\usepackage{amssymb}
+\usepackage[all]{xy}
+\usepackage{multirow}
+\usepackage{tikz-cd}
+
+
+\newtheorem{proposition}[theorem]{Proposition}
+\newcommand{\bN}{\mathbb{N}}
+\newcommand{\bZ}{\mathbb{Z}}
+\newcommand{\bQ}{\mathbb{Q}}
+\newcommand{\bR}{\mathbb{R}}
+\newcommand{\bP}{\mathbb{P}}
+
+\addtobeamertemplate{navigation symbols}{}{%
+    \usebeamerfont{footline}%
+    \usebeamercolor[fg]{footline}%
+    \hspace{1em}%
+    \insertframenumber/\inserttotalframenumber
+}
+\setbeamertemplate{theorems}[numbered]
+\begin{document}
+
+\begin{frame}
+\titlepage
+\end{frame}
+
+\begin{frame}
+\frametitle{What is a set?}
+\begin{itemize}
+\item A \textbf{set} is a collection of objects.
+\vspace{0.2cm}
+\item E.g. the natural numbers, the real numbers, the integers etc. are all sets.
+\vspace{0.2cm}
+\item So is something like $\{1,2,5,11,6\}$.
+\vspace{0.2cm}
+\item Sets don't just contain numbers.
+\vspace{0.2cm}
+\item We can have e.g. the set of all students in this class, the set of all toasters made in Germany etc.
+\vspace{0.2cm}
+\item We can also define sets arbitrarily, e.g. the set that contains my left shoe, the set of all prime numbers, and the current president of France.
+\vspace{0.2cm}
+\item Notice that in the previous example a set contains another set as a member.
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{When are two sets the same?}
+\begin{itemize}
+\item Sets are unordered collections that contain no duplicates.
+\vspace{0.4cm}
+\item Two sets are the same (equal) if they have exactly the same members.
+\vspace{0.4cm}
+\item So there may be multiple ways to define the same set.
+\vspace{0.4cm}
+\item E.g. The set of all natural numbers greater than 1 is the same as the set of all possible products of prime numbers.
+\vspace{0.4cm}
+\item There's a special set that contains nothing, the \textbf{empty set}, $\emptyset$.
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Defining sets from other sets}
+\begin{itemize}
+\item Given a set $X$ we can define the powerset $\wp(X) = \{S:S\subseteq X\}$, the set of all subsets of $X$. 
+\vspace{0.5cm}
+\item Given sets $X$ and $Y$ we can define things like the union $X\cup Y$ and intersection $X\cap Y$. 
+\vspace{0.5cm}
+\item If $I$ is an \emph{indexing set}, that is, a set we use just to label things, and for each $i\in I$ there is a set $X_i$, then we can take the infinite union $\bigcup_I X_i$ and the infinite intersection $\bigcap_I X_i$.
+\vspace{0.5cm}
+\item There are also other ways we can build sets from other sets. E.g. if $X$ is a set, and each element $x\in X$ is associated with some other object, $y_x$ say, then $\{y_x:x\in X\}$ is a set too.
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Set theory as a foundation for mathematics}
+\begin{itemize}
+\item Gottlob Frege and Bertrand Russell wanted to use the idea of a set to formalize mathematics. 
+\vspace{0.2cm}
+\item So the results of mathematics could be derived just by thinking hard enough about the logic of sets.
+\vspace{0.2cm}
+\item They wanted to do this for philosophical reasons related to the work of the German idealist philosopher Immanuel Kant.
+\vspace{0.2cm}
+\item They believed it is a fact of pure logic that every concept defines a set. I.e., if $P$ is a property of objects, then I can define the set of all the things that $P$ applies to (in symbols $\{x:P(x)\}$).  
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Russell's paradox}
+\begin{itemize}
+\item The problem with this assumption is that it leads to a contradiction.
+\item Some sets are members of themselves, e.g. the set of all abstract ideas. Other sets are not, e.g. the set of all chocolate biscuits. 
+\item So `not being a member of itself' is a property of sets.
+\item Let $X$ be the set of all sets that are not members of themselves.
+\item Suppose $X$ is a member of itself. Then, by the definition of $X$, it must also not be a member of itself.
+\item On the other hand, if $X$ is not a member of itself, then, again by definition of $X$, it must be a member of itself after all.
+\item This contradiction reveals that not all properties can define sets.
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{The consequences of Russell's paradox}
+\begin{itemize}
+\item Russell's paradox tells us we can't naively assume that every property defines a set.
+\vspace{0.2cm}
+\item So to be safe mathematicians must restrict the notion of `set'. This gives us what we know as $ZFC$ set theory, which we can define as a theory in first-order logic.
+\vspace{0.2cm}
+\item This is a hack, but it produces enough sets for the (most of) the needs of mathematicians, and seems to block the paradoxes of naive set theory (Russell's paradox is just one of these).
+\vspace{0.2cm}
+\item To avoid his paradox, Russell and others developed the foundations of mathematical logic in the early 20th century.  
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Comparing the sizes of sets}
+\begin{itemize}
+\item If $X,Y$ are sets, a function $f:X\to Y$ is:
+\begin{itemize}
+\item \emph{1-1 (injective)} if for all $y\in Y$ there is \emph{at most} one $x\in X$ with $f(x) = y$.
+\item \emph{onto (surjective)} if for all $y\in Y$ there is \emph{at least} one $x\in X$ with $f(x) = y$.
+\item \emph{bijective} if it is both 1-1 and onto.
+\end{itemize}
+\item We say $X$ is \emph{at most as big} as $Y$ if there is a 1-1 function $f:X\to Y$.
+\item We write $|X|\leq |Y|$.
+\item If $X$ and $Y$ are finite then $|X|\leq|Y|$ according to this definition if and only if $X$ is actually at most as big as $Y$ as we usually understand it.
+\begin{itemize}
+\item Because if $X=\{x_1,\ldots,x_k\}$ and $Y=\{y_1,\ldots,y_n\}$ with $k\leq n$ we can define $f:X\to Y$ by $f(x_i) = y_i$ for $i\in \{1,\ldots,k\}$. 
+\end{itemize}
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Defining cardinality}
+\begin{fact}\mbox{}
+\begin{enumerate}
+\item $|X|\leq|Y|\iff$ there is an onto (surjective) function from $Y$ to $X$.
+\item (Cantor-Bernstein theorem). $|X|=|Y|\iff$ there is a bijection between $X$ and $Y$.
+\item Given two sets $X$ and $Y$, either $|X|\leq |Y|$ or $|Y|\leq|X|$, or both.
+\end{enumerate}
+\end{fact}
+
+\begin{definition}[cardinality]
+We define the \emph{cardinality} of $X$ to be the equivalence class defined by $|X|$.
+\end{definition}
+\end{frame}
+
+\begin{frame}
+\frametitle{Why is this useful?}
+\begin{itemize}
+\item This definition of cardinality agrees with the usual one for finite sets.
+\vspace{0.3cm}
+\item I.e., if $X$ and $Y$ are finite then $|X|=|Y|$ if and only if $X$ and $Y$ have the same number of elements.
+\vspace{0.3cm}
+\item So, for example, if $X$ has 3 elements, then $|X|$ contains every set that has 3 elements. 
+\vspace{0.3cm}
+\item We can use this as a definition for the number 3.
+\vspace{0.3cm}
+\item But this definition also applies to infinite sets, for example $\bN$.
+\vspace{0.3cm}
+\item $\bN$ is obviously bigger than every finite set, but what about other infinite sets?
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{$\bN$ and $\bZ$}
+\begin{theorem}
+$|\bN|=|\bZ|$.
+\end{theorem}
+\begin{proof}
+We define a bijection $f:\bZ\to\bN$ as follows.
+\[f(z)=\begin{cases}2z \text{ when $z\geq 0$} \\
+2|z| - 1 \text{ when $z<0$} \end{cases}\]
+\end{proof}
+\end{frame}
+
+\begin{frame}
+\frametitle{$\bN$ and $\bN\times \bN$}
+\begin{theorem}
+$|\bN|=|\bN\times\bN|$.
+\end{theorem}
+\begin{proof}
+\begin{itemize}
+\item $f:\bN\to\bN\times\bN$ defined by $f(n)=(n,n)$ is clearly 1-1. 
+\item If we define a 1-1 function $g:\bN\times \bN\to \bN$ then fact 1(2) says $|\bN|=|\bN\times\bN|$. We get $g$ by listing the elements of $\bN\times \bN$: 
+\end{itemize}
+\xymatrixrowsep{.3cm}
+\xymatrixcolsep{.3cm}
+\[\xymatrix{ 
+\bullet_{(0,4)} & \bullet_{(1,4)}\ar@{.>}[dr] & \bullet_{(2,4)} & \bullet_{(3,4)}\ar@{.>}[dr] & \bullet_{(4,4)}\\
+\bullet_{(0,3)}\ar@{.>}[dr]  & \bullet_{(1,3)}\ar@{.>}[ul] & \bullet_{(2,3)}\ar@{.>}[dr]  & \bullet_{(3,3)}\ar@{.>}[ul] & \bullet_{(4,3)} \\
+\bullet_{(0,2)}\ar@{.>}[u]  & \bullet_{(1,2)}\ar@{.>}[dr]  & \bullet_{(2,2)}\ar@{.>}[ul] & \bullet_{(3,2)}\ar@{.>}[dr]  & \bullet_{(4,2)}\ar@{.>}[ul]  \\
+\bullet_{(0,1)}\ar@{.>}[dr]  & \bullet_{(1,1)}\ar@{.>}[ul]  & \bullet_{(2,1)}\ar@{.>}[dr]  & \bullet_{(2,1)}\ar@{.>}[ul] & \bullet_{(4,1)} \\
+\bullet_{(0,0)}\ar@{.>}[u] & \bullet_{(1,0)}\ar@{.>}[r]  & \bullet_{(2,0)}\ar@{.>}[ul] & \bullet_{(3,0)}\ar@{.>}[r]  & \bullet_{(4,0)}\ar@{.>}[ul]  }\]
+\end{proof}
+\end{frame}
+
+\begin{frame}
+\frametitle{$\bN$ and $\bQ$}
+\begin{corollary}
+$|\bN|=|\bQ|$.
+\end{corollary}
+\begin{proof}
+\begin{itemize}
+\item Since $\bN\subset\bQ$ the inclusion function is an injection from $\bN$ to $\bQ$, so we just need to find a 1-1 function $\bQ\to\bN$. 
+\item Let $h:\bQ\to\bZ\times\bZ$ be defined by 
+\[h(q) = \begin{cases}
+(0,0) \text{ when $q = 0$}\\
+(a,b) \text{ when $\frac{a}{b}$ is the most reduced form of $q$ }
+\end{cases}\]
+\item Let $g:\bN\times \bN\to \bN$ be the function from theorem 4.
+\item Let $f_1,f_2:\bZ\to \bN$ be copies of the function $f$ from theorem 3.  
+\item Then $g\circ(f_1,f_2)\circ h:\bQ\to \bN$ is 1-1 as $g$, $f$ and $h$ are.
+\end{itemize}
+\[\xymatrix{\bQ\ar[r]^h & \bZ\times \bZ\ar[r]^{(f_1,f_2)} & \bN\times \bN\ar[r]^g & \bN}\]
+\end{proof}
+\end{frame}
+
+\begin{frame}
+\frametitle{$\bN$ and $\bR$}
+\begin{theorem}
+$|\bN|<|\bR|$.
+\end{theorem}
+\emph{Proof:}
+\begin{itemize}
+\item Since $\bN\subset \bR$ we know that $|\bN|\leq |\bR|$ as the inclusion function is 1-1. 
+\item We will show that $|\bN|\neq |\bR|$ by proving that there is no onto function from $\bN$ to $\bR$. 
+\item Let $f$ be a function from $\bN$ to the interval $(0,1)\subset \bR$.
+\item We will show that there is an $x\in(0,1)$ such that $f(n)\neq x$ for all $n\in\bN$. 
+\item This proof technique is known as \emph{Cantor's diagonal argument}, or just \emph{the diagonal argument}. 
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Theorem 6 proof continued}
+\begin{itemize}
+\item Every number in $(0,1)$ can be expressed as an infinite decimal expansion, e.g. $0.x_1x_2x_3\ldots$, where $x_n$ is the $n$th digit. 
+\item Define $y=0.y_1y_2y_3\ldots$ by defining the digits as follows: 
+\[y_n = \begin{cases} 7 \text{ if the $n$th digit of $f(n)$ is not $7$}\\
+3  \text{ if the $n$th digit of $f(n)$ is $7$}\end{cases}\]  
+\item Then, by definition, the $n$th digit of $y$ is different from the $n$th digit of $f(n)$ for all $n$, and so $y\neq f(n)$ for all $n\in\bN$.
+\item So $f$ cannot be onto.
+\item Since there's no onto function $\bN\to (0,1)$, there's no onto function $\bN\to \bR$ either.
+\item So $|\bN|<|\bR|$.
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Countable and uncountable sets}
+\begin{itemize} 
+\item We have seen there's at least one set bigger than $\bN$.
+\vspace{.3cm}
+\begin{definition}[countable]
+A set $X$ is \emph{countable} if $|X|\leq|\bN|$. Otherwise it is \emph{uncountable}.
+\end{definition}
+\vspace{.3cm}
+\item It turns out that there's a never ending increasing hierarchy of uncountable cardinals. 
+\vspace{.3cm}
+\item You'll see a justification for this by thinking about powersets in the exercises.
+\vspace{.3cm}
+\item This is just the tip of the iceberg.
+\vspace{.3cm}
+\item Understanding this hierarchy is part of the work of modern set theorists.
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Cardinal arithmetic}
+\begin{itemize} 
+\item Given disjoint sets $X$ and $Y$, we extend the familiar arithmetic operations as follows:
+\vspace{.3cm}
+\begin{itemize}
+\item $|X|+|Y|=|X\cup Y|$.
+\vspace{.3cm}
+\item $|X|\times |Y| = |X\times Y|$.
+\vspace{.3cm}
+\item $|X|^{|Y|} = |X^Y|$ (here $X^Y$ stands for the set of functions from $Y$ to $X$).
+\end{itemize}
+\vspace{.3cm}
+\item You'll see in the exercises that these operations agree with the usual ones for finite sets.
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Powersets and exponentials}
+
+\begin{proposition}
+If $X$ is a set, then $|\wp(X)|=|2^X|$, where $2$ is the two element set $\{0,1\}$.
+\end{proposition}
+\begin{proof}
+\begin{itemize}
+\item We define a bijection $g$ from $\wp(X)$ to $2^X$ by $g(S) = f_S$, where $f_S:X\to\{0,1\}$ is defined by setting 
+\[f_S(x)=\begin{cases} 1 \text{ when $x\in S$} \\
+0 \text{ otherwise.}\end{cases}\]
+\item $f_S$ is known as the \emph{characteristic function} of $S$.
+\item $g$ is well defined because every set $S\subseteq X$ defines a unique $f_S$. 
+\item It is clearly 1-1, and it is onto because given $f:X\to 2$ we can define $S_f=\{x\in X: f(x)=1\}$, and then $g(S_f)=f$.
+\end{itemize}
+\end{proof}
+\end{frame}
+
+\begin{frame}
+\frametitle{The continuum hypothesis}
+
+\begin{fact}\label{Fa:R}
+$|\bR|=|2^\bN|$.
+\end{fact}
+
+\begin{itemize} 
+\item We know that $|\bN|<|\bR| = |2^\bN|$. 
+\item Is there a set $Y$ such that $|\bN|<|Y|<|\bR|$?. 
+\item Cantor, the founder of set theory, believed the answer is no. 
+\item This idea that there is no such $Y$ is the \emph{continuum hypothesis}.
+\item It turns out that the continuum hypothesis ($CH$) can neither be proved nor disproved using the $ZFC$ axioms. 
+\item G\"odel showed that it can not be disproved in 1940, and, in 1963, Cohen showed that it can not be proved either. 
+\item The basic idea is that there are models of $ZFC$ where $CH$ is true, and others where it is false. 
+\end{itemize}
+\end{frame}
+\end{document}

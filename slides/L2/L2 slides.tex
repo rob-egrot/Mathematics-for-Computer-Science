@@ -1,0 +1,764 @@
+\documentclass[handout]{beamer} 
+\title{ITCS 531: Logic 2 - Deduction rules for propositional logic}
+\date{}
+\author{Rob Egrot}
+
+\usepackage{amsmath, bbold, bussproofs,graphicx}
+\usepackage{mathrsfs}
+\usepackage{amsthm}
+\usepackage{amssymb}
+\usepackage[all]{xy}
+\usepackage{multirow}
+\usepackage{tikz-cd}
+
+
+
+\addtobeamertemplate{navigation symbols}{}{%
+    \usebeamerfont{footline}%
+    \usebeamercolor[fg]{footline}%
+    \hspace{1em}%
+    \insertframenumber/\inserttotalframenumber
+}
+
+\setbeamertemplate{theorems}[numbered]
+
+\newcommand{\bN}{\mathbb{N}}
+\newcommand{\bZ}{\mathbb{Z}}
+\newcommand{\bQ}{\mathbb{Q}}
+\newcommand{\bR}{\mathbb{R}}
+\newcommand{\bP}{\mathbb{P}}
+\newcommand{\HCF}{\mathbf{HCF}}
+\newcommand{\lequiv}{\models\text{\reflectbox{$\models$}}}
+
+\begin{document}
+
+\begin{frame}
+\titlepage
+\end{frame}
+
+\begin{frame}
+\frametitle{Semantic proof}
+\begin{itemize}
+\item Last week we saw how formulas and sets of formulas can imply other formulas according to truth tables. 
+\vspace{0.4cm}
+\item This allows us to make deductions about when a formula must be true assuming that certain other formulas are true. 
+\vspace{0.4cm}
+\item This method of deduction is \emph{semantic}. 
+\vspace{0.4cm}
+\item I.e. it is based on an idea of \emph{true} and \emph{false}. 
+\vspace{0.4cm}
+\item In other words, propositions have a meaning in a world where they are true or false.
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Syntactic proof}
+\begin{itemize}
+\item A different approach to logical deduction is to forget concepts like `true', `false' and `meaning'. 
+\vspace{0.4cm}
+\item I.e. just look at the structure of the formulas involved. 
+\vspace{0.4cm}
+\item This is known as \emph{syntax}.
+\vspace{0.4cm}
+\item We will develop a syntactical approach to deduction here. 
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Formal proofs in propositional logic}
+\begin{itemize}
+\item A formal proof begins with a (possibly empty) set of sentences, $\Gamma$, (considered to be axioms). 
+\vspace{0.3cm}
+\item In addition we have a collection of \textbf{deduction rules} (also called \emph{inference rules}). 
+\vspace{0.3cm}
+\item We use these to generate new sentences from combinations of ones previously generated. 
+\vspace{0.3cm}
+\item During this process the intended meaning of the sentences are irrelevant. 
+\vspace{0.3cm}
+\item The only important thing is their syntactic form. 
+\vspace{0.3cm}
+\item The set of sentences provable from $\Gamma$ is the set of sentences that can be obtained from $\Gamma$ using a finite number of applications of the inference rules.
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Natural deduction}
+\begin{itemize}
+\item There are many ways we can define deduction rules for propositional logic that are equivalent in a technical sense. 
+\vspace{0.3cm}
+\item We use a system called \emph{natural deduction}. 
+\vspace{0.3cm}
+\item The advantage is that it is relatively human readable. 
+\vspace{0.3cm}
+\item Natural deduction proofs resemble human argument. 
+\vspace{0.3cm}
+\item The disadvantage is that its proofs more difficult to formally reason about. 
+\vspace{0.3cm}
+\item This matters to proof theorists because they want to be able to prove theorems about the deductive power of formal systems. 
+\vspace{0.3cm}
+\item We're not worried about that though.
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Introduction rules}
+\begin{prooftree}
+\AxiomC{}
+\LeftLabel{ $\top_I$:\quad}
+\UnaryInfC{$\top$}
+\end{prooftree}
+
+\begin{prooftree}
+\AxiomC{$\phi$}
+\AxiomC{$\psi$}
+\LeftLabel{$\wedge_I$:\quad}
+\BinaryInfC{$\phi\wedge \psi$}
+\end{prooftree} 
+
+\begin{prooftree}
+\AxiomC{$\phi$}
+\LeftLabel{ $\vee_{I_l}$:\quad}
+\UnaryInfC{$\phi\vee\psi$}
+\end{prooftree}
+
+\begin{prooftree}
+\AxiomC{$\psi$}
+\LeftLabel{ $\vee_{I_r}$:\quad}
+\UnaryInfC{$\phi\vee\psi$}
+\end{prooftree} 
+
+\begin{prooftree}
+\AxiomC{$[\phi]$}
+\doubleLine
+\UnaryInfC{$\bot$}
+\LeftLabel{ $\neg_{I}$:\quad}
+\UnaryInfC{$\neg\phi$}
+\end{prooftree}
+
+\begin{prooftree}
+\AxiomC{$[\phi]$}
+\doubleLine
+\UnaryInfC{$\psi$}
+\LeftLabel{ $\rightarrow_{I}$:\quad}
+\UnaryInfC{$\phi\rightarrow\psi$}
+\end{prooftree}
+\end{frame}
+
+\begin{frame}
+\frametitle{Elimination rules}
+\begin{prooftree}
+\AxiomC{$\bot$}
+\LeftLabel{ $\bot_E$:\quad}
+\UnaryInfC{$\phi$}
+\end{prooftree} 
+
+\begin{prooftree}
+\AxiomC{$\phi\wedge\psi$}
+\LeftLabel{ $\wedge_{E_l}$:\quad}
+\UnaryInfC{$\phi$}
+\end{prooftree}
+
+\begin{prooftree}
+\AxiomC{$\phi\wedge\psi$}
+\LeftLabel{ $\wedge_{E_r}$:\quad}
+\UnaryInfC{$\psi$}
+\end{prooftree}
+
+\begin{prooftree}
+\AxiomC{$\phi \vee \psi$}
+\AxiomC{[$\phi$]}
+\doubleLine
+\UnaryInfC{$\theta$}
+\AxiomC{[$\psi$]}
+\doubleLine
+\UnaryInfC{$\theta$}
+\LeftLabel{$\vee_E$:\quad}
+\TrinaryInfC{$\theta$}
+\end{prooftree}
+
+\begin{prooftree}
+\AxiomC{$\phi$}
+\AxiomC{$\neg\phi$}
+\LeftLabel{$\neg_E$:\quad}
+\BinaryInfC{$\bot$}
+\end{prooftree} 
+
+
+\begin{prooftree}
+\AxiomC{$\phi\rightarrow\psi$}
+\AxiomC{$\phi$}
+\LeftLabel{$\rightarrow_E$:\quad}
+\BinaryInfC{$\psi$}
+\end{prooftree} 
+\end{frame}
+
+\begin{frame}
+\frametitle{Intuitionistic propositional logic}
+\begin{itemize}
+\item These rules define \emph{intuitionistic propositional logic}. 
+\vspace{0.5cm}
+\item This is like classical propositional logic except that here $\neg\neg \phi$ does not imply $\phi$ 
+\begin{itemize}
+\vspace{0.2cm}
+\item The converse is still true though! (see example \ref{E:neg} later). 
+\end{itemize}
+\vspace{0.5cm}
+\item To get classical propositional logic we need one extra rule (double negation elimination).
+\vspace{0.5cm}
+\begin{prooftree}
+\AxiomC{$\neg\neg\phi$}
+\LeftLabel{ $\neg\neg_{E}$:\quad}
+\UnaryInfC{$\phi$}
+\end{prooftree}
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Using the deduction rules}
+\begin{itemize}
+\item Roughly speaking, introduction rules create new sentences by combining old ones with a logical connective. 
+\vspace{0.3cm}
+\item Elimination rules create new sentences by eliminating logical connectives from old ones. 
+\begin{itemize}
+\vspace{0.3cm}
+\item There are some rules that don't fit this pattern in an obvious way. 
+\end{itemize}
+\vspace{0.3cm}
+\item Derivations go from top to bottom.
+\vspace{0.3cm} 
+\item We can introduce sentences based on our axioms, then use the inference rules to derive new ones. 
+\vspace{0.3cm}
+\item Derived sentences go below the line. 
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Assumptions and subderivations}
+\begin{itemize}
+\item Sentences in square brackets, e.g. $[\phi]$, are \emph{assumptions}. 
+\vspace{0.3cm}
+\item When we make an assumption we have to discharge it later using one of the inferences rules $\neg_I$, $\rightarrow_I$, or $\vee_E$. 
+\vspace{0.3cm}
+\item We often use a subscript when making an assumption, e.g. $[\phi]_1$, so we can keep track of when we discharge it. 
+\vspace{0.3cm}
+\item We will discharge assumptions using `last in first out'. So, in a derivation, the last assumption made is the first to be discharged.  
+\vspace{0.3cm}
+\item Double lines (e.g. in $\vee_E$) represent a subderivation. 
+\vspace{0.3cm}
+\item That is, it stands for some arbitrary derivation beginning with the thing on the top and ending with the thing on the bottom. 
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Introduction rules again}
+\begin{prooftree}
+\AxiomC{}
+\LeftLabel{ $\top_I$:\quad}
+\UnaryInfC{$\top$}
+\end{prooftree}
+
+\begin{prooftree}
+\AxiomC{$\phi$}
+\AxiomC{$\psi$}
+\LeftLabel{$\wedge_I$:\quad}
+\BinaryInfC{$\phi\wedge \psi$}
+\end{prooftree} 
+
+\begin{prooftree}
+\AxiomC{$\phi$}
+\LeftLabel{ $\vee_{I_l}$:\quad}
+\UnaryInfC{$\phi\vee\psi$}
+\end{prooftree}
+
+\begin{prooftree}
+\AxiomC{$\psi$}
+\LeftLabel{ $\vee_{I_r}$:\quad}
+\UnaryInfC{$\phi\vee\psi$}
+\end{prooftree} 
+
+\begin{prooftree}
+\AxiomC{$[\phi]$}
+\doubleLine
+\UnaryInfC{$\bot$}
+\LeftLabel{ $\neg_{I}$:\quad}
+\UnaryInfC{$\neg\phi$}
+\end{prooftree}
+
+\begin{prooftree}
+\AxiomC{$[\phi]$}
+\doubleLine
+\UnaryInfC{$\psi$}
+\LeftLabel{ $\rightarrow_{I}$:\quad}
+\UnaryInfC{$\phi\rightarrow\psi$}
+\end{prooftree}
+\end{frame}
+
+\begin{frame}
+\frametitle{Elimination rules again}
+\begin{prooftree}
+\AxiomC{$\bot$}
+\LeftLabel{ $\bot_E$:\quad}
+\UnaryInfC{$\phi$}
+\end{prooftree} 
+
+\begin{prooftree}
+\AxiomC{$\phi\wedge\psi$}
+\LeftLabel{ $\wedge_{E_l}$:\quad}
+\UnaryInfC{$\phi$}
+\end{prooftree}
+
+\begin{prooftree}
+\AxiomC{$\phi\wedge\psi$}
+\LeftLabel{ $\wedge_{E_r}$:\quad}
+\UnaryInfC{$\psi$}
+\end{prooftree}
+
+\begin{prooftree}
+\AxiomC{$\phi \vee \psi$}
+\AxiomC{[$\phi$]}
+\doubleLine
+\UnaryInfC{$\theta$}
+\AxiomC{[$\psi$]}
+\doubleLine
+\UnaryInfC{$\theta$}
+\LeftLabel{$\vee_E$:\quad}
+\TrinaryInfC{$\theta$}
+\end{prooftree}
+
+\begin{prooftree}
+\AxiomC{$\phi$}
+\AxiomC{$\neg\phi$}
+\LeftLabel{$\neg_E$:\quad}
+\BinaryInfC{$\bot$}
+\end{prooftree} 
+
+
+\begin{prooftree}
+\AxiomC{$\phi\rightarrow\psi$}
+\AxiomC{$\phi$}
+\LeftLabel{$\rightarrow_E$:\quad}
+\BinaryInfC{$\psi$}
+\end{prooftree} 
+\end{frame}
+
+\begin{frame}
+\frametitle{Some conventions}
+\begin{itemize}
+\item We implicitly assume we can deduce any formula from itself or an assumption of itself:\\
+\vspace{0.5cm}
+\begin{minipage}{0.5\textwidth}
+\begin{prooftree} 
+\AxiomC{$\phi$}
+\UnaryInfC{$\phi$}
+\end{prooftree}
+\end{minipage}
+\begin{minipage}{0.5\textwidth}
+\begin{prooftree} 
+\AxiomC{$[\phi]$}
+\UnaryInfC{$\phi$}
+\end{prooftree}
+\end{minipage}
+\vspace{0.5cm}
+\item When we make deductions we can usually freely switch the order of sentences. 
+\begin{itemize}
+\vspace{0.2cm}
+\item E.g. $\phi$ and $\neg \phi$ could be switched when applying rule $\neg_E$.
+\end{itemize}
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Example: $\phi\rightarrow \phi$}
+\begin{prooftree}
+\AxiomC{$[\phi]$}
+\doubleLine
+\UnaryInfC{$\psi$}
+\LeftLabel{ $\rightarrow_{I}$:\quad}
+\UnaryInfC{$\phi\rightarrow\psi$}
+\end{prooftree}
+\begin{example}
+We can deduce $\phi\rightarrow \phi$ from an empty set of axioms.
+\begin{prooftree}
+\AxiomC{$[\phi]_1$}
+\UnaryInfC{$\phi$}
+\RightLabel{\quad$(\rightarrow_I)_1$}
+\UnaryInfC{$\phi\rightarrow\phi$}
+\end{prooftree}
+\end{example}
+\end{frame}
+
+\begin{frame}
+\frametitle{Example: $\phi\vee \psi$ implies $\psi\vee \phi$}
+\begin{columns}
+\begin{column}{0.5\textwidth}
+\begin{prooftree}
+\AxiomC{$\phi$}
+\LeftLabel{ $\vee_{I_l}$:\quad}
+\UnaryInfC{$\phi\vee\psi$}
+\end{prooftree}
+\end{column}
+\begin{column}{0.5\textwidth}
+\begin{prooftree}
+\AxiomC{$\phi \vee \psi$}
+\AxiomC{[$\phi$]}
+\doubleLine
+\UnaryInfC{$\theta$}
+\AxiomC{[$\psi$]}
+\doubleLine
+\UnaryInfC{$\theta$}
+\LeftLabel{$\vee_E$:\quad}
+\TrinaryInfC{$\theta$}
+\end{prooftree}
+\end{column}
+\end{columns}
+\begin{example}
+If $\phi\vee \psi$ is an axiom then we can deduce $\psi\vee \phi$.
+\begin{prooftree}
+\AxiomC{$\phi\vee \psi$}
+\AxiomC{$[\phi]_1$}
+\UnaryInfC{$\phi$}
+\RightLabel{\quad$(\vee_{I_r})$}
+\UnaryInfC{$\psi\vee \phi$}
+\AxiomC{$[\psi]_1$}
+\UnaryInfC{$\psi$}
+\RightLabel{\quad$(\vee_{I_l})$}
+\UnaryInfC{$\psi\vee \phi$}
+\RightLabel{\quad$(\vee_{E})_1$}
+\TrinaryInfC{$\psi\vee\phi$}
+\end{prooftree}
+\end{example}
+\end{frame}
+
+\begin{frame}
+\frametitle{Example: $\phi\rightarrow\neg\neg\phi$}
+\begin{columns}
+\begin{column}{0.3\textwidth}
+\begin{prooftree}
+\AxiomC{$\phi$}
+\AxiomC{$\neg\phi$}
+\LeftLabel{$\neg_E$:\quad}
+\BinaryInfC{$\bot$}
+\end{prooftree} 
+\end{column}
+
+\begin{column}{0.3\textwidth}
+\begin{prooftree}
+\AxiomC{$[\phi]$}
+\doubleLine
+\UnaryInfC{$\bot$}
+\LeftLabel{ $\neg_{I}$:\quad}
+\UnaryInfC{$\neg\phi$}
+\end{prooftree}
+\end{column}
+
+\begin{column}{0.3\textwidth}
+\begin{prooftree}
+\AxiomC{$[\phi]$}
+\doubleLine
+\UnaryInfC{$\psi$}
+\LeftLabel{ $\rightarrow_{I}$:\quad}
+\UnaryInfC{$\phi\rightarrow\psi$}
+\end{prooftree}
+
+\end{column}
+\end{columns}
+
+\begin{example}\label{E:neg}
+For all sentences $\phi$, we can derive $\phi\rightarrow\neg\neg\phi$ from an empty set of axioms, without using the rule $\neg\neg_E$.
+\begin{prooftree}
+\AxiomC{$[\phi]_1$}
+\UnaryInfC{$\phi$}
+\AxiomC{$[\neg\phi]_2$}
+\UnaryInfC{$\neg\phi$}
+\RightLabel{\quad$(\neg_E)$}
+\BinaryInfC{$\bot$}
+\RightLabel{\quad$(\neg_I)_2$}
+\UnaryInfC{$\neg\neg\phi$}
+\RightLabel{\quad$(\rightarrow_I)_1$}
+\UnaryInfC{$\phi\rightarrow\neg\neg\phi$}
+\end{prooftree} 
+\end{example}
+\end{frame}
+
+\begin{frame}
+\frametitle{Example: De Morgan's laws part 1}
+\scalebox{0.85}{\begin{minipage}{1.20\textwidth}
+\begin{columns}
+\begin{column}{0.3\textwidth}
+\begin{prooftree}
+\AxiomC{$\phi\wedge\psi$}
+\LeftLabel{ $\wedge_{E_l}$:\quad}
+\UnaryInfC{$\phi$}
+\end{prooftree}
+\end{column}
+
+\begin{column}{0.3\textwidth}
+\begin{prooftree}
+\AxiomC{$\phi$}
+\AxiomC{$\neg\phi$}
+\LeftLabel{$\neg_E$:\quad}
+\BinaryInfC{$\bot$}
+\end{prooftree}
+\end{column}
+
+\begin{column}{0.3\textwidth}
+\begin{prooftree}
+\AxiomC{$[\phi]$}
+\doubleLine
+\UnaryInfC{$\bot$}
+\LeftLabel{ $\neg_{I}$:\quad}
+\UnaryInfC{$\neg\phi$}
+\end{prooftree}
+\end{column}
+\end{columns}
+\begin{prooftree}
+\AxiomC{$\phi \vee \psi$}
+\AxiomC{[$\phi$]}
+\doubleLine
+\UnaryInfC{$\theta$}
+\AxiomC{[$\psi$]}
+\doubleLine
+\UnaryInfC{$\theta$}
+\LeftLabel{$\vee_E$:\quad}
+\TrinaryInfC{$\theta$}
+\end{prooftree}
+
+\begin{example}
+From $\phi\vee\psi$ we can deduce $\neg(\neg\phi\wedge \neg\psi)$.
+\begin{prooftree}
+\AxiomC{$(\phi\vee\psi)$}
+
+\AxiomC{$[\phi]_1$}
+\UnaryInfC{$\phi$}
+\AxiomC{$[\neg\phi\wedge\neg \psi]_2$}
+\RightLabel{\quad$(\wedge_{E_l})$}
+\UnaryInfC{$\neg\phi$}
+\RightLabel{\quad$(\neg_E)$}
+\BinaryInfC{$\bot$}
+\RightLabel{\quad$(\neg_I)_2$}
+\UnaryInfC{$\neg(\neg\phi\wedge \neg\psi)$}
+
+\AxiomC{$[\psi]_1$}
+\UnaryInfC{$\psi$}
+\AxiomC{$[\neg\phi\wedge\neg \psi]_3$}
+\RightLabel{\quad$(\wedge_{E_r})$}
+\UnaryInfC{$\neg\psi$}
+\RightLabel{\quad$(\neg_E)$}
+\BinaryInfC{$\bot$}
+\RightLabel{\quad$(\neg_I)_3$}
+\UnaryInfC{$\neg(\neg\phi\wedge \neg\psi)$}
+\RightLabel{\quad $(\vee_E)_{1}$}
+\TrinaryInfC{$\neg(\neg\phi\wedge \neg\psi)$}
+\end{prooftree}
+\end{example}\end{minipage}}
+\end{frame}
+
+\begin{frame}
+\frametitle{Example: De Morgan's laws part 2}
+\scalebox{0.85}{\begin{minipage}{1.20\textwidth}
+\begin{columns}
+\begin{column}{0.3\textwidth}
+\begin{prooftree}
+\AxiomC{$\phi$}
+\LeftLabel{ $\vee_{I_l}$:\quad}
+\UnaryInfC{$\phi\vee\psi$}
+\end{prooftree}
+\end{column}
+
+\begin{column}{0.3\textwidth}
+\begin{prooftree}
+\AxiomC{$\phi$}
+\AxiomC{$\neg\phi$}
+\LeftLabel{$\neg_E$:\quad}
+\BinaryInfC{$\bot$}
+\end{prooftree}
+\end{column}
+
+\begin{column}{0.3\textwidth}
+\begin{prooftree}
+\AxiomC{$[\phi]$}
+\doubleLine
+\UnaryInfC{$\bot$}
+\LeftLabel{ $\neg_{I}$:\quad}
+\UnaryInfC{$\neg\phi$}
+\end{prooftree}
+\end{column}
+\end{columns}
+
+\begin{columns}
+
+\begin{column}{0.3\textwidth}
+\begin{prooftree}
+\AxiomC{$\phi$}
+\AxiomC{$\psi$}
+\LeftLabel{$\wedge_I$:\quad}
+\BinaryInfC{$\phi\wedge \psi$}
+\end{prooftree}
+\end{column}
+\begin{column}{0.3\textwidth}
+\begin{prooftree}
+\AxiomC{$\neg\neg\phi$}
+\LeftLabel{ $\neg\neg_{E}$:\quad}
+\UnaryInfC{$\phi$}
+\end{prooftree}
+\end{column}
+\end{columns}
+
+\begin{example}
+From $\neg(\neg\phi\wedge \neg\psi)$ we can deduce $\phi\vee\psi$.
+\begin{prooftree}
+
+\AxiomC{$\neg(\neg\phi\wedge \neg\psi)$}
+
+\AxiomC{$[\phi]_2$}
+\RightLabel{$(\vee_{I_l})$}
+\UnaryInfC{$\phi\vee \psi$}
+\AxiomC{$[\neg(\phi\vee\psi)]_1$}
+\UnaryInfC{$\neg(\phi\vee\psi)$}
+\RightLabel{$(\neg_E)$}
+\BinaryInfC{$\bot$}
+\RightLabel{$(\neg_I)_2$}
+\UnaryInfC{$\neg\phi$}
+
+\AxiomC{$[\psi]_3$}
+\AxiomC{$[\neg(\phi\vee\psi)]_1$}
+\doubleLine
+\BinaryInfC{$\neg\psi$}
+
+\RightLabel{$(\wedge_I)$}
+\BinaryInfC{$\neg\phi\wedge\neg\psi$}
+\RightLabel{$(\neg_E)$}
+\BinaryInfC{$\bot$}
+\RightLabel{$(\neg_I)_1$}
+\UnaryInfC{$\neg\neg(\phi\vee\psi)$}
+\RightLabel{$(\neg\neg_E)$}
+\UnaryInfC{$\phi\vee\psi$}
+\end{prooftree}
+
+
+\end{example}\end{minipage}}
+\end{frame}
+
+\begin{frame}
+\frametitle{Example: $\phi\vee\neg \phi$}
+\scalebox{0.85}{\begin{minipage}{1.20\textwidth}
+\begin{columns}
+\begin{column}{0.3\textwidth}
+\begin{prooftree}
+\AxiomC{$\phi$}
+\LeftLabel{ $\vee_{I_l}$:\quad}
+\UnaryInfC{$\phi\vee\psi$}
+\end{prooftree}
+\end{column}
+
+\begin{column}{0.3\textwidth}
+\begin{prooftree}
+\AxiomC{$\phi$}
+\AxiomC{$\neg\phi$}
+\LeftLabel{$\neg_E$:\quad}
+\BinaryInfC{$\bot$}
+\end{prooftree}
+\end{column}
+
+\begin{column}{0.3\textwidth}
+\begin{prooftree}
+\AxiomC{$[\phi]$}
+\doubleLine
+\UnaryInfC{$\bot$}
+\LeftLabel{ $\neg_{I}$:\quad}
+\UnaryInfC{$\neg\phi$}
+\end{prooftree}
+\end{column}
+\end{columns}
+
+\begin{columns}
+
+\begin{column}{0.3\textwidth}
+\begin{prooftree}
+\AxiomC{$\neg\neg\phi$}
+\LeftLabel{ $\neg\neg_{E}$:\quad}
+\UnaryInfC{$\phi$}
+\end{prooftree}
+\end{column}
+\end{columns}
+\begin{example}
+$\phi\vee\neg \phi$ is a theorem of classical propositional logic (i.e. it can be deduced from an empty set of axioms).
+\begin{prooftree}
+\AxiomC{$\neg(\neg\phi\vee\phi)$}
+\AxiomC{$[\neg(\neg\phi\vee\phi)]_1$}
+\UnaryInfC{$\neg(\neg\phi\vee\phi)$}
+\AxiomC{$[\phi]_2$}
+\UnaryInfC{$\phi$}
+\RightLabel{\quad$(\vee_{I_r})$}
+\UnaryInfC{$\neg\phi\vee\phi$}
+\RightLabel{\quad$(\neg_E)$}
+\BinaryInfC{$\bot$}
+\RightLabel{\quad$(\neg_I)_2$}
+\UnaryInfC{$\neg\phi$}
+\RightLabel{\quad$(\vee_{I_l})$}
+\UnaryInfC{$\neg\phi\vee\phi$}
+\RightLabel{\quad$(\neg_E)$}
+\BinaryInfC{$\bot$}
+\RightLabel{\quad$(\neg_I)_1$}
+\UnaryInfC{$\neg\neg(\neg\phi\vee\phi)$}
+\RightLabel{\quad$(\neg\neg_E)$}
+\UnaryInfC{$\neg\phi\vee\phi$}
+\end{prooftree}
+\end{example}\end{minipage}}
+\end{frame}
+
+\begin{frame}
+\frametitle{Example: $\psi$ from $\phi\vee \psi$ and $\neg \phi$}
+\begin{columns}
+\begin{column}{0.3\textwidth}
+\begin{prooftree}
+\AxiomC{$\bot$}
+\LeftLabel{ $\bot_E$:\quad}
+\UnaryInfC{$\phi$}
+\end{prooftree} 
+\end{column}
+
+\begin{column}{0.3\textwidth}
+\begin{prooftree}
+\AxiomC{$\phi$}
+\AxiomC{$\neg\phi$}
+\LeftLabel{$\neg_E$:\quad}
+\BinaryInfC{$\bot$}
+\end{prooftree}
+\end{column}
+
+\end{columns}
+\begin{prooftree}
+\AxiomC{$\phi \vee \psi$}
+\AxiomC{[$\phi$]}
+\doubleLine
+\UnaryInfC{$\theta$}
+\AxiomC{[$\psi$]}
+\doubleLine
+\UnaryInfC{$\theta$}
+\LeftLabel{$\vee_E$:\quad}
+\TrinaryInfC{$\theta$}
+\end{prooftree}
+\begin{example}\label{E:notor}
+If $\phi\vee \psi$ and $\neg \phi$ are axioms then we can deduce $\psi$.
+\begin{prooftree}
+\AxiomC{$\phi\vee \psi$}
+\AxiomC{$\neg\phi$}
+\AxiomC{$[\phi]_1$}
+\UnaryInfC{$\phi$}
+\RightLabel{\quad$(\neg_{E})$}
+\BinaryInfC{$\bot$}
+\RightLabel{\quad$(\bot_{E})$}
+\UnaryInfC{$\psi$}
+\AxiomC{$[\psi]_1$}
+\UnaryInfC{$\psi$}
+\RightLabel{\quad$(\vee_{I_l})$}
+\RightLabel{\quad$(\vee_{E})_1$}
+\TrinaryInfC{$\psi$}
+\end{prooftree}
+\end{example}
+\end{frame}
+
+\end{document}

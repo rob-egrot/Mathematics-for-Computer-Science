@@ -1,0 +1,152 @@
+\documentclass[handout]{beamer} 
+\title{ITCS 531: LA3 homework solutions}
+\date{}
+\author{Rob Egrot}
+
+\usepackage{amsmath, bbold, bussproofs,graphicx}
+\usepackage{mathrsfs}
+\usepackage{amsthm}
+\usepackage{amssymb}
+\usepackage[all]{xy}
+\usepackage{multirow}
+\usepackage{tikz-cd}
+
+
+\newtheorem{proposition}[theorem]{Proposition}
+\newcommand{\bN}{\mathbb{N}}
+\newcommand{\bZ}{\mathbb{Z}}
+\newcommand{\bQ}{\mathbb{Q}}
+\newcommand{\bR}{\mathbb{R}}
+\newcommand{\bP}{\mathbb{P}}
+\newcommand{\bC}{\mathbb{C}}
+\newcommand{\bF}{\mathbb{F}}
+\newcommand{\spa}{\mathrm{span}}
+\newcommand{\sL}{\mathscr{L}}
+\newcommand{\lequiv}{\models\text{\reflectbox{$\models$}}}
+\newcommand{\cL}{\mathcal{L}}
+\DeclareMathOperator{\ran}{\mathrm{ran}}
+
+\addtobeamertemplate{navigation symbols}{}{%
+    \usebeamerfont{footline}%
+    \usebeamercolor[fg]{footline}%
+    \hspace{1em}%
+    \insertframenumber/\inserttotalframenumber
+}
+\setbeamertemplate{theorems}[numbered]
+\begin{document}
+
+\begin{frame}
+\titlepage
+\end{frame}
+
+\begin{frame}
+\frametitle{LA3 Q1(1)}
+Let $b,c\in \bR$. Define $T:\bR^3\to \bR^2$ by 
+\[T(x,y,z) = (2x-4y+3z+b, 6x +cxyz).\]
+Prove that $T$ is linear if and only if $b=c=0$.
+\begin{itemize}
+\item If $b=c=0$ then $T(x,y,z) = (2x-4y+3z, 6x)$. 
+\item We check the conditions of definition 3.1. 
+\item First,
+\begin{align*}
+&T(x_1 + x_2,y_1+y_2,z_1+z_2)\\
+=& (2(x_1+x_2) - 4(y_1+y_2) +3(z_1+z_2), 6(x_1+x_2))\\
+=& (2x_1 - 4y_1 +3z_1, 6x_1) + (2x_2 - 4y_2 +3z_2, 6x_2)\\
+=& T(x_1,y_1,z_1) + T(x_2,y_2,z_2).
+\end{align*} 
+\item Second,
+\begin{align*}
+T(\lambda x, \lambda y, \lambda z) &= (2\lambda x-4\lambda y+3 \lambda z, 6\lambda x)\\
+&= \lambda (2 x-4 y+3 z, 6 x)\\
+&= \lambda T(x,y,z).
+\end{align*}
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{LA3 Q1(2)}
+Let $b,c\in \bR$. Define $T:\bR^3\to \bR^2$ by 
+\[T(x,y,z) = (2x-4y+3z+b, 6x +cxyz).\]
+Prove that $T$ is linear if and only if $b=c=0$.
+\begin{itemize}
+\item Conversely, if $T$ is linear then $2T(1,0,0) = T(2,0,0)$. 
+\item So $2(2+b,6) = (4+b,12)$. 
+\item I.e. $(4+2b,12) = (4+b,12)$, and so $b$ must be zero. 
+\item Also, $T(1,1,1) = T(1,0,0) + T(0,1,1)$. 
+\item So
+\[(2-4+3,6 + c) = (2, 6) + (-4+3,0) = (2-4+3,6),\]
+\item So $c=0$. 
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{LA3 Q2}
+Let $T\in \cL(V,W)$. Let $v_1,\ldots, v_n\in V$ and suppose that $(T(v_1),\ldots, T(v_n))$ is linearly independent in $W$. Prove that $(v_1,\ldots, v_n)$ is linearly independent in $V$.\vspace{0.5cm}
+\begin{itemize}
+\item Suppose $a_1v_1+\ldots+a_nv_n = 0$. \vspace{0.2cm}
+\item Then, as $T$ is linear, we have
+\[a_1T(v_1)+\ldots +a_nT(v_n)=T(a_1v_1+\ldots+a_nv_n) = T(0) = 0.\]
+\item As $T(v_1),\ldots, T(v_n)$ is linearly independent, it follows that $a_1=\ldots=a_n=0$. \vspace{0.2cm}
+\item So $(v_1,\ldots, v_n)$ is also linearly independent. 
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{LA3 Q4(1)}
+Let $S\in \cL(U,V)$ and let $T\in\cL(V,W)$. Let $(u_1,\ldots,u_n)$, $(v_1,\ldots,v_m)$ and $(w_1,\ldots, w_p)$ be bases for $U$, $V$ and $W$ respectively. Suppose that $B$ is the matrix of $T$ with respect to $(v_1,\ldots,v_m)$ and $(w_1,\ldots, w_p)$, and that $A$ is the matrix of $S$ with respect to $(u_1,\ldots,u_n)$ and $(v_1,\ldots,v_m)$. Then $BA$ is the matrix of $TS$ with respect to $(u_1,\ldots,u_n)$ and $(w_1,\ldots, w_p)$.
+
+\end{frame}
+
+\begin{frame}
+\frametitle{LA3 Q4(2)}
+\begin{itemize}
+\item What should $TS$ do to the basis vector $u_i$ of $U$? \vspace{0.2cm}
+\item As $A$ is the matrix of $S$, to find $Su_i$ we look at what $A$ does to the column vector that is zeroes except for 1 in the $i$th place. \vspace{0.2cm}
+\item So the result is $a_{1i}v_1 + \ldots + a_{mi}v_m$. \vspace{0.2cm}
+\item What does $T$ do to a basis vector $v_j$ of $V$? \vspace{0.2cm}
+\item The matrix $B$ tells us that $T(v_j) = b_{1j}w_1+\ldots+ b_{pj}w_p$. \vspace{0.2cm}
+\item So, 
+\begin{align*}&TS(u_i)\\ 
+=& T(a_{1i}v_1 + \ldots + a_{mi}v_m)\\
+=& a_{1i}T(v_1)+\ldots + a_{mi}T(v_m)\\
+=& a_{1i}(b_{11}w_1+\ldots+ b_{p1}w_p) + \ldots + a_{mi}(b_{1m}w_1+\ldots+ b_{pm}w_p). \end{align*}
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{LA3 Q4(3)}
+\begin{itemize}
+\item We can rearrange this as
+\begin{align*}&(a_{1i}b_{11} + \ldots + a_{mi}b_{1m})w_1\\
++&(a_{1i}b_{21} + \ldots + a_{mi}b_{2m})w_2\\ 
++& \ldots\\
++&(a_{1i}b_{p1}+\ldots +a_{mi}b_{pm})w_p.\end{align*}
+
+\item But this is the $i$th column of the matrix $BA$: 
+\[\begin{bmatrix}
+a_{1i}b_{11} + \ldots + a_{mi}b_{1m}\\
+a_{1i}b_{21} + \ldots + a_{mi}b_{2m}\\
+\vdots\\
+a_{1i}b_{p1}+\ldots +a_{mi}b_{pm}
+\end{bmatrix}
+\]
+
+\item Since this is true for every basis vector $u_i$ of $U$, the transformation $TS$ is given by the matrix $BA$ as claimed.
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{LA3 Q5}
+Let $T\in\cL(V,W)$, and suppose both $V$ and $W$ are finite dimensional. Prove that, whatever the choice of bases for $V$ and $W$, the matrix of $T$ with respect to these bases must have at least $\dim \ran T$ entries that are not equal to $0$.\vspace{0.5cm}
+\begin{itemize}
+\item Let $A$ be the matrix of $T$ with respect to some pair of bases. \vspace{0.2cm}
+\item If the $i$th column of $A$ is all zeroes, then this means $T(v_i)=0$, where $v_i$ is the $i$th basis vector for $V$. \vspace{0.2cm}
+\item Since $(T(v_1),\ldots,T(v_n))$ spans $\ran T$, there must be at least $\dim\ran T$ columns of $A$ that are not all zeroes. \vspace{0.2cm}
+\item This requires at least $\dim\ran T$ non-zero entries.
+\end{itemize}
+\end{frame}
+
+
+
+
+\end{document}

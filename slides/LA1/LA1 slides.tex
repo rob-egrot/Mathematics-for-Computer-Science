@@ -1,0 +1,402 @@
+\documentclass[handout]{beamer} 
+\title{ITCS 531: Linear Algebra - Vector spaces over fields}
+\date{}
+\author{Rob Egrot}
+
+\usepackage{amsmath, bbold, bussproofs,graphicx}
+\usepackage{mathrsfs}
+\usepackage{amsthm}
+\usepackage{amssymb}
+\usepackage[all]{xy}
+\usepackage{multirow}
+\usepackage{tikz-cd}
+
+
+\newtheorem{proposition}[theorem]{Proposition}
+\newcommand{\bN}{\mathbb{N}}
+\newcommand{\bZ}{\mathbb{Z}}
+\newcommand{\bQ}{\mathbb{Q}}
+\newcommand{\bR}{\mathbb{R}}
+\newcommand{\bP}{\mathbb{P}}
+\newcommand{\bC}{\mathbb{C}}
+\newcommand{\bF}{\mathbb{F}}
+\newcommand{\spa}{\mathrm{span}}
+
+\addtobeamertemplate{navigation symbols}{}{%
+    \usebeamerfont{footline}%
+    \usebeamercolor[fg]{footline}%
+    \hspace{1em}%
+    \insertframenumber/\inserttotalframenumber
+}
+\setbeamertemplate{theorems}[numbered]
+\begin{document}
+
+\begin{frame}
+\titlepage
+\end{frame}
+
+\begin{frame}
+\frametitle{What is linear algebra?}
+\begin{itemize}
+\item Linear algebra is an abstract approach to thinking about Euclidean space.
+\vspace{0.3cm}
+\item What is a Euclidean space?
+\vspace{0.3cm}
+\item Examples include the plane in 2 dimensions, and the 3 dimensional grid.
+\vspace{0.3cm}
+\item These spaces have an \emph{origin} (the point at zero), and two, three, or some other number of dimensions.
+\vspace{0.3cm}
+\item For each dimension we have an axis, and we can define the position of points by how far along each axis they are.
+\vspace{0.3cm}
+\item Euclidean space is not curved. So, for example the Euclidean plane is a flat plane in space. It's not curved around the surface of a sphere, or in any other way.
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{What is linear algebra for?}
+\begin{itemize}
+\item The axioms of linear algebra allow geometric facts to be proved with very clean arguments.
+\vspace{0.6cm}
+\item By abstracting away from intuitions about physical space we can see the underlying mathematics more clearly.
+\vspace{0.6cm}
+\item Conversely, by taking an abstract approach we can `see' systems that are not obviously geometric as `spaces in disguise'.
+\vspace{0.6cm}
+\item We can use geometric reasoning about these `secret spaces'. 
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Where is linear algebra used?}
+\begin{itemize}
+\item Linear algebra is used almost everywhere mathematics is used.
+\vspace{0.3cm}
+\item Physicists need it to understand e.g. quantum systems.
+\vspace{0.3cm}
+\item Statisticians use it, e.g. principal component analysis.
+\vspace{0.3cm}
+\item Pure mathematicians like to reformulate problems as linear algebra problems so they can solve them.
+\vspace{0.3cm}
+\item Computer scientists use linear algebra too, e.g:
+\begin{itemize}
+\vspace{0.3cm}
+\item The Google page rank algorithm.
+\vspace{0.3cm}
+\item Machine learning, e.g. ANN, SVM.
+\vspace{0.3cm}
+\item 3D graphics.
+\end{itemize}
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{What will we cover on this course?}
+\begin{itemize}
+\item Since this is a short course we will only scratch the surface.
+\vspace{0.3cm}
+\item We will introduce the basic abstract definitions and try to understand how they relate to the idea of a space.
+\vspace{0.3cm}
+\item We will prove some fundamental results using abstract arguments.
+\vspace{0.3cm}
+\item At the end of the course we will use these abstract results to prove some geometric facts.
+\vspace{0.3cm}
+\item The idea is that the rigorous approach taken here will give you the background you need to go deeper. 
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Complex numbers}
+\begin{itemize}
+\item The complex numbers $\bC$ are obtained by adding a root for the equation $x^2+1 = 0$ to the real numbers $\bR$.
+\item This root is a new number called $i$.
+\item It turns out that if we add $i$, then we get roots for every other polynomial equation too.
+\item So every polynomial over $\bC$ factorizes into linear factors (the \emph{Fundamental Theorem of Algebra}).
+\item We can define $\bC$ as the set of all numbers $a+bi$ where $a,b\in \bR$.
+\item We have 
+\[(a+bi)\pm (c+di) = (a\pm c) +(b\pm d)i\]
+and
+\[(a+bi)\times(c+di) = ac - bd +(ad+bc)i.\]
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Complex arithmetic}
+\begin{lemma}
+Let $\alpha$, $\beta$ and $\gamma$ be complex numbers. Then:
+\begin{enumerate}
+\item $\alpha + \beta = \beta + \alpha$, and $\alpha\beta = \beta\alpha$ (commutativity).
+\item $\alpha + (\beta + \gamma) = (\alpha + \beta) +\gamma$, and $\alpha(\beta\gamma) = (\alpha\beta)\gamma$ (associativity).
+\item $0 + \alpha = \alpha$, and $1\alpha = \alpha$ (identities).
+\item There is a unique $-\alpha\in\bC$ such that $\alpha + (-\alpha) = 0$ (inverse for addition).
+\item If $\alpha\neq 0$ there is a unique $\alpha^{-1}$ such that $\alpha\alpha^{-1} = 1$ (inverse for multiplication).
+\item $\alpha(\beta + \gamma) = \alpha\beta + \alpha\gamma$ (distributivity). 
+\end{enumerate}
+\end{lemma}
+\end{frame}
+
+\begin{frame}
+\frametitle{Complex arithmetic - proof}
+We'll prove  part 5. Part 4 is in the notes and the rest are exercises.
+\begin{itemize}
+\item Given $\alpha = a + bi$, suppose $(a+bi)(c+di) = 1$. 
+\item Then $ac - bd + (ad + bc)i = 1$.
+\item So 
+\[\tag{$\dagger$}ac - bd = 1,\]
+and 
+\[\tag{$\ddagger$}ad = - bc.\] 
+\item If $b = 0 $ then $\alpha^{-1}=\frac{1}{a}$, so we assume $b\neq 0$. 
+\item So we can rewrite $(\ddagger)$ as $c = \frac{-ad}{b}$. 
+\item Substituting into $(\dagger)$ gives $d = \frac{-b}{a^2+ b^2}$. 
+\item Substituting this value for $d$ into $(\ddagger)$ produces $c = \frac{a}{a^2+b^2}$. 
+\item So, we define $\alpha^{-1} = \frac{a-bi}{a^2+b^2}$. 
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Fields}
+We can define division for complex numbers:
+\begin{definition}
+Let $\alpha,\beta\in\bC$, and suppose $\beta\neq 0$. Then $\frac{\alpha}{\beta} = \alpha\beta^{-1}$.
+\begin{itemize}
+\item A \textbf{field} is a mathematical structure generalizing the arithmetic of real numbers.
+\item Fields have special elements zero and one, have addition and multiplication operations, and also inverses for non-zero elements.
+\item E.g. $\bC$ is a field.
+\item Fields behave like real numbers, but with important differences - e.g. they can be finite!
+\item Abstract linear algebra can be done with arbitrary fields, but we will just use $\bR$ and $\bC$.
+\end{itemize}
+\end{definition}
+\end{frame}
+
+\begin{frame}
+\frametitle{Vector spaces over fields}
+\begin{definition}
+For a field $\bF$, a \emph{vector space over $\bF$} is a set $V$ with operations $+:V\times V\to V$ and $\cdot:\bF\times V\to V$ satisfying:
+\begin{enumerate}
+\item $u + v = v + u$ for all $u,v\in V$.
+\item $u + (v + w) = (u + v) + w$ for all $u,v,w\in V$.
+\item $(ab)v = a(bv)$ for all $a,b\in\bF$ and for all $v\in V$.
+\item There is a special element $0\in V$ such that $0 + v = v$ for all $v\in V$.
+\item For all $v\in V$ there is $w\in V$ such that $v + w = 0$.
+\item $1v = v$ for all $v\in V$ (i.e. scalar multiplication by $1$ does not change $v$).
+\item $a(u+v) = au + av$ for all $a\in\bF$ and for all $u,v\in V$.
+\item $(a+b)v = av + bv$ for all $a,b\in\bF$ and for all $v\in V$.
+\end{enumerate}
+\end{definition}
+\end{frame}
+
+\begin{frame}
+\frametitle{Real and complex vector spaces}
+\begin{itemize}
+\item $+$ is known as \textbf{vector addition}.
+\vspace{0.5cm}
+\item $\cdot$ is known as \textbf{scalar multiplication}.
+\vspace{0.5cm}
+\item When $\bF=\bR$ we say $V$ is a \emph{real vector space}.
+\vspace{0.5cm}
+\item When $\bF=\bC$ we say $V$ is a \emph{complex vector space}.
+\vspace{0.5cm}
+\item We refer to elements of $V$ as \emph{vectors}, or \emph{points}.
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Examples of vector spaces}
+\begin{itemize}
+\item Any field as a vector space over itself. E.g. $\bR$ is a real vector space.
+\vspace{0.5cm}
+\item $\bR\times \bR$, i.e. the Euclidean plane, is a real vector space.
+\vspace{0.5cm}
+\item For any $n\in\bN\setminus\{0\}$,\/ $\bF^n$ is a vector space over $\bF$ 
+\begin{itemize}
+\item Define $(x_1,\ldots,x_n)+(y_1,\ldots,y_n) = (x_1+y_1,\ldots,x_n+ y_n)$, and $a(x_1,\ldots x_n)=(ax_1,\ldots,ax_n)$.
+\end{itemize}
+\vspace{0.5cm}
+\item Let $\bR[x]$ be the set of all polynomials with the variable $x$. So 
+\[\bR[x] = \{ a_0 + a_1x + \ldots +a_nx^n: n\in\bN\text{ and } a_i\in\bR\text{ for all }i\}.\]
+Then $\bR[x]$ is a vector space over $\bR$.
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Properties of vector spaces}
+\begin{proposition}
+Let $V$ be a vector space over $\bF$. Then:
+\begin{enumerate}
+\item The additive identity $0$ is unique.
+\item The additive inverse of $v$ is unique for all $v\in V$ (we call it $-v$).
+\item $0v = 0$ for all $v\in V$.
+\item $-1v = -v$ for all $v\in V$.
+\end{enumerate}
+\end{proposition}
+\end{frame}
+
+\begin{frame}
+\frametitle{Properties of vector spaces - proof}
+\begin{proof}\mbox{}
+\begin{enumerate}
+\vspace{0.5cm}
+\item Suppose $0$ and $0'$ are both additive identities for $V$. Then $0 = 0 + 0' = 0'$.
+\vspace{0.5cm}
+\item Suppose $v+u = 0$ and $v + u' =0$. Then $(v + u) + u' = u'$, and so $(v + u') + u = u'$, which means $u = u'$.
+\vspace{0.5cm}
+\item $0v = (0+0)v = 0v + 0v$, so $0v +(-0v) = (-0v) + 0v + 0v$, and so $0 = 0v$.
+\vspace{0.5cm}
+\item Exercise 1.3.
+\end{enumerate}
+\end{proof}
+\end{frame}
+
+\begin{frame}
+\frametitle{Subspaces}
+\begin{definition}
+Let $V$ be a vector space over $\bF$. Then a subset $U$ of $V$ is a \emph{subspace} of $V$ if it has the following properties:
+\begin{enumerate}
+\item $0\in U$.
+\item $u + v \in U$ for all $u,v\in U$ (closure under vector addition). 
+\item $au\in U$ for all $a\in \bF$ and for all $u\in U$ (closure under scalar multiplication).
+\end{enumerate}
+\end{definition}
+\end{frame}
+
+\begin{frame}
+\frametitle{Another view of subspaces}
+\begin{lemma}
+If $V$ is a vector space over $\bF$ then $U\subseteq V$ is a subspace of $V$ if and only if it is also a vector space over $\bF$ with the addition and scalar multiplication inherited from $V$.
+\end{lemma}
+\begin{proof}
+\begin{itemize}
+\item If $U$ is a vector space with the inherited operations then it must be closed under the inherited operations and contain $0$. 
+\item Conversely, if $U$ satisfies the conditions of definition 5 then it automatically satisfies all conditions of definition 3 except (5). 
+\item To see that (5) also holds in $U$ note that, by proposition 4(4), given $u\in U$ we have $-u = -1u$, which is in $U$ by definition 5(3).
+\end{itemize}
+\end{proof}
+\end{frame}
+
+\begin{frame}
+\frametitle{Sums of subspaces}
+\begin{definition}
+Given subspaces $U_1,\ldots,U_n$ of $V$, the \emph{sum} $U_1+\ldots +U_n$ is the smallest subspace of $V$ containing $\bigcup_{i=1}^n U_i$.
+\end{definition}
+
+\begin{lemma}
+If $U_1,\ldots,U_n$ are subspaces of $V$, then 
+\[U_1+\ldots +U_n = \{u_1+\ldots +u_n: u_i\in U_i\text{ for all }i\in\{1,\ldots,n\}\}.\]
+\end{lemma}
+\begin{proof}
+\begin{itemize}
+\item $\{u_1+\ldots +u_n: u_i\in U_i\text{ for all }i\in\{1,\ldots,n\}\}$ contains $\bigcup_{i=1}^n U_i$ because $u_i = 0+\ldots +0 + u_i + 0 +\ldots + 0$ for all $u_i\in U_i$. 
+\item It is a subspace by the definition of a vector space. 
+\item It must be the smallest subspace containing $\bigcup_{i=1}^n U_i$, because any such subspace must be closed under vector addition.
+\end{itemize} 
+\end{proof}
+\end{frame}
+
+\begin{frame}
+\frametitle{Direct sums}
+\begin{definition}
+If $U_1,\ldots,U_n$ are subspaces of $V$, then the sum $U_1+\ldots +U_n$ is a \emph{direct sum} if, for all $u\in U_1+\ldots +U_n$, there is exactly one choice of $\{u_1,\ldots, u_n\}$ such that $u_i\in U_i$ for all $i$ and $u = u_1+\ldots +u_n$. In this case we write $U_1\oplus\ldots\oplus U_n$.
+\end{definition}
+\vspace{0.5cm}
+\begin{itemize}
+\item So direct sum is a sum where there is no redundancy. 
+\vspace{0.5cm}
+\item Every element in a direct sum is formed in exactly one way using the subspaces that make up the sum. 
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Direct sums - expressing zero}
+\begin{lemma}
+If $U_1,\ldots,U_n$ are subspaces of $V$, then $U_1+\ldots +U_n$ is a direct sum if and only if there is exactly one choice of $\{u_1,\ldots, u_n\}$ such that $u_i\in U_i$ for all $i$ and $0 = u_1+\ldots +u_n$. 
+\end{lemma}
+\begin{proof}
+\begin{itemize}
+\item If $U=U_1+\ldots +U_n$ is a direct sum, then by definition there is only one way to express $0$ (i.e. $0= 0+\ldots + 0$). 
+\item Conversely, suppose there is only one way to express $0$.
+\item Let $u\in U$, and suppose $u = u_1+\ldots + u_n = u'_1+\ldots + u'_n$. Then 
+\[0 = u_1+\ldots + u_n - (u'_1+\ldots + u'_n) = (u_1-u_1') + \ldots + (u_n-u_n').\]
+So $(u_i- u'_i) = 0$ for all $i$, as there is only one way to express $0$. 
+\item Thus $u_i = u_i'$ for all $i$.  
+\end{itemize}
+\end{proof}
+\end{frame}
+
+\begin{frame}
+\frametitle{Direct sums - two subspaces}
+\begin{lemma}
+Let $U$ and $W$ be subspaces of $V$. Then $U+W$ is a direct sum if and only if $U\cap W = \{0\}$.
+\end{lemma}
+\begin{proof}
+\begin{itemize}
+\item If there is $v\in U\cap W$ then $v = 0 +v$ and $v = v + 0$, so $U+W$ is not a direct sum. 
+\item Conversely, suppose $U\cap W=\{0\}$ and that $v = u + w$ and $v = u' + w'$. 
+\item Then $u-u' = w' -w$, and so $u - u'$ and $w'-w$ are both in $U\cap W$, and thus are both $0$. 
+\item This implies $u= u'$ and $w = w'$, so $U+W$ is a direct sum.
+\end{itemize}
+\end{proof}
+\end{frame}
+
+\begin{frame}
+\frametitle{Direct sums - Example}
+\begin{itemize}
+\item Let $V = \bR^3$, let $U_1 = \{(2x, 0, z): x,z\in \bR\}$, let $U_2 = \{(0,y,0): y\in \bR\}$, and let $U_3 = \{(0,z,z): z\in\bR\}$. 
+\item Then $\bR^3 = U_1 + U_2 + U_3$, because given $(a,b,c)\in\bR^3$ we have 
+\[(a,b,c) = (2(\frac{a}{2}), 0, 0) + (0, b-c, 0) + (0,c,c).\]
+
+\item However, $U_1+U_2+U_3$ is not a direct sum as 
+\[(0,0,0) = (0,0,1) + (0,1,0) + (0,-1,-1).\] 
+\item I.e., $0$ is not uniquely expressible.
+
+\item However, $U_i\cap U_j = \{0\}$ for all $i\neq j$, which indicates that lemma 11 only applies to binary sums.
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Span}
+\begin{definition}
+Given a vector space $V$ over $\bF$, and vectors $v_1,\ldots v_n\in V$, we say the \emph{span} of $(v_1,\ldots,v_n)$ is the smallest subspace of $V$ containing $\{v_1,\ldots,v_n\}$. 
+
+By convention we define $\spa() = \{0\}$. If $\spa(v_1,\ldots,v_n) = V$ we say $(v_1,\ldots,v_n)$ \emph{spans} $V$.
+\end{definition}
+
+\end{frame}
+
+\begin{frame}
+\frametitle{Span}
+\begin{lemma}
+If $V$ is vector space over $\bF$, and $v_1,\ldots v_n\in V$, then 
+\[\spa(v_1,\ldots v_n) = \{a_1v_1+\ldots + a_nv_n: a_i \in \bF\text{ for all }i\}.\]
+\end{lemma}
+\begin{proof}
+\begin{itemize}
+\item Let $U = \{a_1v_1+\ldots + a_nv_n: a_i \in \bF$ for all $i\}$. 
+\item Then clearly $U\subseteq \spa(v_1,\ldots v_n)$, as $\spa(v_1,\ldots v_n)$ is closed under vector addition and scalar multiplication. 
+\item Moreover, $U$ is closed under vector addition and scalar multiplication, so $U$ is a subspace of $V$. 
+\item Since $\{v_1,\ldots,v_n\}\subseteq U$, it follows from the definition that $\spa(v_1,\ldots v_n)\subseteq U$. 
+\item Thus $U = \spa(v_1,\ldots v_n)$ as required. 
+\end{itemize} 
+\end{proof}
+\end{frame}
+
+\begin{frame}
+\frametitle{Linear independence}
+\begin{definition}
+Let $V$ be vector space over $\bF$, and let $v_1,\ldots v_n\in V$. Then $(v_1,\ldots,v_n)$ is \emph{linearly independent} if whenever $a_1v_1+\ldots + a_n v_n = 0$ we have $a_1=\ldots=a_n=0$. 
+
+If $(v_1,\ldots,v_n)$ is not linearly independent then we say it is \emph{linearly dependent}.
+\end{definition}
+\end{frame}
+
+\begin{frame}
+\frametitle{Examples}
+\begin{enumerate}
+\item The vectors $(1,0,0)$, $(0,1,0)$ and $(0,0,1)$ are linearly independent and span $\bR^3$ and $\bC^3$.
+\vspace{0.5cm}
+\item The span of a single vector $v$ is $\{av:a\in \bF\}$. Single vectors are always linearly independent.
+\vspace{0.5cm}
+\item The vectors $(2,3,1)$, $(1,-1,2)$ and $(7,3,c)$ are linearly independent so long as $c\neq 8$.
+\vspace{0.5cm}
+\item Every list of vectors containing $0$ is linearly dependent.
+\end{enumerate}
+\end{frame}
+\end{document}

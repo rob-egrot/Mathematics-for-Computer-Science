@@ -1,0 +1,147 @@
+\documentclass[handout]{beamer} 
+\title{ITCS 531: NT4 homework solutions}
+\date{}
+\author{Rob Egrot}
+
+\usepackage{amsmath, bbold, bussproofs,graphicx}
+\usepackage{mathrsfs}
+\usepackage{amsthm}
+\usepackage{amssymb}
+\usepackage[all]{xy}
+\usepackage{multirow}
+\usepackage{tikz-cd}
+
+
+\newtheorem{proposition}[theorem]{Proposition}
+\newcommand{\bN}{\mathbb{N}}
+\newcommand{\bZ}{\mathbb{Z}}
+\newcommand{\bQ}{\mathbb{Q}}
+\newcommand{\bR}{\mathbb{R}}
+\newcommand{\bP}{\mathbb{P}}
+\newcommand{\bC}{\mathbb{C}}
+\newcommand{\bF}{\mathbb{F}}
+\newcommand{\spa}{\mathrm{span}}
+
+\addtobeamertemplate{navigation symbols}{}{%
+    \usebeamerfont{footline}%
+    \usebeamercolor[fg]{footline}%
+    \hspace{1em}%
+    \insertframenumber/\inserttotalframenumber
+}
+\setbeamertemplate{theorems}[numbered]
+\begin{document}
+
+\begin{frame}
+\titlepage
+\end{frame}
+
+\begin{frame}
+\frametitle{NT4 Q1}
+Let $p =11$ and $q=13$. Choose suitable $e$ and $d$ for use in RSA encryption.
+\vspace{0.5cm}
+\begin{itemize}
+\item Choose e.g. $e = 7$.
+\vspace{0.5cm}
+\item $d$ is inverse of $e$ mod 120 (turns out to be 103).
+\vspace{0.5cm}
+\item Can find $d$ with brute force as 120 is a small number (best use a computer).
+\vspace{0.5cm}
+\item Or can implement extended Euclidean algorithm.
+\vspace{0.5cm}
+\item Can also find with a little trick - see the solutions. 
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{NT4 Q2}
+Prove that if $a\equiv_n b$ then $a^k\equiv_n b^k$ for all $k\in\bN$.
+\vspace{0.5cm}
+\begin{itemize}
+\item Induct on $k$. If $k=0$ then its obviously true as $1=1$. 
+\vspace{0.3cm}
+\item Suppose it's true for $k-1$. 
+\vspace{0.3cm}
+\item Then $a^k = a.a^{k-1}$ and $b^k = b.b^{k-1}$.
+\vspace{0.3cm} 
+\item By assumption we have $a \equiv_n b$. 
+\vspace{0.3cm}
+\item By the inductive hypothesis we have $a^{k-1}\equiv_n b^{k-1}$. 
+\vspace{0.3cm}
+\item Proposition 2.8(2) applies and tells us that $a^k\equiv_n b^k$ too.
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{NT4 Q3}
+Let $a$ and $b$ be coprime. Prove that if $a| c$ and $b|c$ then $ab|c$.
+\vspace{0.5cm}
+\begin{itemize}
+\item By B\'ezout's identity there are $x$ and $y$ with $xa + yb = 1$. 
+\vspace{0.3cm}
+\item So $cxa + cyb = c$. 
+\vspace{0.3cm}
+\item Also, as $a| c$ there is $k$ with $ak = c$, and as $b|c$ there is $l$ with $bl = c$. 
+\vspace{0.3cm}
+\item So, we have $(bl)xa + (ak)yb = c$.
+\vspace{0.3cm}
+\item Rearranging this gives $(ab)(xl + yb) = c$.
+\vspace{0.3cm}
+\item This means $ab|c$ as claimed.
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{NT4 Q4(a)}
+Let $n_1,\ldots,n_k\in\bN$ all be greater than 1 and such that $n_i$ and $n_j$ are coprime for all $i\neq j$. Define $N=\prod_{i=1}^k n_i$. For each $i\in\{1,\ldots,k\}$ let $a_i\in\{0,\ldots, n_i-1\}$. 
+\vspace{1cm}
+\begin{enumerate}
+\item[a)] Let $x$ and $y$ be integers with $x \equiv_{n_i} a_i$ and $y \equiv_{n_i} a_i$ for all $i$. Prove that $x\equiv_N y$.
+\end{enumerate}
+\begin{itemize}
+\item As $\equiv_n$ is transitive, we have $x\equiv_{n_i} y$ for all $i$.
+\item So $n_i|(x-y)$ for all $i$.
+\item By coprimality and Q3 we have $N|(x-y)$, so $x \equiv_N y$.
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{NT4 Q4(b)}
+\begin{enumerate}
+\item[b)] Find $z\in\bZ$ with $z\equiv_{n_1} a_1$ and $z\equiv_{n_2} a_2$. 
+\end{enumerate}
+\vspace{1cm}
+\begin{itemize}
+\item By B\'ezout take $x,y$ with $1=xn_1+yn_2$.
+\vspace{0.5cm}
+\item So $xn_1 = 1- yn_2$ and $yn_2 = 1-xn_1$.
+\vspace{0.5cm}
+\item Define $z = xn_1a_2+yn_2a_1$.
+\vspace{0.5cm}
+\item Then $z = a_2(1-yn_2) + yn_2a_1 \equiv_{n_2} a_2$.
+\vspace{0.5cm}
+\item Similarly $z\equiv_{n_1} a_1$.
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{NT4 Q4(c)}
+\begin{enumerate}
+\item[c)] Extend part b) to prove that there is $z$ with $z \equiv_{n_i} a_i$ for all $i\in\{1,\ldots ,k\}$.
+\end{enumerate}
+\vspace{0.5cm}
+\begin{itemize}
+\item Induct on $k$. Trivial when $k=1$. Let $k>1$ and suppose true for $k-1$.
+\vspace{0.2cm}
+\item Define $N' = \prod_{i=1}^{k-1} n_i$.
+\vspace{0.2cm}
+\item By inductive hypothesis, there is $0\leq z'<N'$ with $z' \equiv_{n_i} a_i$ for all $1\leq i < k$.
+\vspace{0.2cm}
+\item Then $n_k$ and $N'$ are coprime, because if $p$ is prime and $p| N'$ then $p|n_i$ for some $i<k$, and thus $p\nmid n_k$.
+\vspace{0.2cm}
+\item So by b) there is $z$ with $z \equiv_{N'} z'$ and $z\equiv_{n_k} a_k$.
+\vspace{0.2cm}
+\item Since $z \equiv_{n_i} z' \equiv_{n_i} a_i$, we can use this $z$.
+\end{itemize}
+\end{frame}
+
+\end{document}

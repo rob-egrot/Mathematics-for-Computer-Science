@@ -1,0 +1,113 @@
+\documentclass[handout]{beamer} 
+\title{ITCS 531: L3 homework solutions}
+\date{}
+\author{Rob Egrot}
+
+\usepackage{amsmath, bbold, bussproofs,graphicx}
+\usepackage{mathrsfs}
+\usepackage{amsthm}
+\usepackage{amssymb}
+\usepackage[all]{xy}
+\usepackage{multirow}
+\usepackage{tikz-cd}
+
+
+\newtheorem{proposition}[theorem]{Proposition}
+\newcommand{\bN}{\mathbb{N}}
+\newcommand{\bZ}{\mathbb{Z}}
+\newcommand{\bQ}{\mathbb{Q}}
+\newcommand{\bR}{\mathbb{R}}
+\newcommand{\bP}{\mathbb{P}}
+\newcommand{\bC}{\mathbb{C}}
+\newcommand{\bF}{\mathbb{F}}
+\newcommand{\spa}{\mathrm{span}}
+
+\addtobeamertemplate{navigation symbols}{}{%
+    \usebeamerfont{footline}%
+    \usebeamercolor[fg]{footline}%
+    \hspace{1em}%
+    \insertframenumber/\inserttotalframenumber
+}
+\setbeamertemplate{theorems}[numbered]
+\begin{document}
+
+\begin{frame}
+\titlepage
+\end{frame}
+
+\begin{frame}
+\frametitle{Q1}
+Complete the proof of theorem 3.3 (don't forget the extra axiom, $\neg\neg_E$).
+\vspace{0.5cm}
+\begin{itemize}
+\item Must check rules $\vee_I$, $\vee_E$, $\rightarrow_E$ and $\neg\neg_E$.
+\item We'll just do $\vee_E$.
+\begin{prooftree}
+\AxiomC{$\phi \vee \psi$}
+\AxiomC{[$\phi$]}
+\doubleLine
+\UnaryInfC{$\theta$}
+\AxiomC{[$\psi$]}
+\doubleLine
+\UnaryInfC{$\theta$}
+\TrinaryInfC{$\theta$}
+\end{prooftree}
+\item We have $\Gamma\vdash \phi\vee \psi$, \/ $\Gamma\cup\{\phi\}\vdash \theta$, and $\Gamma\cup\{\psi\}\vdash \theta$.
+\item by induction, $\Gamma\models \phi\vee \psi$, \/ $\Gamma\cup\{\phi\}\models \theta$, and $\Gamma\cup\{\psi\}\models \theta$.
+\item Let $v$ be an assignment satisfying $\Gamma$. Then $v$ satisfies $\phi\vee\psi$.
+\item So $v$ satisfies one or both of $\phi$ and $\psi$.
+\item So $v$ also satisfies $\theta$. 
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Q2}
+Prove that soundness of a deduction system is equivalent to the statement ``every satisfiable set of sentences is consistent".
+\vspace{0.5cm}
+\begin{itemize}
+\item Soundness = $\Gamma\vdash \phi \implies \Gamma\models \phi$ ($\dagger$).
+\item ``satisfiable implies consistent"  =  $\Gamma\vdash \bot \implies \Gamma\models \bot$ ($\ddagger$).
+\end{itemize}
+\scalebox{0.8}{\begin{minipage}{1.20\textwidth}
+\begin{columns}
+\begin{column}{0.5\textwidth}
+$(\dagger) \implies (\ddagger)$.
+\begin{align*}
+\Gamma\vdash \bot &\iff \Gamma'\cup\{\psi\}\vdash\bot \\
+&\iff \Gamma'\vdash \neg\psi \phantom{xxx}\text{ by lemma 3.5(2)} \\
+&\implies \Gamma'\models \neg\psi \phantom{xxx}\text{ by ($\dagger$)}\\
+&\iff \Gamma \models \bot \phantom{xxxx}\text{ by lemma 3.5(1)}.
+\end{align*}
+\end{column}
+\begin{column}{0.5\textwidth}
+$(\ddagger) \implies (\dagger)$.
+\begin{align*}
+\Gamma \vdash \phi &\iff \Gamma \vdash \neg\neg \phi \phantom{xxxxx}\text{ by classical logic}\\
+&\iff\Gamma\cup\{\neg\phi\}\vdash \bot \phantom{x}\text{ by lemma 3.5(2)} \\
+&\implies \Gamma\cup\{\neg\phi\}\models \bot \phantom{x}\text{ by $(\ddagger)$}\\
+&\iff \Gamma \models \neg\neg \phi \phantom{xxixx}\text{ by lemma 3.5(1)}\\
+&\iff \Gamma \models \phi.
+\end{align*}
+\end{column}
+\end{columns}
+\end{minipage}}
+
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Q3}
+Let $\Gamma$ be a set of sentences in propositional logic. Then $\Gamma$ is satisfiable if and only if every finite subset of $\Gamma$ is satisfiable. 
+\vspace{0.5cm}
+\begin{itemize}
+\item If $\Gamma$ is satisfiable then every finite subset is obviously satisfiable too.
+\item We must now prove that if every finite subset of $\Gamma$ is satisfiable then so is $\Gamma$.
+\item Prove contrapositive: If $\Gamma$ is not satisfiable then it has a finite subset that is not satisfiable.
+\item Suppose $\Gamma$ is not satisfiable (i.e. $\Gamma\models \bot$). Then, by completeness, $\Gamma\vdash \bot$.
+\item The deduction of $\bot$ from $\Gamma$ can only use a finite set of axioms from $\Gamma$. Call this set $\Gamma'$.
+\item Then $\Gamma'\vdash \bot$, and so by soundness $\Gamma'\models \bot$.
+\item I.e. $\Gamma'$ is not satisfiable.
+\end{itemize}
+\end{frame}
+
+\end{document}

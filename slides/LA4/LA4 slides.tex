@@ -1,0 +1,371 @@
+\documentclass[handout]{beamer} 
+\title{ITCS 531: Linear Algebra - Inner products on real vector spaces}
+\date{}
+\author{Rob Egrot}
+
+\usepackage{amsmath, bbold, bussproofs,graphicx}
+\usepackage{mathrsfs}
+\usepackage{amsthm}
+\usepackage{amssymb}
+\usepackage[all]{xy}
+\usepackage{multirow}
+\usepackage{tikz-cd}
+
+
+\newtheorem{proposition}[theorem]{Proposition}
+\newcommand{\bN}{\mathbb{N}}
+\newcommand{\bZ}{\mathbb{Z}}
+\newcommand{\bQ}{\mathbb{Q}}
+\newcommand{\bR}{\mathbb{R}}
+\newcommand{\bP}{\mathbb{P}}
+\newcommand{\bC}{\mathbb{C}}
+\newcommand{\bF}{\mathbb{F}}
+\newcommand{\spa}{\mathrm{span}}
+\newcommand{\cL}{\mathcal{L}}
+\DeclareMathOperator{\nul}{\mathrm{null}}
+\DeclareMathOperator{\ran}{\mathrm{ran}}
+
+
+\addtobeamertemplate{navigation symbols}{}{%
+    \usebeamerfont{footline}%
+    \usebeamercolor[fg]{footline}%
+    \hspace{1em}%
+    \insertframenumber/\inserttotalframenumber
+}
+\setbeamertemplate{theorems}[numbered]
+\begin{document}
+
+\begin{frame}
+\titlepage
+\end{frame}
+
+\begin{frame}
+\frametitle{What is an inner product?}
+\begin{itemize}
+\item  We will work with vector spaces over $\bR$.\vspace{0.5cm} 
+\item Everything can be adapted for $\bC$, but the definitions are more complicated.\vspace{0.5cm} 
+\item An inner product is a generalization of the dot product. \vspace{0.5cm} 
+\item E.g. in $\bR^3$, we have $(a,b,c)\cdot(d,e,f)=ad+be+cf$.  \vspace{0.5cm} 
+\item Many geometric ideas for Euclidean spaces can be described using dot products.\vspace{0.5cm} 
+\item If a vector space has an inner product, then our geometric intuitions apply to it in some sense. 
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{The definition of an inner product}
+\begin{definition}
+Let $V$ be a vector space over $\bR$. An \emph{inner product} for $V$ is a function that takes a pair $(u,v)\in V^2$ to a value $\langle u,v\rangle  \in\bR$, satisfying the following properties:
+\begin{enumerate}
+\item $\langle v,v\rangle  \geq 0$ for all $v\in V$ (positivity).
+\item $\langle v,v\rangle  =0\iff v = 0$ (definiteness).
+\item $\langle u+v,w\rangle  =\langle u,w\rangle  +\langle v,w\rangle  $ for all $u,v,w\in V$ (additivity in first slot).
+\item $\langle \lambda u,v\rangle   = \lambda\langle u,v\rangle  $ for all $\lambda\in \bR$ and for all $u,v\in V$ (homogeneity in first slot).  
+\item $\langle u,v\rangle   = \langle v,u\rangle  $ for all $u,v\in V$ (symmetry).
+\end{enumerate}
+\end{definition}\vspace{0.1cm}
+\begin{definition}
+A vector space with an inner product is an \emph{inner product space}.  
+\end{definition}
+\end{frame}
+
+\begin{frame}
+\frametitle{Examples of inner products}
+\begin{example}\mbox{}
+\begin{enumerate}
+\item It's easy to check that the dot product as it is usually defined is indeed an inner product.\vspace{0.5cm}
+\item It can be shown that the set of continuous real valued functions on the interval $[-1,1]$ is a vector space over $\bR$. We can define an inner product on this space using $\langle f,g\rangle   = \int_{-1}^1 f(x)g(x)dx$.
+\end{enumerate}
+\end{example}
+\end{frame}
+
+\begin{frame}
+\frametitle{Basic properties of inner products}
+\begin{proposition}\label{P:LA4inner}
+The following properties hold in all real inner product spaces:\vspace{0.3cm}
+\begin{enumerate}
+\item Given $v\in V$, we can define a linear map $\langle -, v\rangle:V\to \bR$ by defining $\langle -, v\rangle(u) = \langle u, v\rangle$ for all $u\in V$.\vspace{0.3cm}
+\item $\langle v, 0 \rangle = \langle 0 , v\rangle = 0$ for all $v\in V$.\vspace{0.3cm}
+\item $\langle u, v+w\rangle = \langle u, v\rangle + \langle u, w\rangle$ for all $u,v,w\in V$. \vspace{0.3cm}
+\item $\langle u,\lambda v\rangle   = \lambda\langle u,v\rangle  $ for all $\lambda\in \bR$ and for all $u,v\in V$
+\end{enumerate}
+\end{proposition}
+\end{frame}
+
+\begin{frame}
+\frametitle{Basic properties of inner products - proof}
+\begin{proof}
+\begin{enumerate}
+\item ``\emph{$\langle -, v\rangle(u) = \langle u, v\rangle$ is a linear map}". \begin{itemize}
+\item Given $u_1,u_2\in V$ we have $\langle u_1+u_2, v\rangle = \langle u_1, v\rangle + \langle u_2, v\rangle$, by additivity in the first slot. 
+\item We also have $\langle \lambda u,v\rangle = \lambda \langle u, v \rangle$ by homogeneity in the first slot.
+\end{itemize}\vspace{0.1cm}
+\item``\emph{$\langle v, 0 \rangle = \langle 0 , v\rangle = 0$}" \begin{itemize} \item That $\langle 0 , v\rangle = 0 $ follows from part (1) and the fact that $T(0)= 0$ for all linear maps. 
+\item We then have $\langle v , 0\rangle = 0$ by symmetry.
+\end{itemize}\vspace{0.1cm}
+\item``\emph{$\langle u, v+w\rangle = \langle u, v\rangle + \langle u, w\rangle$}". \begin{itemize} \item $\langle u, v+w\rangle = \langle v+w, u\rangle$ by symmetry. 
+\item The result follows from additivity and symmetry again.\end{itemize}\vspace{0.1cm}
+\item ``\emph{$\langle u,\lambda v\rangle   = \lambda\langle u,v\rangle  $}".
+\begin{itemize}
+\item Symmetry and homogeneity in the first slot.
+\end{itemize}
+
+\end{enumerate}
+\end{proof}
+\end{frame}
+
+\begin{frame}
+\frametitle{Norms}
+\begin{itemize}
+\item In every real inner product space $V$ we can calculate the value of $\langle v, v\rangle$.
+\item This  must be non-negative. 
+\item This inspires the following definition:
+\end{itemize} 
+
+\begin{definition}
+If $V$ is an inner product space, then given $v\in V$, the \emph{norm} of $v$, $||v||$, is defined by
+\[\|v\| = \sqrt \langle v, v \rangle.\]
+\end{definition} 
+
+\begin{example}
+In $\bR^2$ with the usual dot product, the norm of a vector $(a,b)$ is $\sqrt (a^2 + b^2)$. I.e., it is the Euclidean distance of the point $(a,b)$ from the origin.
+\end{example}
+\end{frame}
+
+\begin{frame}
+\frametitle{Basic properties of norms}
+\begin{proposition}
+The following hold for all real inner product spaces $V$, and for all $v\in V$:
+\begin{enumerate}
+\item $\|v\| = 0 \iff v = 0$.
+\item $\|\lambda v\| = |\lambda|\|v\|$ for all $\lambda\in \bR$.
+\end{enumerate}
+\end{proposition}
+\begin{proof}
+\begin{itemize}
+\item (1) follows immediately from definiteness of the inner product. 
+\item (2) follows from homogeneity in the first slot and proposition \ref{P:LA4inner}(4).
+\end{itemize}
+\end{proof}
+\end{frame}
+
+\begin{frame}
+\frametitle{Geometric interpretation of dot product}
+\begin{proposition}\label{P:LA4cos}
+Given $u,v\in \bR^2\setminus\{0\}$, we have
+\[\langle u, v\rangle = \|u\|\|v\|\cos \theta,\]
+where $\theta$ is the angle between $u$ and $v$ when these are thought of as arrows beginning at the origin.
+\end{proposition}
+\end{frame}
+
+\begin{frame}
+\frametitle{Geometric interpretation of dot product - proof}
+\center \resizebox{1.6cm}{0.08cm}{$\xymatrix{ &\\
+& & &\ar[ull]_{u-v} \\
+\\
+\ar[uuur]^u\ar[uurrr]_v
+}$} 
+\begin{itemize}
+\item In $\bR^2$ the norm of a vector is its length.
+\item Law of cosines: $\|u-v\|^2 = \|u\|^2+\|v\|^2 - 2\|u\|\|v\|\cos \theta.$ 
+
+\item Now, $\|u-v\|^2 = \langle u-v, u-v\rangle$, by definition, and
+\begin{align*}\langle u-v, u-v\rangle &= \langle u, u-v\rangle - \langle v, u - v \rangle\\
+&= \langle u, u \rangle -\langle u , v \rangle - \langle v , u \rangle + \langle v, v \rangle\\
+&= \langle u, u \rangle + \langle v, v \rangle - 2\langle u, v \rangle\\
+&= \|u\|^2+\|v\|^2 - 2\langle u, v \rangle .\end{align*}
+
+\item So $\langle u, v \rangle = \|u\|\|v\|\cos \theta$ as required. 
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}
+\frametitle{Orthogonality}
+\begin{definition}
+If $u$ and $v$ are vectors in an inner product space, then we say $u$ and $v$ are \emph{orthogonal} if $\langle u ,v\rangle =0$.
+\end{definition}
+\vspace{0.5cm}
+\begin{itemize}
+\item By proposition \ref{P:LA4cos}, two non-zero vectors in $\bR^2$ are orthogonal if and only if the cosine of the angle between them is 0. \vspace{0.5cm}
+\item I.e. if and only if they are perpendicular. \vspace{0.5cm}
+\item You can think of `being orthogonal' as a generalization of the concept of `being perpendicular'.
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Orthogonality of zero}
+\begin{lemma}\mbox{}
+\begin{enumerate}
+\item $0$ is orthogonal to everything.
+\item $0$ is the only thing that is orthogonal to itself.
+\end{enumerate}
+\end{lemma}
+\begin{proof}
+These follows from proposition \ref{P:LA4inner}(2) and the definiteness of inner products, respectively.
+\end{proof}
+\end{frame}
+
+\begin{frame}
+\frametitle{Pythagoras for inner products}
+\begin{proposition}\label{P:LA4pythag}
+If $u$ and $v$ are vectors in a real inner product space, then
+\[\|u\|^2+\|v\|^2 = \|u+v\|^2 \iff u\text{ and } v \text{ are orthogonal}.\]
+\end{proposition}
+\begin{proof}
+\center \resizebox{2cm}{0.1cm}{$\xymatrix{ & & \\
+ \ar[rr]_u\ar[rru]^{u+v}& &\ar[u]_v
+}$}
+\begin{align*}
+\|u+v\|^2 &= \langle u+v, u+v\rangle \\
+&= \langle u, u \rangle + \langle u, v \rangle + \langle v,u \rangle + \langle v,v \rangle \\
+&= \|u\|^2+\|v\|^2 + 2\langle u, v\rangle. 
+\end{align*}
+So $\|u\|^2+\|v\|^2 = \|u+v\|^2$ if and only if $\langle u, v\rangle = 0$.
+\end{proof}
+\end{frame}
+
+\begin{frame}
+\frametitle{Some geometric intuition 1}
+\begin{itemize}
+\item We can think of vectors as arrows. E.g: 
+
+\[\xymatrix{ & & & \\
+\ar[rrru]^u\ar[rr]_v & & 
+}\] 
+
+\item Geometric intuition says we should be able to turn this into a right angled triangle by drawing some lines. I.e:
+\[\xymatrix{ & & & \\
+\ar[rrru]^u\ar[rr]_v & &\ar@{.>}[r] &\ar@{.>}[u]
+}\]
+\item In the picture above we have essentially extended $v$ as far as we need, then added a third line. 
+\item `Extending' $v$ is multiplying by some scalar $c$ to get $cv$. 
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Some geometric intuition 2}
+\begin{itemize}
+\item The associated vector equation is $u = cv + (u -cv)$.
+\[\xymatrix{ & & & \\
+\ar[rrru]^u\ar@{.>}[rrr]_{cv} & & &\ar@{.>}[u]_{u-cv}
+}\]
+
+\item In an inner product space, the triangle being `right angled' corresponds to the vectors $v$ and $(u-cv)$ being orthogonal.
+\item I.e. $\langle v, u-cv\rangle = 0$. 
+\item We should always be able to find a scalar value $c$ such that this is true (so long as $u$ and $v$ are non-zero). 
+
+\item From the properties of the inner product we have
+\[\langle v, u-cv\rangle = 0 \iff \langle v, u\rangle - c\|v\|^2 = 0.\]
+\item So we can take 
+\[c = \frac{\langle v, u \rangle}{\|v\|^2}.\]
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Some geometric intuition 3}
+\begin{lemma}\label{L:LA4orth}
+Let $V$ be a real inner product space, let $u,v\in V$ and suppose $v\neq 0$. Then there is $w\in V$ such that $\langle v, w\rangle =0$, and $u = cv + w$ for some $c\in \bR$. 
+\[\xymatrix{ & & & \\
+\ar[rrru]^u\ar@{.>}[rrr]_{cv} & & &\ar@{.>}[u]_{w}
+}\]
+\end{lemma}
+\begin{proof}
+Set $c = \frac{\langle v, u \rangle}{\|v\|^2}$ and $w = u - cv$.
+\end{proof}
+\end{frame}
+
+\begin{frame}
+\frametitle{The Cauchy-Schwarz inequality}
+\begin{theorem}[Cauchy-Schwarz]
+Let $V$ be an inner product space, and let $u,v\in V$. Then
+\[|\langle u, v\rangle| \leq\|u\|\|v\|.\]
+Moreover, we have equality if and only if $u$ is a scalar multiple of $v$ or vice versa.
+\end{theorem}
+\end{frame}
+
+\begin{frame}
+\frametitle{The Cauchy-Schwarz inequality - proof}
+\begin{itemize}
+\item If $v$ is zero, then everything is zero, and there is nothing to do. 
+\item Let $v\neq 0$ and write $u = cv + w$ where $\langle v, w \rangle = 0$. 
+\item By Pythagoras we have $\|u\|^2 = c^2\|v\|^2 +\|w\|^2$.
+\item We have $c = \frac{\langle v, u \rangle}{\|v\|^2}$, so 
+\[\|u\|^2 =\frac{\langle v, u \rangle^2}{\|v\|^4}\|v\|^2 + \|w\|^2.\]
+\item As $\|w\|^2\geq 0$ this implies 
+\[\|u\|^2 \geq \frac{\langle v, u \rangle^2}{\|v\|^4}\|v\|^2.\]
+\item So $\|u\|\|v\| \geq |\langle u, v\rangle|.$  
+
+\item Note that $|\langle u, v\rangle| =\|u\|\|v\|$ if and only if $\|w\| = 0$, which happens if and only if $w = 0$. I.e. if $u=cv$.
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Applications of Cauchy-Schwarz}
+The Cauchy-Schwarz inequality is extremely useful. Here's a simple application, and we will see more soon.\vspace{0.5cm}
+\begin{example}
+Let $x_1,\ldots,x_n,y_1,\ldots,y_n \in\bR$. Then, using Cauchy-Schwarz we have
+\[|x_1y_1+\ldots +x_ny_n|^2\leq (x_1^2+\ldots + x_n^2)(y_1^2+\ldots +y_n^2).\]
+\end{example}
+\end{frame}
+
+\begin{frame}
+\frametitle{The triangle inequality}
+\begin{itemize}
+\item It is a basic fact of Euclidean geometry that the length of a side of a triangle is less than the sum of the lengths of the other two sides. 
+\item This generalizes to inner product spaces.
+\end{itemize}
+
+\begin{proposition}\label{P:LA4tri}
+Let $V$ be a real inner product space, and let $u,v\in V$. Then 
+\[\|u + v \|\leq \|u\|+\|v\|.\]
+Moreover, we have equality if and only if $u$ is a scalar multiple of $v$ or vice versa.
+\end{proposition} 
+\end{frame}
+
+\begin{frame}
+\frametitle{The triangle inequality - proof}
+\begin{itemize}
+\item Appealing to Cauchy-Schwarz for the inequality marked $*$ we have
+\begin{align*}
+\|u+v\|^2 &= \langle u+v, u+v \rangle \\
+&= \langle u,u \rangle + \langle v,u \rangle + \langle u,v \rangle + \langle v,v \rangle\\
+&= \|u\|^2 + \|v\|^2 + 2\langle u, v \rangle\\
+*&\leq \|u\|^2 + \|v\|^2 + 2\|u\|\|v\| \\
+&= (\|u\|+ \|v\|)^2.
+\end{align*}
+\item So $\|u+v\|\leq \|u\|+ \|v\|$ as claimed.
+\item We have equality if and only if $\|u\|\|v\|= \langle u, v \rangle$. 
+\item By Cauchy-Schwarz this happens if and only if one of $u$ or $v$ is a scalar multiple of the other.
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{The parallelogram equality}
+Now lets use what we have proved about inner product spaces to prove a less obvious fact about plain geometry.
+\vspace{1cm}
+\begin{proposition}
+In a parallelogram, the sum of the squares of the lengths of the diagonals equals the sum of the squares of the sides.
+\end{proposition}
+\end{frame}
+
+\begin{frame}
+\frametitle{The parallelogram equality - proof}
+\begin{itemize}
+\item Expressed in terms of vectors, a parallelogram has form
+\center \resizebox{3cm}{0.3cm}{$\xymatrix{ &\ar[rrr]^u & & &\\
+\\
+\ar[ruu]^v\ar[rrr]_u & & &\ar[ruu]_v
+}$}
+\item The diagonals are given by $u-v$ and $u+v$. Now
+\begin{align*}
+&\|u+v\|^2 + \|u-v\|^2\\ 
+=& \langle u+v, u+v \rangle + \langle u-v, u-v \rangle\\
+=& \|u\|^2 + \|v\|^2 + 2\langle u, v \rangle +\|u\|^2 + \|v\|^2 -  2\langle u,v \rangle\\
+=& 2(\|u\|^2 + \|v\|^2).
+\end{align*}
+\end{itemize} 
+The identity $\|u+v\|^2 + \|u-v\|^2 = 2(\|u\|^2 + \|v\|^2)$
+is called the \emph{parallelogram equality}. 
+\end{frame}
+
+\end{document}

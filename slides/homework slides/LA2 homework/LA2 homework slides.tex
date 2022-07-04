@@ -1,0 +1,227 @@
+\documentclass[handout]{beamer} 
+\title{ITCS 531: LA2 homework solutions}
+\date{}
+\author{Rob Egrot}
+
+\usepackage{amsmath, bbold, bussproofs,graphicx}
+\usepackage{mathrsfs}
+\usepackage{amsthm}
+\usepackage{amssymb}
+\usepackage[all]{xy}
+\usepackage{multirow}
+\usepackage{tikz-cd}
+
+
+\newtheorem{proposition}[theorem]{Proposition}
+\newcommand{\bN}{\mathbb{N}}
+\newcommand{\bZ}{\mathbb{Z}}
+\newcommand{\bQ}{\mathbb{Q}}
+\newcommand{\bR}{\mathbb{R}}
+\newcommand{\bP}{\mathbb{P}}
+\newcommand{\bC}{\mathbb{C}}
+\newcommand{\bF}{\mathbb{F}}
+\newcommand{\spa}{\mathrm{span}}
+\newcommand{\sL}{\mathscr{L}}
+\newcommand{\lequiv}{\models\text{\reflectbox{$\models$}}}
+
+\addtobeamertemplate{navigation symbols}{}{%
+    \usebeamerfont{footline}%
+    \usebeamercolor[fg]{footline}%
+    \hspace{1em}%
+    \insertframenumber/\inserttotalframenumber
+}
+\setbeamertemplate{theorems}[numbered]
+\begin{document}
+
+\begin{frame}
+\titlepage
+\end{frame}
+
+\begin{frame}
+\frametitle{LA2 Q3 (1)}
+Let $U$ and $W$ be subspaces of $V$ and suppose that $V = U\oplus W$. Let $(u_1,\ldots,u_k)$ be  a basis for $U$, and let $(w_1,\ldots,w_m)$ be a basis for $W$. Prove that $(u_1,\ldots,u_k,w_1,\ldots,w_m)$ is a basis for $V$.
+\vspace{0.5cm}
+\begin{itemize}
+\item We will first show that $(u_1,\ldots,u_k,w_1,\ldots,w_m)$ is linearly independent. 
+\item Suppose $0 = a_1u_1+\ldots + a_ku_k + b_1w_1 + \ldots + b_mw_m$. 
+\item Since $U\oplus W$ is a direct sum, by definition there is a unique $u\in U$ and $w\in W$ with $u+w=0$, and this must be $u = 0$ and $w= 0$. 
+\item So $b_1w_1 + \ldots + b_mw_m = 0$ and $a_1u_1+\ldots + a_ku_k = 0$. 
+\item But $(u_1,\ldots,u_k)$ is a basis for $U$ and $(w_1,\ldots,w_m)$ is a basis for $W$, so $a_1=\ldots = a_k=b_1=\ldots = b_m=0$. 
+\item But this means $(u_1,\ldots,u_k,w_1,\ldots,w_m)$ is linearly independent as claimed.
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{LA2 Q3 (2)}
+Let $U$ and $W$ be subspaces of $V$ and suppose that $V = U\oplus W$. Let $(u_1,\ldots,u_k)$ be  a basis for $U$, and let $(w_1,\ldots,w_m)$ be a basis for $W$. Prove that $(u_1,\ldots,u_k,w_1,\ldots,w_m)$ is a basis for $V$.
+\vspace{0.5cm}
+\begin{itemize}
+\item Now we show the list spans $V$. \vspace{0.2cm}
+\item Let $v\in V$. \vspace{0.2cm}
+\item Then there is $u\in U$ and $w\in W$ with $v = u+w$. \vspace{0.2cm}
+\item So, as $(u_1,\ldots,u_k)$ and $(w_1,\ldots,w_m)$ span $U$ and $W$ respectively, we have $b_1w_1 + \ldots + b_mw_m = w$ and $a_1u_1+\ldots + a_ku_k = u$, for some choice of coefficients. \vspace{0.2cm}
+\item But this means $v = a_1u_1+\ldots + a_ku_k+b_1w_1 + \ldots + b_mw_m$, so the list does span $v$. 
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{LA2 Q4}
+Let $U$ and $W$ be subspaces of $\bR^8$, and suppose $\dim(U) = 5$, $\dim(W)= 3$, and $U\cap W =\{0\}$. Prove that $\bR^8 = U\oplus W$.
+\vspace{0.5cm}
+\begin{itemize}
+\item Let $(u_1,\ldots,u_5)$ be  a basis for $U$, and let $(w_1,w_2,w_3)$ be a basis for $W$. \vspace{0.2cm}
+\item By lemma 1.14, $U+W$ is a direct sum, so $(u_1,\ldots,u_5,w_1,w_2,w_3)$ is linearly independent. \vspace{0.2cm}
+\item It also has 8 elements, which is the dimension of $\bR^8$. \vspace{0.2cm}
+\item So, by theorem 2.11, $(u_1,\ldots,u_5,w_1,w_2,w_3)$ is a basis for $\bR^8$, and so $U\oplus W = \bR^8$.
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{LA2 Q5}
+Let $V$ be a finite dimensional vector space and $\dim(V)= n>0$. Show that $V= U_1\oplus\ldots\oplus U_n$, for some set $\{U_1,\ldots,U_n\}$ of one-dimensional subspaces. 
+\vspace{0.5cm}
+\begin{itemize}
+\item Let $(v_1,\ldots,v_n)$ be a basis for $V$. \vspace{0.3cm}
+\item For each $i\in \{1\ldots,n\}$, let $U_i = \spa(v_i)$. \vspace{0.3cm}
+\item Then $V=U_1+\ldots+ U_n$, as a basis spans $V$, by definition. \vspace{0.3cm}
+\item Also, if $0 = a_1v_n+\ldots+a_nv_n$ then $a_1=\ldots= a_n = 0$, by linear independence, so the sum is direct, by lemma 1.13.
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{L4 Q2 (1)}
+Let $\sL=\{0,1,+,\times\}$ be the language of basic arithmetic. Let $\phi=\forall x(\neg(x\approx 0)\rightarrow \exists y(x\times y \approx 1))$. Let $\bN$ and $\bR$ have their usual meanings, and interpret $\sL$ into these languages by giving the non-logical symbols of $\sL$ their usual meanings. \vspace{0.4cm}
+\begin{enumerate}[a)]
+\item Does $\bN\models \phi$?
+\item Does $\bR\models \phi$?
+\end{enumerate} 
+\vspace{0.5cm}
+\begin{itemize}
+\item $\phi$ is the statement that every non-zero element has an inverse.\vspace{0.2cm}
+\item This is not true in $\bN$, but it is true in $\bR$. 
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{L4 Q2 (2)}
+\begin{enumerate}[]
+\item[c)] Let $n\in\bN$ with $n\geq 2$, and let $\bZ_n$ be the integers mod $n$. For what values of $n$ does $\bZ_n\models \phi$? 
+\item[d)] Let $A=(\{a,b\},I)$, where $I$ interprets $0$ and $1$ as $a$ and $b$ respectively, $b\times b = b$, and $a\times b = a\times a = a$. Does $A\models \phi$?
+\end{enumerate} 
+\vspace{0.5cm}
+\begin{itemize}
+\item Remember in $\bZ_n$, an element has an inverse iff it is coprime with $n$. 
+\item So $\bZ\models \phi$ iff every non-zero element is coprime with $n$. I.e. iff $n$ is prime.\vspace{0.3cm}
+\item In the structure $A$, the only non-zero element is $b$.
+\item Does $b$ have an inverse? Yes, because $b\times b = b = 1$. 
+\item So $A\models \phi$.
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{L4 Q2 (3)}
+\begin{enumerate}[]
+\item[e)] Let $\psi= \exists x \forall y(\neg (y\approx 0)\rightarrow (x\times y \approx 1))$. Which of the structures in parts a)-d) is a model for $\psi$? 
+\end{enumerate} 
+\vspace{0.5cm}
+\begin{itemize}
+\item $\psi$ is the statement that there's an element which is an inverse to \emph{all} non-zero elements.\vspace{0.3cm}
+\item This is clearly not true in $\bN$, $\bR$ or $\bZ_n$ for $n>2$.\vspace{0.3cm}
+\item $\bZ_2\models \psi$ as 1 is the only non-zero element of $\bZ_2$.\vspace{0.3cm}
+\item $\psi$ is true in $A$, as $b$ is the only non-zero element of $A$, and $b\times b = b = 1$.
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{L4 Q3 (1)}
+Let $R$ and $S$ be unary predicates. Let $\phi=\forall x R(x) \vee \forall x S(x)$, and let $\psi=\forall x \forall y (R(x)\vee S(y))$. Prove that $\phi\lequiv \psi$.
+\vspace{0.5cm}
+\begin{itemize}
+\item Let $A$ be a structure of the appropriate kind. \vspace{0.2cm}
+\item Suppose first that $A\models \phi$. \vspace{0.2cm}
+\item Then either every element of $A$ satisfies $R$, or every element of $A$ satisfies $S$. \vspace{0.2cm}
+\item In the former case, for every pair of elements $a,b\in A$ we must have $R(a)\vee S(b)$, because $R(a)$ must be true. \vspace{0.2cm}
+\item So $A\models \forall x\forall y(R(x)\vee S(y))$. This shows $\phi\models \psi$.
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{L4 Q3 (2)}
+Let $R$ and $S$ be unary predicates. Let $\phi=\forall x R(x) \vee \forall x S(x)$, and let $\psi=\forall x \forall y (R(x)\vee S(y))$. Prove that $\phi\lequiv \psi$.
+\vspace{0.5cm}
+\begin{itemize}
+\item Conversely, suppose $A\models \psi$. \vspace{0.2cm}
+\item Suppose wlog that $A$ does not satisfy $\forall x R(x)$. \vspace{0.2cm}
+\item Then there is $a\in A$ with $A\not\models R(a)$. I.e. $R(a)$ is not true. \vspace{0.2cm}
+\item As $A\models \forall x\forall y(R(x)\vee S(y))$, \/$A\models \forall y(R(a)\vee S(y))$. \vspace{0.2cm}
+\item As $R(a)$ is not true in $A$, it follows that $A\models \forall y S(y)$. \vspace{0.2cm}
+\item By changing the variable name we have $A\models \forall x S(x)$, and so $A\models \forall x R(x) \vee \forall x S(x)$. \vspace{0.2cm}
+\item This shows $\psi\models \phi$, and we are done.
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}
+\frametitle{L4 Q4 (1)}
+Let $\phi$ be an $\sL$-formula, let $A$ be an $\sL$-structure, and let $v$ be an assignment for $\sL$ to $A$ with $A,v \models \phi$. Prove that $A,u\models \phi$ for all assignments $u$ such that $u(x)= v(x)$ for all variables $x$ occurring free in $\phi$.\vspace{0.5cm}
+\vspace{0.5cm}
+\begin{itemize}
+\item We induct on formula construction. \vspace{0.5cm}
+\item It's obviously true for atomic formulas, because these have no bound variables. \vspace{0.5cm}
+\item Suppose now that it's true for formulas $\phi$ and $\psi$.
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{L4 Q4 (2)}
+\begin{itemize}
+\item[$\neg \phi$:]  \begin{itemize}
+\item Suppose $A ,v\models \neg \phi$.\vspace{0.1cm} 
+\item Then $A, v\not\models \phi$. \vspace{0.1cm} 
+\item Suppose that $u$ agrees with $v$ about the free variables of $\phi$. \vspace{0.1cm} 
+\item If $A,u\models \phi$, by the inductive hypothesis we would have $A, v\models \phi$, which would be a contradiction. \vspace{0.1cm} 
+\item So we must have $A, u\models \neg\phi$ as required.
+\end{itemize}\vspace{0.6cm}
+\item[$\phi\vee\psi$] \begin{itemize}
+\item Suppose $A,v\models \phi\vee\psi$. \vspace{0.1cm} 
+\item Then, wlog we can assume that $A,v\models \phi$. \vspace{0.1cm} 
+\item Let $u$ be an assignment agreeing with $v$ about the free variables of $\phi\vee\psi$. \vspace{0.1cm} 
+\item Then $u$ agrees with $v$ about the free variables of $\phi$. \vspace{0.1cm} 
+\item So $A, u\models \phi$, and thus $A,u\models \phi\vee\psi$ as required.
+\end{itemize}
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{L4 Q4 (3)}
+\begin{itemize}
+\item[$\forall x \phi$:]\begin{itemize} 
+\item Suppose $A ,v\models \forall x \phi$, and let $u$ be an assignment agreeing with $v$ about the free variables of $\forall x\phi$. 
+\item We must show that $A, u\models \forall x \phi$. 
+\item I.e. that $A, u'\models \phi$ for all $u'$ agreeing with $u$ except possibly at $x$. 
+\item Let $u'$ be such an assignment, and let $v'$ be an assignment agreeing with $v$ except possibly at $x$, where we define $v'(x)=u'(x)$. 
+\item Then, if $F$ is the set of variables occurring free in $\phi$, we have
+\begin{itemize}
+\item $v'$ agrees with $v$ on $F\setminus\{x\}$.
+\item $u$ agrees with $v$ on $F\setminus\{x\}$.
+\item $u'$ agrees with $u$ on $F\setminus\{x\}$.
+\item $u'$ agrees with $v'$ on $F$.
+\end{itemize}
+\item So,
+\begin{align*}
+A,v\models \forall x \phi &\implies A, v'\models \phi \text{ (by definition of $\models$)}  \\
+&\implies A,u'\models \phi \text{ (by the inductive hypothesis)},
+\end{align*}
+\item And so $A,u\models \forall x\phi$ as required.
+\end{itemize}
+\end{itemize}
+\end{frame}
+
+
+
+
+
+
+
+
+\end{document}

@@ -1,0 +1,130 @@
+\documentclass[handout]{beamer} 
+\title{ITCS 531: Number Theory 1 solutions}
+\date{}
+\author{Rob Egrot}
+
+\usepackage{amsmath, bbold, bussproofs,graphicx}
+\usepackage{mathrsfs}
+\usepackage{amsthm}
+\usepackage{amssymb}
+\usepackage[all]{xy}
+\usepackage{multirow}
+\usepackage{tikz-cd}
+
+
+\newtheorem{Def}{Definition}
+\newtheorem{Lem}{Lemma}
+\newtheorem{Thm}{Theorem}
+\newtheorem{Cor}{Corollary}
+\newtheorem{Ex}{Example}
+\newtheorem{Prop}{Proposition}
+\newtheorem{Fact}{Fact}
+\newtheorem{Que}{Question}
+
+\newcommand{\bN}{\mathbb{N}}
+\newcommand{\bZ}{\mathbb{Z}}
+\newcommand{\bQ}{\mathbb{Q}}
+\newcommand{\bR}{\mathbb{R}}
+\newcommand{\bP}{\mathbb{P}}
+
+\addtobeamertemplate{navigation symbols}{}{%
+    \usebeamerfont{footline}%
+    \usebeamercolor[fg]{footline}%
+    \hspace{1em}%
+    \insertframenumber/\inserttotalframenumber
+}
+\newtheorem*{theorem*}{Theorem}
+
+\begin{document}
+
+\begin{frame}
+\titlepage
+\end{frame}
+
+\begin{frame}
+\frametitle{Q1}
+Consider the following (false) theorem: 
+\begin{theorem*}If $a,b\in \bN$ and $a=b$ then $a=0$.
+\end{theorem*}
+\begin{proof}
+\begin{align*}
+a&=b\\
+a^2&= ab\\
+a^2-b^2&=ab-b^2\\
+(a-b)(a+b)&=(a-b)b\\
+a+b&= b\\
+a&=0
+\end{align*}
+\end{proof}
+What is wrong with this proof?
+\begin{itemize}
+\item Division by zero!
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Q2}
+\scalebox{0.8}{\begin{minipage}{1.20\textwidth}
+Use the well-ordering principle to show that \[2+4+6+\ldots + 2n = n(n+1).\]
+\begin{itemize}
+\item Suppose this is not true for all natural numbers.
+\item By well-ordering, let $k$ be smallest number for which the identity is not true. 
+\item $k$ cannot be $1$ as identity is true for $n=1$. 
+\item Identity must be true for $k-1$. So we have 
+\[2+\ldots + 2(k-1) = (k-1)(k),\] 
+and so, adding $2k$ to both sides we have
+\[2+\ldots + 2(k-1) +2k = (k-1)(k)+2k.\]
+But 
+\[(k-1)(k)+2k = (k)(k+1),\]
+and so
+\[2+\ldots +2k = (k)(k+1).\]
+\item This is a contradiction because $k$ is supposed to invalidate the identity. 
+\end{itemize}
+\end{minipage}}
+\end{frame}
+
+\begin{frame}
+\frametitle{Q3}
+Let $n\in\bN$. If $n^2$ is even must $n$ also be even? Give a proof or a counterexample.
+\vspace{0.5cm}
+\begin{itemize}
+\item By the fundamental theorem of arithmetic, $n^2$ has a unique prime factorization.
+ \item The same is true for $n$. 
+\item Suppose $n = p_1\ldots p_k$. 
+\item Then $n^2=p_1\ldots p_kp_1\ldots p_k$. 
+\item If $n^2$ is even then $2| n^2$. 
+\item Since $n^2 = p_1\ldots p_kp_1\ldots p_k$, we must have $2| p_i$ for some $i\in \{1,\ldots,k\}$.
+\item But this means $2|n$. 
+\item So $n$ is even too.
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Q4}
+Let $n\in\bN\setminus\{0\}$. Then using theorem 1.2 prove that $\log_5(n)$ is either a natural number or irrational.
+\begin{itemize}
+\item If $5^{\frac{a}{b}} = n$ then $5^a = n^b$. 
+\item $n^b$ can be uniquely factorized into primes. 
+\item Since $n^b = 5^a$ we know this factorization must just be $55\ldots 5$ (a list of $a$ fives). 
+\item $n$ must also have a unique factorization into primes. 
+\item As $n^b = 55\ldots 5$, the factorization of $n$ must be a list of fives.
+\item I.e. $n = 5^k$ for some $k$.
+\item  But if we take a product of $b$ copies of this list of fives we get $n^b$, which is $5^a$.
+\item I.e. $5^a = (5^k)^b$, so $a = kb$. 
+\item This means that $b$ must divide $a$. 
+\item In other words, $\frac{a}{b}$ must be a natural number.  
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Q5}
+Is the result from exercise 4 still true if we replace $5$ with $4$? Provide a proof or a counterexample.
+\vspace{1cm}
+\begin{itemize}
+\item It's not true. 
+\vspace{0.5cm}
+\item For example, $\log_4{2} = \frac{1}{2}$.
+\end{itemize}
+\end{frame}
+
+\end{document}
